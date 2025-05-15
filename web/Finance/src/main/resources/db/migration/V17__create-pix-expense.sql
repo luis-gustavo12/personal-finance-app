@@ -14,6 +14,6 @@ CREATE TABLE pix_expense (
     
 
     FOREIGN KEY (expense_id) REFERENCES expenses(id),
-    FOREIGN KEY (source_bank_acc_id) REFERENCES bank_account(id)
+    FOREIGN KEY (source_bank_acc_id) REFERENCES bank_accounts(id)
 
 );

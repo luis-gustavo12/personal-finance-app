@@ -2,7 +2,7 @@
 
 -- Add fields for specific country, if needed!!
 
-CREATE TABLE bank_account (
+CREATE TABLE bank_accounts (
 
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT,
