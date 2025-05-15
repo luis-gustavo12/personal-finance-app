@@ -1,0 +1,6 @@
+CREATE TABLE payment_methods (
+
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(15) NOT NULL UNIQUE
+
+);

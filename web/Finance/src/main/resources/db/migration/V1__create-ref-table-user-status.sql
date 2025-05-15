@@ -1,0 +1,7 @@
+
+CREATE TABLE user_status (
+
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    status VARCHAR(12) NOT NULL UNIQUE
+
+);
