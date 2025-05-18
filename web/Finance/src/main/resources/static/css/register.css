@@ -1,0 +1,50 @@
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    background-image: linear-gradient(to bottom, var(--main-blue), var(--aqua));
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+form {
+    background-color: white;
+    margin-top: 12em;
+    height: 16em;
+    width: 15em;
+    padding: 0.3em;
+    border-radius: 3px;
+}
+
+form div {
+    padding: 5px;
+}
+
+div#btn-div {
+    display: flex;
+    justify-content: center;
+}
+
+form button {
+    background-color: white;
+    padding: 5px;
+    border: 1px solid black;
+    margin: 3px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: var(--main-blue);
+    color: white;
+    transition: 0.3s;
+}

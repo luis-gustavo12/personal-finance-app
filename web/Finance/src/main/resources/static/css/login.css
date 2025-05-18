@@ -1,0 +1,60 @@
+
+
+body {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(to bottom, var(--main-blue), var(--aqua));
+    background-attachment: fixed;
+}
+
+
+form {
+    background-color: white;
+    margin-top: 5em;
+    padding: 15px;
+    width: 16em;
+    height: 16em;
+    border-radius: 5px;
+
+}
+
+div#input-field {
+    padding: 4px;
+}
+
+input#email {
+    margin-bottom: 0.7em;
+}
+
+input#password {
+    margin-bottom: 0.5em;
+}
+
+div#check-box-div {
+    margin-bottom: 0.6em;
+}
+
+div#forgot-password-div {
+    margin-bottom: 0.6em;
+}
+
+div#sign-in {
+    margin-bottom: 0.6em;
+}
+
+div#send-btn {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.3em;
+}
+
+div#send-btn input {
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid black;
+    padding: 0.3em;
+    border-radius: 3px;
+    
+}

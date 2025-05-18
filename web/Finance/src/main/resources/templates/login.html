@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+    
+    <div layout:fragment="content">
+        <form action="" method="post">
+            <div id="log-text">
+                <h2>Entre com sua conta</h2>
+            </div>
+            <div id="input-field">
+                <div id="form">
+                    <label for="input">
+                        <input type="email" name="email" id="email" placeholder="Email">
+                    </label>
+                    <br>
+                    <label for="password">
+                        <input type="password" name="password" id="password" placeholder="Senha">
+                    </label>
+        
+                </div>
+            </div>
+            <div id="check-box-div">
+                <label for="check-box">
+                    Remind me? <input type="checkbox" name="check-box" id="check-box">
+                </label>
+            </div>
+            <div id="forgot-password-div">
+                <a href="">Recover your password</a>
+            </div>
+            <div id="sign-in">
+                <a href="">Create your account</a>
+            </div>
+            <div id="send-btn">
+                <input type="submit" value="Enviar">
+            </div>
+        
+        </form>
+    </div>
+
+</body>
+</html>
