@@ -38,7 +38,7 @@ public class SecurityConfig {
                     .loginProcessingUrl("/login/submit")
                     .usernameParameter("email")
                     .passwordParameter("password")
-                        .defaultSuccessUrl("/dashboard")
+                    .defaultSuccessUrl("/dashboard")
                     .permitAll()
             )
             ;
