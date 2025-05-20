@@ -1,0 +1,56 @@
+2025-05-19T18:26:52.517-03:00  INFO 132911 --- [My Finance App] [restartedMain] c.g.Finance.MyFinanceAppApplication      : Starting MyFinanceAppApplication using Java 17.0.15 with PID 132911 (/home/starc/Desktop/Projects/MyFinancesApp/web/Finance/target/classes started by starc in /home/starc/Desktop/Projects/MyFinancesApp/web/Finance)
+2025-05-19T18:26:52.519-03:00  INFO 132911 --- [My Finance App] [restartedMain] c.g.Finance.MyFinanceAppApplication      : No active profile set, falling back to 1 default profile: "default"
+2025-05-19T18:26:52.640-03:00  INFO 132911 --- [My Finance App] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-05-19T18:26:52.640-03:00  INFO 132911 --- [My Finance App] [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-05-19T18:26:52.939-03:00  INFO 132911 --- [My Finance App] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-05-19T18:26:52.940-03:00  INFO 132911 --- [My Finance App] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2025-05-19T18:26:52.959-03:00  INFO 132911 --- [My Finance App] [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.github.Finance.repositories.RoleRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2025-05-19T18:26:52.959-03:00  INFO 132911 --- [My Finance App] [restartedMain] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface com.github.Finance.repositories.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2025-05-19T18:26:52.960-03:00  INFO 132911 --- [My Finance App] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 16 ms. Found 0 JDBC repository interfaces.
+2025-05-19T18:26:52.966-03:00  INFO 132911 --- [My Finance App] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2025-05-19T18:26:52.967-03:00  INFO 132911 --- [My Finance App] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-19T18:26:52.983-03:00  INFO 132911 --- [My Finance App] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 13 ms. Found 2 JPA repository interfaces.
+2025-05-19T18:26:53.298-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-05-19T18:26:53.304-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-05-19T18:26:53.305-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.40]
+2025-05-19T18:26:53.321-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-05-19T18:26:53.322-03:00  INFO 132911 --- [My Finance App] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 681 ms
+2025-05-19T18:26:53.466-03:00  INFO 132911 --- [My Finance App] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-19T18:26:53.563-03:00  INFO 132911 --- [My Finance App] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2d8c5c80
+2025-05-19T18:26:53.565-03:00  INFO 132911 --- [My Finance App] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-19T18:26:53.591-03:00  INFO 132911 --- [My Finance App] [restartedMain] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://localhost:3306/finance_app (MySQL 5.5)
+2025-05-19T18:26:53.634-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.f.core.internal.command.DbValidate     : Successfully validated 22 migrations (execution time 00:00.027s)
+2025-05-19T18:26:53.642-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.f.core.internal.command.DbMigrate      : Current version of schema `finance_app`: 22
+2025-05-19T18:26:53.645-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.f.core.internal.command.DbMigrate      : Schema `finance_app` is up to date. No migration necessary.
+2025-05-19T18:26:53.701-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-19T18:26:53.731-03:00  INFO 132911 --- [My Finance App] [restartedMain] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2025-05-19T18:26:53.750-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-19T18:26:53.901-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-19T18:26:53.934-03:00  WARN 132911 --- [My Finance App] [restartedMain] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-19T18:26:53.935-03:00  WARN 132911 --- [My Finance App] [restartedMain] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-05-19T18:26:53.945-03:00  INFO 132911 --- [My Finance App] [restartedMain] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-19T18:26:54.361-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-19T18:26:54.393-03:00  INFO 132911 --- [My Finance App] [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-19T18:26:54.578-03:00  WARN 132911 --- [My Finance App] [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-19T18:26:54.608-03:00  INFO 132911 --- [My Finance App] [restartedMain] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name daoAuthenticationProvider
+2025-05-19T18:26:54.608-03:00  WARN 132911 --- [My Finance App] [restartedMain] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-05-19T18:26:54.699-03:00 DEBUG 132911 --- [My Finance App] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerMapping : 6 mappings in 'requestMappingHandlerMapping'
+2025-05-19T18:26:54.762-03:00 DEBUG 132911 --- [My Finance App] [restartedMain] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**] in 'resourceHandlerMapping'
+2025-05-19T18:26:54.799-03:00 DEBUG 132911 --- [My Finance App] [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CsrfFilter, LogoutFilter, UsernamePasswordAuthenticationFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-05-19T18:26:54.842-03:00 DEBUG 132911 --- [My Finance App] [restartedMain] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2025-05-19T18:26:54.924-03:00 DEBUG 132911 --- [My Finance App] [restartedMain] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 0 @ExceptionHandler, 1 ResponseBodyAdvice
+2025-05-19T18:26:55.059-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2025-05-19T18:26:55.088-03:00  INFO 132911 --- [My Finance App] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-05-19T18:26:55.096-03:00  INFO 132911 --- [My Finance App] [restartedMain] c.g.Finance.MyFinanceAppApplication      : Started MyFinanceAppApplication in 2.805 seconds (process running for 3.042)
+2025-05-19T19:20:06.863-03:00  INFO 132911 --- [My Finance App] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-05-19T19:20:06.867-03:00  INFO 132911 --- [My Finance App] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-05-19T19:20:06.870-03:00  INFO 132911 --- [My Finance App] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-19T19:20:06.873-03:00  INFO 132911 --- [My Finance App] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-19T19:20:06.875-03:00  INFO 132911 --- [My Finance App] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
