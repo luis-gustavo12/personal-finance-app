@@ -1,0 +1,18 @@
+package com.github.Finance.controllers.web;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/dashboard")
+public class DashbordController {
+
+    
+    @GetMapping("")
+    public String mainDashboard() {
+        return "home";
+    }
+
+    
+}

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 @Controller
-@RequestMapping("/register")
+@RequestMapping("register")
 public class RegisterController {
 
     private final UserService userService;
@@ -32,8 +32,8 @@ public class RegisterController {
 
         User newUser = userService.createUser(form);
 
-        // TODO: Return message to the user
-        return "";
+        
+        return "redirect:/login";
     }
     
     

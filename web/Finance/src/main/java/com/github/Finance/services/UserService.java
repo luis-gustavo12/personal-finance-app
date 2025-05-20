@@ -1,5 +1,11 @@
 package com.github.Finance.services;
 
+import java.util.Collections;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -8,16 +14,20 @@ import com.github.Finance.models.Role;
 import com.github.Finance.models.User;
 import com.github.Finance.repositories.UserRepository;
 
+
+/**
+ * Class responsible for every user interaction with the repositories.
+ */
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     
     private final UserRepository repository;
-    private final BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final RoleService roleService;
 
-    public UserService (UserRepository repository, BCryptPasswordEncoder encoder, RoleService roleService) {
+    public UserService (UserRepository repository, RoleService roleService) {
         this.repository = repository;
-        this.encoder = encoder;
         this.roleService = roleService;
     }
 
@@ -32,6 +42,24 @@ public class UserService {
         user.setRole( roleService.findRepositoryById(Role.ROLE_USER)  );
         
         return repository.save(user);
+
+    }
+
+
+    /**
+     * 
+     * Implementation in order to Spring Security handle authentication for us.
+     * 
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        
+        User user = repository.findByEmail(username).orElseThrow( () -> new UsernameNotFoundException("User wasn't found!!") );
+        return new org.springframework.security.core.userdetails.User(
+            user.getEmail(),
+            user.getPassword(),
+            Collections.singleton(new SimpleGrantedAuthority( String.format("ROLE_%s", user.getRole().getRole().toUpperCase()) ) )
+        );
 
     }
 

@@ -2,12 +2,21 @@ package com.github.Finance.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.github.Finance.services.UserService;
+
 @Configuration
 public class SecurityConfig {
+
+    private final UserService userService;
+
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
+    }
 
 
     @Bean
@@ -17,8 +26,8 @@ public class SecurityConfig {
         httpSecurity
             .authorizeHttpRequests(
                requests -> requests
-               .requestMatchers("/css/**").permitAll()
-               .requestMatchers("/register/**").permitAll()
+               .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
+               .requestMatchers("/register/**", "/register", "/register/").permitAll()
                .anyRequest().authenticated()
             )
 
@@ -26,6 +35,10 @@ public class SecurityConfig {
             .formLogin(
                 (form) -> form
                     .loginPage("/login")
+                    .loginProcessingUrl("/login/submit")
+                    .usernameParameter("email")
+                    .passwordParameter("password")
+                        .defaultSuccessUrl("/dashboard")
                     .permitAll()
             )
             ;
@@ -39,5 +52,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        var provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(encoder());
+        provider.setUserDetailsService(userService);
+        return provider;
+    }
+
+
 }
