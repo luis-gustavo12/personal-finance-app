@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"4>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div layout:fragment="content">
+        <nav>
+            <div class="main-routes">
+                <div class="nav-pannel">
+                    <a href="#">Faturas</a>
+                </div>
+                <div class="nav-pannel">
+                    <a href="#">Rendimentos</a>
+                </div>
+                <div class="nav-pannel">
+                    <a th:href="@{/expenses}">Despesas</a>
+                </div>
+            </div>
+            <div class="user-config">
+                <div class="nav-pannel">
+                    <a href="#">Configurações</a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+
+    <main>
+
+    </main>
+
+
+    <footer>
+
+    </footer>
+
+</body>
+</html>

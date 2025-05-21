@@ -1,6 +1,6 @@
 package com.github.Finance.services;
 
-import com.github.Finance.dtos.LoginForm;
+import com.github.Finance.dtos.forms.LoginForm;
 import org.springframework.stereotype.Service;
 
 /**

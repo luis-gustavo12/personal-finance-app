@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.github.Finance.dtos.RegisterForm;
+import com.github.Finance.dtos.forms.RegisterForm;
 import com.github.Finance.models.Role;
 import com.github.Finance.models.User;
 import com.github.Finance.repositories.UserRepository;
