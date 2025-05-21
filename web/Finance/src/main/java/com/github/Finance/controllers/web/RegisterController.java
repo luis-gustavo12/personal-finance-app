@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.github.Finance.dtos.RegisterForm;
+import com.github.Finance.dtos.forms.RegisterForm;
 import com.github.Finance.models.User;
 import com.github.Finance.services.UserService;
 
@@ -32,7 +32,6 @@ public class RegisterController {
 
         User newUser = userService.createUser(form);
 
-        
         return "redirect:/login";
     }
     

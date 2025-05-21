@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Despesas</title>
+</head>
+<body>
+    
+    <div layout:fragment="content">
+        <nav>
+            <div class="return-anchor">
+                <a href="#">Go Back</a>
+            </div>
+    
+            <div class="actions-divs">
+    
+                <div class="action">
+                    <a th:href="@{/expenses/create}">Criar Despesa</a>
+                </div>
+    
+                <div class="action">
+                    <a href="#">Atualizar Despesa</a>
+                </div>
+    
+            </div>
+    
+        </nav>
+    
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Método de Pagamento</th>
+                <th>Moeda</th>
+                <th>Quantidade</th>
+                <th>Extra</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Pix</td>
+                <td>BRL</td>
+                <td>4.50</td>
+                <td>Dale dele dele dolen</td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+
+
+
+body {
+    background-color: white;
+}
+
+
+
+
+nav {
+    display: flex;
+    justify-content: space-between; /* Optional: separates main-routes and user-config */
+    align-items: center;
+    padding: 10px;
+}
+
+.main-routes,
+.user-config {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-pannel {
+    background-color: wheat;
+    padding: 15px;
+    border-radius: 4px;
+}

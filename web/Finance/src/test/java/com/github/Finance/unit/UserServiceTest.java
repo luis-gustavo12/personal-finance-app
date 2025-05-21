@@ -12,13 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.github.Finance.models.Role;
 import com.github.Finance.models.User;
-import com.github.Finance.models.UserStatus;
 import com.github.Finance.repositories.UserRepository;
 import com.github.Finance.services.UserService;
 
