@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Error</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #f8f9fa;
+      color: #333;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .error-container {
+      background: #fff;
+      padding: 2rem 3rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .error-title {
+      font-size: 2.5rem;
+      color: #e74c3c;
+      margin-bottom: 0.5rem;
+    }
+    .error-message {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+    .home-link {
+      display: inline-block;
+      padding: 0.5rem 1.5rem;
+      background: #3498db;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    .home-link:hover {
+      background: #217dbb;
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <div class="error-title">Oops!</div>
+    <div class="error-message">
+      Something went wrong.<br>
+      Please try again later.
+    </div>
+    <a th:href="@{/dashboard}" class="home-link">Go to Dashboard</a>
+  </div>
+</body>
+</html>

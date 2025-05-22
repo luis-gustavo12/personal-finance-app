@@ -29,7 +29,7 @@
     
         </nav>
     
-        <table>
+        <!-- <table>
             <tr>
                 <th>ID</th>
                 <th>Método de Pagamento</th>
@@ -44,7 +44,37 @@
                 <td>4.50</td>
                 <td>Dale dele dele dolen</td>
             </tr>
-        </table>
+        </table> -->
+
+
+        <p th:if="${expenses.isEmpty}">
+            Você não tem nenhuma despesa!!!
+        </p>
+        
+        <div th:unless="${expenses.isEmpty}" class="expense-table">
+            <table>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Método de Pagamento</th>
+                    <th>Moeda</th>
+                    <th>Quantidade</th>
+                    <th>Extra</th>
+                </tr>
+
+                <tr th:each="expense : ${expenses}">
+                    <td th:text="${expense.id}"></td>
+                    <td th:text="${expense.paymentMethod.description}"></td>
+                    <td th:text="${expense.currency.currencySymbol}"></td>
+                    <td th:text="${expense.amount}"></td>
+                    <td th:if="${expense.extraInfo != ''}" th:text="${expense.extraInfo}"></td>
+                </tr>
+
+            </table>
+        </div>
+
+
+
     </div>
 
 </body>
