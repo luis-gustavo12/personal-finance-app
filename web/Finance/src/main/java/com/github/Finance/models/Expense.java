@@ -1,6 +1,7 @@
 package com.github.Finance.models;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +14,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Table
+@Table(name = "expenses")
 @Entity
 @Getter
 @Setter
@@ -40,5 +41,13 @@ public class Expense {
     @Column(name = "extra_info")
     private String extraInfo;
 
+    @ManyToOne
+    @JoinColumn(
+        name = "user_id"
+    )
+    private User user;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
     
 }

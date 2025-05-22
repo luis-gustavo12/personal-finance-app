@@ -6,6 +6,7 @@ import java.util.List;
 import com.github.Finance.dtos.ExpenseView;
 import com.github.Finance.dtos.forms.AddExpenseForm;
 import com.github.Finance.models.Currency;
+import com.github.Finance.models.Expense;
 import com.github.Finance.services.CurrencyService;
 import com.github.Finance.services.ExpenseService;
 import org.springframework.stereotype.Controller;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.github.Finance.models.PaymentMethod;
 import com.github.Finance.services.PaymentMethodsService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 /**
@@ -43,7 +43,9 @@ public class ExpensesController {
     }
 
     @GetMapping("")
-    public String expenses() {
+    public String expenses(Model model) {
+        List<Expense> expenses = expenseService.getUserExpenses();
+        model.addAttribute("expenses", expenses);
         return "expenses";
     }
 
@@ -63,41 +65,41 @@ public class ExpensesController {
         ExpenseView response = expenseService.saveExpense(form);
 
         // redirects for specific details route. Each payment method has its own
-        // way of dealing with specific data.\
+        // way of dealing with specific data.
 
         switch (response.getPaymentMethodName()) {
             case "CREDIT CARD":
-                return "redirect:/expense/details/credit_card";
+                return "redirect:/expenses/details/credit_card";
             case "DEBIT CARD":
-                return "redirect:/expense/details/debit_card";
+                return "redirect:/expenses/details/debit_card";
             case "PIX":
-                return "redirect:/expense/details/pix";
+                return "redirect:/expenses/details/pix";
             case "CASH":
-                return "redirect:/expense/details/cash";
+                return "redirect:/expenses/details/cash";
             default:
-                return "redirect:/expense/details/other";
+                return "redirect:/expenses/details/other";
         }
         
     }
 
     @GetMapping("/details/credit_card")
     public String creditCardDetails() {
-        return "dashboard";
+        return "redirect:/dashboard";
     }
     
     @GetMapping("/details/debit_card")
     public String debitCardDetails() {
-        return "dashboard";
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/details/pix")
     public String pixDetails() {
-        return "dashboard";
+        return "redirect:/dashboard";
     }
 
     @GetMapping("/details/cash")
     public String cashDetails() {
-        return "dashboard";
+        return "redirect:/dashboard";
     }
 
     
