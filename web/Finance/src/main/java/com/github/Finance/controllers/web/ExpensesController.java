@@ -56,7 +56,7 @@ public class ExpensesController {
         List<Currency> currencies = currencyService.findAllCurrencies();
         model.addAttribute("currencies", currencies);
         model.addAttribute("paymentMethods", paymentMethods);
-        return "create_expense";
+        return "create-expense";
     }
 
     @PostMapping("/create")
@@ -84,7 +84,7 @@ public class ExpensesController {
 
     @GetMapping("/details/credit_card")
     public String creditCardDetails() {
-        return "redirect:/dashboard";
+        return "creditcard_details";
     }
     
     @GetMapping("/details/debit_card")
@@ -99,6 +99,11 @@ public class ExpensesController {
 
     @GetMapping("/details/cash")
     public String cashDetails() {
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/details/other")
+    public String otherPaymentsDetails() {
         return "redirect:/dashboard";
     }
 
