@@ -2,8 +2,9 @@ package com.github.Finance.controllers.web;
 
 import java.util.List;
 
+
+import com.github.Finance.dtos.views.*;
 import com.github.Finance.dtos.forms.AddExpenseForm;
-import com.github.Finance.dtos.views.ExpenseView;
 import com.github.Finance.models.Currency;
 import com.github.Finance.models.Expense;
 import com.github.Finance.services.CurrencyService;
@@ -23,7 +24,7 @@ import com.github.Finance.services.PaymentMethodsService;
  * 
  * Class for most expenses part
  * 
- * NOTE: maybe, details gets bigger, so it'd be a good idea to split it
+ * NOTE: maybe, details may get bigger, so it'd be a good idea to split it
  * 
  */
 

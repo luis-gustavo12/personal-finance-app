@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.github.Finance.models.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>{
     public Optional<User> findByEmail(String email);
 }
