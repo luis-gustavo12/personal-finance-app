@@ -11,15 +11,15 @@
     <div layout:fragment="content">
 
         <nav>
-            <div class="nav-pannel">
-                <a th:href="@{/cards/create}">Adicionar cartão</a>
-            </div>
-            <div class="nav-pannel">
-                <a href="#">Atualizar informação do cartão</a>
-            </div>
-            <div class="nav-pannel">
-                <a href="#">Deletar cartão</a>
-            </div>
+
+            <a th:href="@{/dashboard}" class="nav-pannel">Dashboard</a>
+            
+            <a th:href="@{/cards/create}" class="nav-pannel">Adicionar cartão</a>
+            
+            <a href="#" class="nav-pannel">Atualizar informação do cartão</a>
+            
+            <a href="#" class="nav-pannel">Deletar cartão</a>
+            
         </nav>
 
 
@@ -27,7 +27,6 @@
             <p>Vazio</p>
         </div>
 
-        <!-- Listagem de cartoes -->
         <main th:unless="${cardViews.isEmpty()}">
 
             <table>

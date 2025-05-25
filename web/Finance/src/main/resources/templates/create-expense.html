@@ -5,35 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Expense</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/create-expenses.css}">
     
 </head>
 <body>
     
     <div layout:fragment="content">
 
+        <nav>
+            <a onclick="window.history.back()" class="nav-pannel">Retornar</a>
+        </nav>
+
         <p th:if="${paymentMethods.isEmpty()}">Você não tem nenhum método de pagamento!!</p>
 
         <form th:unless="${paymentMethods.isEmpty()}" th:action="@{/expenses/create}" th:method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-            <p>Selecione a forma de pagamento</p>
-            <label for="paymentMethodId"></label>
+            <h2>Adicione uma despesa</h2>
+            <label for="paymentMethodId">Selecione a forma de pagamento</label>
             <select name="paymentMethodId" id="paymentMethodId">
                 <option th:each="method : ${paymentMethods}" th:value="${method.id}" th:text="${method.description}">
                 </option>
             </select>
             <br>
-            <p>Selecione a moeda</p>
-            <label for="currencyId"></label>
+            <label for="currencyId">Selecione a moeda</label>
             <select name="currencyId" id="currencyId">
                 <option th:each="currency : ${currencies}" th:value="${currency.id}" th:text="${currency.currencyFlag}">
                 </option>
             </select>
             <br>
-            <label for="amount"></label>
-            <input type="text" name="amount" id="amount" placeholder="Insira a quantidade" required>
+            <label for="amount">Insira a quantidade</label>
+            <input type="text" name="amount" id="amount" placeholder="Use valores decimais" required>
             <br>
-            <label for="extra"></label>
-            <textarea name="extra" id="extra" cols="30" rows="10"></textarea>
+            <label for="extra">Informação extra</label>
+            <textarea name="extra" id="extra" cols="30" rows="10" placeholder="Coloque algo do qual se lembrará depois"></textarea>
             <br>
             <button type="submit" >Enviar</button>
 

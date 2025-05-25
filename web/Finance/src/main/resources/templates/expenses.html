@@ -4,26 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/expenses.css}">
     <title>Despesas</title>
 </head>
 <body>
     
     <div layout:fragment="content">
         <nav>
-            <div class="return-anchor">
-                <a href="#">Go Back</a>
-            </div>
-    
-            <div class="actions-divs">
-    
-                <div class="action">
-                    <a th:href="@{/expenses/create}">Criar Despesa</a>
-                </div>
-    
-                <div class="action">
-                    <a href="#">Atualizar Despesa</a>
-                </div>
+            
+            <a th:href="@{/dashboard}" class="nav-pannel">Dashboard</a>
+            
+            <a th:href="@{/expenses/create}" class="nav-pannel">Criar Despesa</a>
+            
+            <a href="#" class="nav-pannel">Atualizar Despesa</a>
     
             </div>
     

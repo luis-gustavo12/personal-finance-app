@@ -3,14 +3,42 @@
 :root {
     --main-blue: #0099DD;
     --main-green: #399E5A;
+    --dark-green: #26532B;
     --aqua: #6EF9F5;
+    --lilac: #C297B8;
     --font-family: "Montserrat", sans-serif;
     --font-style: normal;
+    
 }
 
 
 * {
     font-family: var(--font-family);
     font-size: 1em;
+    color: black;
 }
 
+
+.nav-pannel {
+    background-color: var(--lilac);
+    padding: 15px;
+    border-radius: 4px;
+    color: black;
+}
+
+.nav-pannel:hover {
+    color: white;
+    transition: 0.3s;
+}
+
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+a {
+    text-decoration: none;
+}
