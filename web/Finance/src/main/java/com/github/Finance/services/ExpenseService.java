@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.github.Finance.dtos.ExpenseView;
 import com.github.Finance.dtos.forms.AddExpenseForm;
+import com.github.Finance.dtos.views.ExpenseView;
 import com.github.Finance.mappers.ExpenseMapper;
 import com.github.Finance.models.Expense;
 import com.github.Finance.models.User;
@@ -36,7 +36,7 @@ public class ExpenseService {
         if (!form.extra().isEmpty()) 
             expense.setExtraInfo(form.extra());
         expense.setPaymentMethod(paymentMethodsService.findPaymentMethod(form.paymentMethodId()));
-        expense.setUser(authenticationService.getAuthenticatedUser());
+        expense.setUser(authenticationService.getCurrentAuthenticatedUser());
         expense = repository.save(expense);
         
 
@@ -44,10 +44,9 @@ public class ExpenseService {
     }
 
     public List<Expense> getUserExpenses() {
-        User user = authenticationService.getAuthenticatedUser();
+        User user = authenticationService.getCurrentAuthenticatedUser();
         List<Expense> list = repository.findByUser(user);
         return list;
-        
     }
 
 

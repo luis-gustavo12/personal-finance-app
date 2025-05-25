@@ -1,0 +1,4 @@
+
+
+ALTER TABLE cards
+MODIFY COLUMN card_type ENUM ('DEBIT', 'CREDIT', 'PREPAID', 'VIRTUAL', 'GIFT');

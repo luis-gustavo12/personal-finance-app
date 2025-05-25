@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Cartões</title>
+</head>
+<body>
+
+    <div layout:fragment="content">
+
+        <nav>
+            <div class="nav-pannel">
+                <a th:href="@{/cards/create}">Adicionar cartão</a>
+            </div>
+            <div class="nav-pannel">
+                <a href="#">Atualizar informação do cartão</a>
+            </div>
+            <div class="nav-pannel">
+                <a href="#">Deletar cartão</a>
+            </div>
+        </nav>
+
+
+        <div th:if="${cardViews.isEmpty()}">
+            <p>Vazio</p>
+        </div>
+
+        <!-- Listagem de cartoes -->
+        <main th:unless="${cardViews.isEmpty()}">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Nome no cartão</th>
+                        <th>Mês de expiração</th>
+                        <th>Ano de expiração</th>
+                        <th>Tipo</th>
+                        <th>Marca</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cardView : ${cardViews}">
+                        <td th:text="${cardView.cardNumber}"></td>
+                        <td th:text="${cardView.cardName}"></td>
+                        <td th:text="${cardView.expirationMonth}"></td>
+                        <td th:text="${cardView.expirationYear}"></td>
+                        <td th:text="${cardView.cardType}"></td>
+                        <td th:text="${cardView.brand}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </main>
+
+
+    </div>
+    
+</body>
+</html>

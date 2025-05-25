@@ -28,7 +28,7 @@ public class AuthenticationService {
 
     }
 
-    public User getAuthenticatedUser() {
+    public User getCurrentAuthenticatedUser() {
 
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

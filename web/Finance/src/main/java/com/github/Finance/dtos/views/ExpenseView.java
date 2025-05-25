@@ -1,6 +1,6 @@
-package com.github.Finance.dtos;
+package com.github.Finance.dtos.views;
 
-import com.github.Finance.models.Expense;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

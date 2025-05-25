@@ -2,9 +2,8 @@ package com.github.Finance.controllers.web;
 
 import java.util.List;
 
-
-import com.github.Finance.dtos.ExpenseView;
 import com.github.Finance.dtos.forms.AddExpenseForm;
+import com.github.Finance.dtos.views.ExpenseView;
 import com.github.Finance.models.Currency;
 import com.github.Finance.models.Expense;
 import com.github.Finance.services.CurrencyService;
@@ -24,7 +23,7 @@ import com.github.Finance.services.PaymentMethodsService;
  * 
  * Class for most expenses part
  * 
- * NOTE: maybe, details may get bigger, so it'd be a good idea to split it
+ * NOTE: maybe, details gets bigger, so it'd be a good idea to split it
  * 
  */
 
@@ -69,9 +68,9 @@ public class ExpensesController {
 
         switch (response.getPaymentMethodName()) {
             case "CREDIT CARD":
-                return "redirect:/expenses/details/credit_card";
+                return "redirect:/expenses/details/credit-card";
             case "DEBIT CARD":
-                return "redirect:/expenses/details/debit_card";
+                return "redirect:/expenses/details/debit-card";
             case "PIX":
                 return "redirect:/expenses/details/pix";
             case "CASH":
@@ -82,12 +81,12 @@ public class ExpensesController {
         
     }
 
-    @GetMapping("/details/credit_card")
+    @GetMapping("/details/credit-card")
     public String creditCardDetails() {
-        return "creditcard_details";
+        return "credit-card-details";
     }
     
-    @GetMapping("/details/debit_card")
+    @GetMapping("/details/debit-card")
     public String debitCardDetails() {
         return "redirect:/dashboard";
     }
