@@ -1,13 +1,17 @@
 package com.github.Finance.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.github.Finance.dtos.forms.AddExpenseForm;
+import com.github.Finance.dtos.views.ExpenseDetails;
 import com.github.Finance.dtos.views.ExpenseView;
+import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.mappers.ExpenseMapper;
 import com.github.Finance.models.Expense;
+import com.github.Finance.models.PaymentMethod;
 import com.github.Finance.models.User;
 import com.github.Finance.repositories.ExpenseRepository;
 
@@ -47,6 +51,54 @@ public class ExpenseService {
         User user = authenticationService.getCurrentAuthenticatedUser();
         List<Expense> list = repository.findByUser(user);
         return list;
+    }
+
+    /**
+     * 
+     * Iterates osver Expense, and generate one link for each expense
+     * 
+     * The idea is that on the expenses.html file, an extra column gets the link for that
+     * expense in specific
+     * 
+     * @param expenses
+     * @return
+     */
+    public List<String> paymentFormDetailLink(List<Expense> expenses) {
+
+        List<String> list = new ArrayList<>();
+
+        for (Expense expense : expenses) {
+            list.add(String.format("/expenses/details/%d", expense.getId()));    
+        }
+
+        return list;
+
+    }
+
+
+
+
+    public Expense findExpenseById(Long id) {
+        return repository.findById(id).orElseThrow( () -> new ResourceNotFoundException("Expense not found!!"));
+    }
+
+    public List<ExpenseDetails> getExpenseDetails (List<Expense> expenses) {
+
+        List<ExpenseDetails> expenseDetails = new ArrayList<ExpenseDetails>(expenses.size());
+
+        for (Expense expense : expenses) {
+            ExpenseDetails obj = new ExpenseDetails();
+            obj.setId(expense.getId());
+            obj.setPaymentMethod(expense.getPaymentMethod());
+            obj.setCurrency(expense.getCurrency());
+            obj.setAmount(expense.getAmount());
+            obj.setExtraInfo(expense.getExtraInfo());
+            obj.setDetailedLink(String.format("/expenses/details/%d", expense.getId()));
+            expenseDetails.add(obj);
+        }
+
+        return expenseDetails;
+
     }
 
 

@@ -1,5 +1,103 @@
+
+
+<p align="center">
+  <a href="#portugues">Português</a> • <a href="#english">English</a>
+</p>
+
+---
+<a id="portugues"></a>
+
+# Personal Finance App (Aplicativo de Finanças Pessoais)
+
+Este é o meu Aplicativo de Finanças Pessoais, criado para auxiliar no rastreamento de despesas e gerenciamento financeiro. O projeto foi desenvolvido com foco no público brasileiro, portanto, a interface do usuário está em português.
+
+O código-fonte, comentários e a documentação técnica seguem o padrão internacional em inglês, visando as melhores práticas de desenvolvimento e facilitando a colaboração.
+
+---
+
+## Funcionalidades
+
+- Autenticação (Spring Security e Encriptação BCrypt)
+- Rastreamento de assinaturas mensais
+- Adicionar cartões de crédito e outros métodos de pagamento
+- Adicionar renda de Conta para Conta
+
+---
+
+## Tecnologias Utilizadas
+
+- Java 17
+- Spring Boot
+- Spring Data JPA
+- Spring Security
+- MySQL
+- Lombok
+- Spring Mail
+
+---
+
+## Rodando a Aplicação
+
+
+### Pré-requisitos:
+
+    - Java JDK 17
+    - MySQL 8
+    - Git
+
+---
+
+
+1. **Clone o repositório**
+    ```bash
+    git clone https://github.com/luis-gustavo12/personal-finance-app.git
+    ```
+2. **Configure o Banco de Dados MySQL**
+    - Dê um nome ao banco de dados (exemplo: `finances_app`)
+    - Configure o arquivo `src/main/resources/application.properties`
+
+    ```properties
+    spring.datasource.url=jdbc:mysql://localhost:3306/finances_app
+    spring.datasource.username=user
+    spring.datasource.password=pwd
+    ```
+
+    - Então, crie o banco de dados no MySQL
+    ```SQL
+    CREATE DATABASE finances_app;
+    ```
+
+    - Os arquivos do Flyway Migration cuidará de criar as tabelas
+
+3. **Compile o projeto**
+    ```bash
+    ./mvnw clean install
+    ```
+
+4. **Então, execute a aplicação**
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+
+- A aplicação estará rodando no [localhost](http://localhost:8080)
+
+
+## Observações
+
+*   **Idioma:** A interface do usuário está em português (PT-BR) para melhor experiência do público brasileiro. O código e a documentação técnica estão em inglês.
+
+
+
+---
+<br>
+<a id="english"></a>
+<!-- English Content Starts Here -->
+
 # Personal Finance App
-My Personal Finance App I created to track my expenses
+
+This is my Personal Finance App, created to help track expenses and manage personal finances. The user interface is in Portuguese, as the project was initially developed with a Brazilian audience in mind.
+
+The source code, comments, and technical documentation follow international standards in English, aiming for best development practices and ease of collaboration.
 
 ---
 
@@ -21,3 +119,9 @@ My Personal Finance App I created to track my expenses
 - MySQL
 - Lombok
 - Spring Mail
+
+---
+
+## Notes
+
+*   **Language:** The user interface is in Portuguese (PT-BR) to best serve the Brazilian audience. The code and technical documentation are in English.

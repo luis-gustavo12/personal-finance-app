@@ -12,11 +12,13 @@ import com.github.Finance.services.ExpenseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.github.Finance.models.PaymentMethod;
 import com.github.Finance.services.PaymentMethodsService;
+
 
 
 /**
@@ -45,7 +47,8 @@ public class ExpensesController {
     @GetMapping("")
     public String expenses(Model model) {
         List<Expense> expenses = expenseService.getUserExpenses();
-        model.addAttribute("expenses", expenses);
+        List<ExpenseDetails> expenseDetails = expenseService.getExpenseDetails(expenses);
+        model.addAttribute("expenses", expenseDetails);
         return "expenses";
     }
 
@@ -59,29 +62,31 @@ public class ExpensesController {
         return "create-expense";
     }
 
+    /**
+     * 
+     * After saving the expense, users must follow the next "step"
+     * that consists of detailing data about that expense
+     * 
+     * @param form The first form
+     * @return Redirect to the detail page of the related payment method id
+     */
     @PostMapping("/create")
     public String createExpense(AddExpenseForm form) {
 
         ExpenseView response = expenseService.saveExpense(form);
 
-        // redirects for specific details route. Each payment method has its own
-        // way of dealing with specific data.
-
-        switch (response.getPaymentMethodName()) {
-            case "CREDIT CARD":
-                return "redirect:/expenses/details/credit-card";
-            case "DEBIT CARD":
-                return "redirect:/expenses/details/debit-card";
-            case "PIX":
-                return "redirect:/expenses/details/pix";
-            case "CASH":
-                return "redirect:/expenses/details/cash";
-            default:
-                return "redirect:/expenses/details/other";
-        }
+        return "redirect:/details/" + response.getId();
         
     }
 
+
+    /**
+     * 
+     * detailed payment GET Routes section
+     * 
+     * Each route above is supposed to show to the user the details of each payment method of the user
+     * 
+     */
     @GetMapping("/details/credit-card")
     public String creditCardDetails() {
         return "credit-card-details";
@@ -107,8 +112,39 @@ public class ExpensesController {
         return "redirect:/dashboard";
     }
 
+    /**
+     * End of detailed payment GET Routes section
+     */
     
     
+
+    
+    /**
+     * 
+     * Returns the deatils of the user expense
+     * 
+     * 
+     * 
+     * @param id the expense id
+     */
+    
+     
+    // TODO: Implement Insecure Direct Object Reference validation
+    @GetMapping("/details/{id}")
+    public String getExpenseDetails(@PathVariable Long id, Model model) {
+
+        Expense expense = expenseService.findExpenseById(id);
+
+        switch (expense.getPaymentMethod().getDescription()) {
+            case "DEBIT CARD":
+                return "credit-card-details";
+        
+            default:
+                break;
+        }
+
+        return "dashboard";
+    }
     
     
 
