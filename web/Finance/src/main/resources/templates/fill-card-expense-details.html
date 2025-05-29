@@ -4,14 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Despesas de Cartão</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
 </head>
 <body>
     
 
 <div layout:fragment="content">
+
+    <div th:if="${cardsList.isEmpty()}">
+        <p>Você não tem nenhum cartão cadastrado!!</p>
+        <a href="@{/cards/create}">Clique aqui para cadastrar</a>
+    </div>
     
+    <form th:method="post" action="#">
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <h2>Insira informações sobre a despesa</h2>
+
+        <!-- list cards -->
+
+        <label for="cardsSelect">Selecione o cartão</label>
+        <select name="cardsSelect" id="cardsSelect" required>
+            <option value="" disabled selected>Selecione um cartão</option>
+            <option th:each="card : ${cardsList}" th:value="${card.cardNumber}" th:text="'******' + ${card.cardNumber}">
+            </option>
+        </select>
+
+        <!-- is installment? -->
+
+        <label for="installmentCheck">Parcelamento?</label>
+        <input type="checkbox" name="installmentCheck" id="installmentCheck" value="yes">
+
+        <!-- if so, how many splits? -->
+
+        <label for="splits">Quantidade de Parcelas</label>
+        <input type="text" name="splits" id="splits">
+
+        <!-- interest rate? -->
+
+        <label for="interestRate">Coloque taxa de juros</label>
+        <input type="text" name="interestRate" id="interestRate">
+
+        <!-- Raw value amount -->
+
+        <label for="rawAmount">Valor Bruto (Sem Juros)</label>
+        <input type="text" name="rawAmount" id="rawAmount">
+
+        <!-- status? -->
+
+        <label for="status">Status</label>
+        <select name="status" id="status" required>
+            <option value="" disabled selected>Selecione o status</option>
+            <option value="PENDING">Pendente</option>
+            <option value="PAID">Pago</option>
+            <option value="CANCELLED">Cancelada</option>
+        </select>
+        
+        <!-- transaction date -->
+
+        <label for="transactionDate">Data da transação</label>
+        <input type="date" name="transactionDate" id="transactionDate" required>
+
+        <button type="submit">Enviar</button>
+
+    </form>
+
+
 </div>
 
-
+    <script th:src="@{/js/fill-card-expense-details.js}"></script>
 </body>
 </html>
