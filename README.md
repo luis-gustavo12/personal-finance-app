@@ -69,12 +69,25 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 
     - Os arquivos do Flyway Migration cuidará de criar as tabelas
 
-3. **Compile o projeto**
+3. **Adicione as variáveis de ambiente necessárias para rodar a aplicação, de acordo com o sistema operacional**
+    - Para o Flyway:
+        - Crie uma variável para o usuário, senha, e link para o banco de dados, para o flyway, sendo eles *FLYWAY_USER*, *FLYWAY_PASSWORD*, e *FLYWAY_URL* respectivamente.
+        - As variáveis em questão já estão referenciadas no _POM.xml_
+
+    - Para usar a encriptação:
+        - Crie a variável para a chave de encriptação AES: *AES_SECRET_KEY*
+        - Referencie a variável no arquivo _application.properties_
+        ```properties
+        aes.secret.key=${AES_SECRET_KEY}
+        ```
+        
+
+4. **Compile o projeto**
     ```bash
     ./mvnw clean install
     ```
 
-4. **Então, execute a aplicação**
+5. **Então, execute a aplicação**
     ```bash
     ./mvnw spring-boot:run
     ```
