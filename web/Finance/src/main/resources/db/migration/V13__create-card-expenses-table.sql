@@ -3,7 +3,7 @@
 CREATE TABLE card_expenses (
 
     id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    expense_id BIGINT,
+    expense_id BIGINT UNIQUE,
     card_id BIGINT,
     is_installment BOOLEAN NOT NULL,
     splits INT,

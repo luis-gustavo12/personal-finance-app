@@ -8,54 +8,54 @@
 </head>
 <body>
 
-    <div layout:fragment="content">
+<div layout:fragment="content">
 
-        <nav>
+    <nav>
 
-            <a th:href="@{/dashboard}" class="nav-pannel">Dashboard</a>
-            
-            <a th:href="@{/cards/create}" class="nav-pannel">Adicionar cartão</a>
-            
-            <a href="#" class="nav-pannel">Atualizar informação do cartão</a>
-            
-            <a href="#" class="nav-pannel">Deletar cartão</a>
-            
-        </nav>
-
-
-        <div th:if="${cardViews.isEmpty()}">
-            <p>Vazio</p>
-        </div>
-
-        <main th:unless="${cardViews.isEmpty()}">
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Número</th>
-                        <th>Nome no cartão</th>
-                        <th>Mês de expiração</th>
-                        <th>Ano de expiração</th>
-                        <th>Tipo</th>
-                        <th>Marca</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="cardView : ${cardViews}">
-                        <td th:text="${cardView.cardNumber}"></td>
-                        <td th:text="${cardView.cardName}"></td>
-                        <td th:text="${cardView.expirationMonth}"></td>
-                        <td th:text="${cardView.expirationYear}"></td>
-                        <td th:text="${cardView.cardType}"></td>
-                        <td th:text="${cardView.brand}"></td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </main>
+        <a th:href="@{/dashboard}" class="nav-pannel">Dashboard</a>
+        
+        <a th:href="@{/cards/create}" class="nav-pannel">Adicionar cartão</a>
+        
+        <a href="#" class="nav-pannel">Atualizar informação do cartão</a>
+        
+        <a href="#" class="nav-pannel">Deletar cartão</a>
+        
+    </nav>
 
 
+    <div th:if="${cardViews.isEmpty()}">
+        <p>Vazio</p>
     </div>
+
+    <main th:unless="${cardViews.isEmpty()}">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Número</th>
+                    <th>Nome no cartão</th>
+                    <th>Mês de expiração</th>
+                    <th>Ano de expiração</th>
+                    <th>Tipo</th>
+                    <th>Marca</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cardView : ${cardViews}">
+                    <td th:text="${cardView.firstDigits} + '*********' + ${cardView.lastDigits}"></td>
+                    <td th:text="${cardView.cardName}"></td>
+                    <td th:text="${cardView.expirationMonth}"></td>
+                    <td th:text="${cardView.expirationYear}"></td>
+                    <td th:text="${cardView.cardType}"></td>
+                    <td th:text="${cardView.brand}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </main>
+
+
+</div>
     
 </body>
 </html>

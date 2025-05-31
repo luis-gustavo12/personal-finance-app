@@ -1,0 +1,9 @@
+
+
+body.green-to-blue-bg {
+    display: flex;
+    background-image: linear-gradient(to bottom, var(--main-green), var(--main-blue));
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}

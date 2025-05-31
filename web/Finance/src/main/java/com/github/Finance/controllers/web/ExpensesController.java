@@ -4,9 +4,14 @@ import java.util.List;
 
 
 import com.github.Finance.dtos.views.*;
+import com.github.Finance.dtos.forms.AddExpenseDetailsForm;
 import com.github.Finance.dtos.forms.AddExpenseForm;
+import com.github.Finance.models.Card;
+import com.github.Finance.models.CardExpense;
 import com.github.Finance.models.Currency;
 import com.github.Finance.models.Expense;
+import com.github.Finance.services.CardExpenseService;
+import com.github.Finance.services.CardService;
 import com.github.Finance.services.CurrencyService;
 import com.github.Finance.services.ExpenseService;
 import org.springframework.stereotype.Controller;
@@ -18,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.github.Finance.models.PaymentMethod;
 import com.github.Finance.services.PaymentMethodsService;
+
+import jakarta.servlet.http.HttpSession;
 
 
 
@@ -37,11 +44,17 @@ public class ExpensesController {
     private final PaymentMethodsService paymentMethodsService;
     private final CurrencyService currencyService;
     private final ExpenseService expenseService;
+    private final CardExpenseService cardExpenseService;
+    private final CardService cardService;
 
-    public ExpensesController(PaymentMethodsService paymentMethodsService, CurrencyService currencyService, ExpenseService expenseService) {
+    public ExpensesController(PaymentMethodsService paymentMethodsService, CurrencyService currencyService, ExpenseService expenseService,
+    CardExpenseService cardExpenseService, CardService cardService) {
+
         this.paymentMethodsService = paymentMethodsService;
         this.currencyService = currencyService;
         this.expenseService = expenseService;
+        this.cardExpenseService = cardExpenseService;
+        this.cardService = cardService;
     }
 
     @GetMapping("")
@@ -75,23 +88,23 @@ public class ExpensesController {
 
         ExpenseView response = expenseService.saveExpense(form);
 
-        return "redirect:/details/" + response.getId();
-        
+        return "redirect:/expenses/details/" + response.getId();
+
     }
 
 
     /**
-     * 
+     *
      * detailed payment GET Routes section
-     * 
+     *
      * Each route above is supposed to show to the user the details of each payment method of the user
-     * 
+     *
      */
     @GetMapping("/details/credit-card")
     public String creditCardDetails() {
         return "credit-card-details";
     }
-    
+
     @GetMapping("/details/debit-card")
     public String debitCardDetails() {
         return "redirect:/dashboard";
@@ -112,33 +125,41 @@ public class ExpensesController {
         return "redirect:/dashboard";
     }
 
-    /**
-     * End of detailed payment GET Routes section
-     */
-    
-    
 
-    
+     //End of detailed payment GET Routes section
+
+
+
+
     /**
      * 
-     * Returns the deatils of the user expense
+     * Returns the details of the user expense
      * 
      * 
      * 
      * @param id the expense id
+     *
      */
     
      
     // TODO: Implement Insecure Direct Object Reference validation
     @GetMapping("/details/{id}")
-    public String getExpenseDetails(@PathVariable Long id, Model model) {
+    public String getExpenseDetails(@PathVariable Long id, Model model, HttpSession session) {
 
         Expense expense = expenseService.findExpenseById(id);
 
         switch (expense.getPaymentMethod().getDescription()) {
-            case "DEBIT CARD":
+            case "CREDIT CARD":
+            case "DEBIT CARD": {
+                CardExpense cardExpense = cardExpenseService.findCardExpense(id);
+                if (cardExpense == null) {
+                // If details of the expense id is null, so the user must fill it
+                    session.setAttribute("expenseId", id);
+                    return "redirect:/expenses/details/fill-expense/" + id;
+                }
                 return "credit-card-details";
-        
+            }
+
             default:
                 break;
         }
@@ -146,7 +167,30 @@ public class ExpensesController {
         return "dashboard";
     }
     
-    
+
+    /**
+     * 
+     * Route for filling the detailed information about cards expenses
+     * 
+     */
+    @GetMapping("/details/fill-expense/{id}")
+    public String createCardExpenseDetails(Model model, @PathVariable Long id) {
+        // Give the view the necessary information for filling that specific type of form
+        List<CardView> userCards = cardService.getUserRegisteredCards();
+        model.addAttribute("cardsList", userCards);
+        return "fill-card-expense-details";
+
+    }
+
+    @PostMapping("/details/fill-expense/{id}")
+    public String formCreateExpense(AddExpenseDetailsForm form, @PathVariable("id") Long expenseId) {
+
+        cardExpenseService.processExpenseDetails(form, expenseId);
+
+
+
+        return "redirect:/dashboard";
+    }
 
     
 }

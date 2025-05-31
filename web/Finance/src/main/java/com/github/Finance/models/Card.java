@@ -30,8 +30,11 @@ public class Card {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "card_number")
-    private String cardNumber;
+    @Column(name = "first_six_digits")
+    private String firstSixDigits;
+
+    @Column(name = "last_four_digits")
+    private String lastFourDigits;
 
     @Column(name = "cardholder_name")
     private String cardholderName;

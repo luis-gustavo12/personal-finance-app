@@ -38,7 +38,7 @@ public class CardsController {
     @GetMapping("/create")
     public String createCardString(Model model) {
         List<CardType> cardTypes = service.getAllCardTypes();
-        model.addAttribute("cardTypes", cardTypes);
+        model.addAttribute("cardTypes", cardTypes); 
         return "create-card";
     }
 

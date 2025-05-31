@@ -5,18 +5,21 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+
 import com.github.Finance.dtos.forms.AddExpenseForm;
 import com.github.Finance.dtos.views.ExpenseDetails;
 import com.github.Finance.dtos.views.ExpenseView;
 import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.mappers.ExpenseMapper;
 import com.github.Finance.models.Expense;
-import com.github.Finance.models.PaymentMethod;
 import com.github.Finance.models.User;
 import com.github.Finance.repositories.ExpenseRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @Service
+@Slf4j
 public class ExpenseService {
 
     private final ExpenseRepository repository;
@@ -100,6 +103,8 @@ public class ExpenseService {
         return expenseDetails;
 
     }
+
+    
 
 
 }

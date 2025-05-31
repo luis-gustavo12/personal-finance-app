@@ -4,6 +4,7 @@ public enum CardType {
     
     DEBIT,
     CREDIT,
+    HYBRID,
     PREPAID,
     VIRTUAL,
     GIFT
