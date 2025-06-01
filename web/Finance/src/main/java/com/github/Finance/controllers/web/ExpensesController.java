@@ -13,6 +13,7 @@ import com.github.Finance.models.Expense;
 import com.github.Finance.services.CardExpenseService;
 import com.github.Finance.services.CardService;
 import com.github.Finance.services.CurrencyService;
+import com.github.Finance.services.EncryptionService;
 import com.github.Finance.services.ExpenseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ import com.github.Finance.models.PaymentMethod;
 import com.github.Finance.services.PaymentMethodsService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
 
 
@@ -39,6 +41,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/expenses")
+@Slf4j
 public class ExpensesController {
 
     private final PaymentMethodsService paymentMethodsService;
@@ -46,15 +49,17 @@ public class ExpensesController {
     private final ExpenseService expenseService;
     private final CardExpenseService cardExpenseService;
     private final CardService cardService;
+    private final EncryptionService encryptionService;
 
     public ExpensesController(PaymentMethodsService paymentMethodsService, CurrencyService currencyService, ExpenseService expenseService,
-    CardExpenseService cardExpenseService, CardService cardService) {
+    CardExpenseService cardExpenseService, CardService cardService, EncryptionService encryptionService) {
 
         this.paymentMethodsService = paymentMethodsService;
         this.currencyService = currencyService;
         this.expenseService = expenseService;
         this.cardExpenseService = cardExpenseService;
         this.cardService = cardService;
+        this.encryptionService = encryptionService;
     }
 
     @GetMapping("")
@@ -157,6 +162,9 @@ public class ExpensesController {
                     session.setAttribute("expenseId", id);
                     return "redirect:/expenses/details/fill-expense/" + id;
                 }
+                model.addAttribute("firstDigits", encryptionService.decrypt(cardExpense.getCard().getFirstSixDigits()));
+                model.addAttribute("lastDigits", encryptionService.decrypt(cardExpense.getCard().getLastFourDigits()));
+                model.addAttribute("cardDetail", cardExpense);
                 return "credit-card-details";
             }
 

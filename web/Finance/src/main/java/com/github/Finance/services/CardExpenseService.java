@@ -33,7 +33,7 @@ public class CardExpenseService {
      * returns null instead of an execpetion. I think it's better,
      * because there are scenarios where null can be a possibility,
      * and forcing above classes that calls this functions to use
-     * try catch, may gets dirtier
+     * try catch, may get dirtier
      * 
      * @param id
      * @return
@@ -70,12 +70,14 @@ public class CardExpenseService {
         }
 
         cardExpense.setStatus(ExpenseCardEnum.valueOf(form.status()) );
-        cardExpense.setTransationcDate(form.transactionDate());
+        cardExpense.setTransactionDate(form.transactionDate());
         
         cardExpense = repository.save(cardExpense);
         log.debug("Card expense with ID {} created", cardExpense);
 
     }
+
+
 
     
 }

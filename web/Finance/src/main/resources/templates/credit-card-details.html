@@ -4,13 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes Cartão de Crédito</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/credit-card-details.css}">
 </head>
 <body>
 
 <div layout:fragment="content">
 
+    <nav>
+
+        <a th:href="@{/dashboard}" class="nav-pannel">Dashboard</a>
+        
+        <a th:href="@{/cards/create}" class="nav-pannel">Adicionar cartão</a>
+        
+        <a href="#" class="nav-pannel">Atualizar informação do cartão</a>
+        
+        <a href="#" class="nav-pannel">Deletar cartão</a>
+        
+    </nav>
+
     <main>
         
+        <section class="expense-info">
+            <div class="expense-header">
+                <span class="expense-title">Custo </span>
+                <span class="expense-cost" th:text="${cardDetail.expense.currency.currencySymbol + '' + cardDetail.expense.amount}" ></span>
+            </div>
+            <div class="expense-body">
+                <div class="detail-row">
+                    <span class="detail">Data:</span>
+                    <span class="data" th:text="${cardDetail.transactionDate}"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail">Cartão: </span>
+                    <span class="data" th:text="${firstDigits + '*******' + lastDigits}"></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail">Status: </span>
+                    <span class="data" th:text="${cardDetail.status}"></span>
+                </div>
+                <div class="notes-row">
+                    <span class="detail">Notes</span>
+                    <span class="data" th:text="${cardDetail.expense.extraInfo}">Nota </span>
+                </div>
+            
+            </div>
+        </section>
+
     </main>
 
 

@@ -27,7 +27,6 @@ public class CardsController {
     }
 
 
-
     @GetMapping("")
     public String cards(Model model) {
         List<CardView> cardViews = service.getUserRegisteredCards();

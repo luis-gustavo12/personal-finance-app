@@ -58,7 +58,7 @@ public class CardExpense {
     private ExpenseCardEnum status;
 
     @Column(name = "transaction_date")
-    private LocalDate transationcDate;
+    private LocalDate transactionDate;
 
 
 }
