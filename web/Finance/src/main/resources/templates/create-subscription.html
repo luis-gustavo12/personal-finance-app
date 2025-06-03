@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Assinatura</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+<div layout:fragment="content">
+
+    <button class="back-button" type="button" onclick="window.history.back()">
+        &#8592; Back
+    </button>
+   
+    <form th:action="@{/subscriptions/create}" th:method="post">
+
+        <h2>Adiciona uma assinatura</h2>
+
+        <label for="subscriptionName">
+            Nome da Assinatura
+            <input type="text" name="subscriptionName" id="subscriptionName">
+        </label>
+
+        <label for="currencySelect">Selecione a moeda</label>
+        <select name="currencySelect" id="currencySelect">
+            <option th:each="currency : ${currencies}" th:value="${currency.id}" th:text="${currency.currencyFlag}" >BRL</option>
+        </select>
+
+        <label for="subscriptionPaymentForm">Selecione a forma de pagamento</label>
+        <select name="subscriptionPaymentForm" id="subscriptionPaymentForm">
+            <option th:each="pmethod : ${methods}" th:value="${pmethod.id}" th:text="${pmethod.description}"  >CARTAO</option>
+        </select>
+
+        <label for="subscriptionCost">Valor da Assinatura</label>
+        <input type="text" name="subscriptionCost" id="subscriptionCost">
+
+        <label for="subscriptionStart">Data de início da Assinatura</label>
+        <input type="date" name="subscriptionStart" id="subscriptionStart">
+
+        <label for="subscriptionCategory">Selecione uma categoria</label>
+        <input type="text" name="subscriptionCategory" id="subscriptionCategory">
+
+        <button type="submit"></button>
+
+    </form>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assinaturas</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/subscriptions.css}">
+</head>
+<body>
+<div layout:fragment="content">
+   
+    <nav class="sidebar">
+
+        <div class="main-routes">
+
+            <div class="nav-pannel">
+                <a th:href="@{/dashboard}">Dashboard</a>
+            </div>
+            <div class="nav-pannel">
+                <a th:href="@{/subscriptions/create}">Adicionar Assinatura</a>
+            </div>
+
+        </div>
+
+    </nav>
+
+    <main>
+
+    </main>
+
+</div>
+</body>
+</html>

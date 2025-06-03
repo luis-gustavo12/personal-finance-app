@@ -1,30 +1,53 @@
 
 
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--lilac);
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 9px;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  color: white;
+}
+
 
 form {
-    border: 1px solid black;
-    max-width: 350px;
-    padding: 25px;
-    width: 95%;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+  max-width: 350px;
+  padding: 25px;
+  width: 95%;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.48);
 }
 
 form h2 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 1.8rem;
-    color: var(--main-blue);
-    font-size: 1.4rem;
-    font-weight: 500;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1.8rem;
+  color: var(--main-blue);
+  font-size: 1.4rem;
+  font-weight: 500;
 }
 
 label {
-    display: block;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-    margin-bottom: 0.6rem;
+  display: block;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.6rem;
 }
 
 input[type="text"], select, textarea {
@@ -61,7 +84,7 @@ button[type="submit"] {
   border: none;
   border-radius: 8px;
   padding: 0.9rem 0;
-  font-size: 1.1rem; 
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s, box-shadow 0.2s;
@@ -78,3 +101,5 @@ button[type="submit"]:hover {
   background-color: var(--dark-green); 
   box-shadow: 0 4px 16px rgba(44, 62, 80, 0.15); 
 }
+
+

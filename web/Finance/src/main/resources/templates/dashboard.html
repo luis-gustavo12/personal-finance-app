@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
 <body>
     <div layout:fragment="content">
-        <nav>
+        <nav class="sidebar">
             <div class="main-routes">
                 <div class="nav-pannel">
                     <a href="#">Faturas</a>
@@ -20,8 +20,11 @@
                 <div class="nav-pannel">
                     <a th:href="@{/expenses}">Despesas</a>
                 </div>
-                    <div class="nav-pannel">
+                <div class="nav-pannel">
                     <a th:href="@{/cards}">Cartões</a>
+                </div>
+                <div class="nav-pannel">
+                    <a th:href="@{/subscriptions}">Assinaturas</a>
                 </div>
             </div>
 
@@ -34,7 +37,7 @@
     </div>
 
 
-    <main>
+    <main class="main-content">
 
     </main>
 

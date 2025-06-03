@@ -2,23 +2,17 @@
 
 
 body {
+    font-size: 0.7em;
     background-color: white;
 }
 
 
 
 
-nav {
-    display: flex;
-    justify-content: space-between; /* Optional: separates main-routes and user-config */
-    align-items: center;
-    padding: 10px;
+
+.main-content {
+    margin-left: 220px; 
+    padding: 32px;
+    min-height: 100vh;
+    background: #f5f7fa;
 }
-
-.main-routes,
-.user-config {
-    display: flex;
-    gap: 10px;
-}
-
-
