@@ -29,8 +29,9 @@ public class SubscriptionsController {
 
 
     @GetMapping("")
-    public String subscriptionsDashboard() {
-
+    public String subscriptionsDashboard(Model model) {
+        model.addAttribute("subscriptions", service.getUserSubscriptions());
+        model.addAttribute("summary", service.getUserSubscriptionsSummary());
         return "subscriptions";
 
     }

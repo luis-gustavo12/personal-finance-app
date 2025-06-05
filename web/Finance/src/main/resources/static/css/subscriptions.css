@@ -3,3 +3,33 @@
 * {
     font-size: 0.97em;
 }
+
+.no-subscription {
+
+    margin-left: 180px;
+    position: relative;
+
+}
+
+.no-subscription p {
+    font-weight: 700;
+}
+
+.no-subscription a {
+    color: var(--main-blue);
+}
+
+
+
+.subscriptions-main {
+    margin-left: 180px;
+    padding: 32px 40px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+section.create-subscriptions-summary {
+    
+}
+

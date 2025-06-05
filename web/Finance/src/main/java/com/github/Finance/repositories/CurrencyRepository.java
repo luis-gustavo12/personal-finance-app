@@ -5,9 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import com.github.Finance.models.Currency;
 
+import java.util.Optional;
+
 @Repository
 public interface CurrencyRepository extends JpaRepository<Currency, Long> {
 
 
-
+    Optional<Currency> findByCurrencyFlag(String currencyFlag);
 }

@@ -25,7 +25,20 @@
 
     </nav>
 
-    <main>
+    <div th:if="${subscriptions.isEmpty()}" class="no-subscription">
+        <p>Você não tem nenhum assinatura</p>
+        <a th:href="@{/subscriptions/create}">Clique aqui para ser redirecionado</a>
+    </div>
+
+    <main class="subscriptions-main" th:unless="${subscriptions.isEmpty()}">
+
+        <section class="current-subscriptions-summary">
+            <h2>Resumo do Mês</h2>
+            <div class="current-subscriptions-summary-container">
+                <div class="summary-data" th:text="'Total: ' + ${summary.currencySymbol()} + ' ' + ${#numbers.formatDecimal(summary.totalAmount(), 1, 2)}"></div>
+                <div class="summary-data" th:text="'Assinaturas: ' + ${subscriptions.size()}"> </div>
+            </div>
+        </section>
 
     </main>
 

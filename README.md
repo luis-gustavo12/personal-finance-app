@@ -80,6 +80,10 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
         ```properties
         aes.secret.key=${AES_SECRET_KEY}
         ```
+    - Para acessar a API do Exchange Rate (para conversão em tempo real de moedas):
+        - Crie a variável *EXCHANGE_RATE_API_KEY*
+        - Preencha com o valor referente à chave
+        - Você pode criar uma no [site](https://exchangerate.host/signup/free)
         
 
 4. **Compile o projeto**

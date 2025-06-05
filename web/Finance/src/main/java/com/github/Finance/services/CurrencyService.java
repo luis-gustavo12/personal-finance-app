@@ -25,5 +25,9 @@ public class CurrencyService {
     public Currency findCurrency(Long id) {
         return repository.findById(id).orElseThrow( () -> new ResourceNotFoundException("User could not be found!!!") );
     }
+
+    public Currency findCurrencyByCurrencyFlag(String currencyFlag) {
+        return repository.findByCurrencyFlag(currencyFlag).orElse(null);
+    }
     
 }
