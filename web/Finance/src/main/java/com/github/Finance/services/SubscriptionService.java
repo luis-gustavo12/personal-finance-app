@@ -35,6 +35,7 @@ public class SubscriptionService {
         Subscription subscription = new Subscription();
         subscription.setUser(authenticationService.getCurrentAuthenticatedUser());
         subscription.setName(form.subscriptionName());
+        subscription.setCost(form.subscriptionCost());
         subscription.setCurrency( currencyService.findCurrency(form.currencySelect()) );
         subscription.setPaymentMethod( paymentMethodsService.findPaymentMethod(form.subscriptionPaymentForm()) );
         subscription.setValidFrom(form.subscriptionStart());

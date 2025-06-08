@@ -50,11 +50,18 @@ public class ExchangeRateService {
 
     public SubscriptionsSummaryView getSubscriptionsSummary(List<Subscription> subscriptions) {
 
-        Double fullAmount = 0.0;
+        double fullAmount = 0.0;
 
 
         for (Subscription subscription : subscriptions) {
-            fullAmount += handleRequest(subscription.getCurrency().getCurrencyFlag(), LocalDate.now());
+
+            if (!subscription.getCurrency().getCurrencyFlag().equals("BRL")) {
+                Double dailyQuotation = handleRequest(subscription.getCurrency().getCurrencyFlag(), LocalDate.now());
+                fullAmount += dailyQuotation * subscription.getCost().doubleValue();
+            }
+
+            else
+                fullAmount += subscription.getCost().doubleValue();
         }
 
         return new SubscriptionsSummaryView(
@@ -68,7 +75,8 @@ public class ExchangeRateService {
 
         String url = String.format(
             EXCHANGE_URL,
-            date,
+            //date,
+            date.isAfter(LocalDate.now()) ? LocalDate.now() : date,
             // Fow now, hardcoding it
             currencyFlag,
             "BRL",

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depósitos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/incomes.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
+</head>
+<body>
+<div layout:fragment="content">
+   
+    <nav class="sidebar">
+        <div class="main-routes">
+            <div class="nav-panel">
+                <a th:href="@{/dashboard}">Dashboard</a>
+            </div>
+            <div class="nav-panel">
+                <a th:href="@{/incomes/create}">Adicionar rendimento</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <!-- something for other data on top -->
+        <section>
+
+        </section>
+
+        <p th:if="${incomesData.isEmpty()}">
+            Você não tem nenhum rendimento!!
+            <a th:href="@{/incomes/create}">Clique aqui para criar um</a>
+        </p>
+
+        <section th:unless="${incomesData.isEmpty()}" class="month-incomes">
+
+            <h2 th:text="'Depósitos do mês ' + ${month}"></h2>
+
+            <table class="entity-display-table">
+
+                <thead>
+                    <tr>
+                        <th>Moeda</th>
+                        <th>Quantia</th>
+                        <th>Forma de Pagamento</th>
+                        <th>Data</th>
+                        <th>Extra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="income : ${incomesData}">
+                        <td th:text="${income.currency.currencyFlag}"></td>
+                        <td th:text="${income.amount}"></td>
+                        <td th:text="${income.paymentMethod.description}"></td>
+                        <td th:text="${income.incomeDate}"></td>
+                        <td th:text="${income.description}"></td>
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <td th:text="'Total: ' + ${sum.userCurrency} + ' ' + ${#numbers.formatDecimal(sum.sum, 1, 2)}"></td>
+                </tfoot>
+
+
+            </table>
+
+
+        </section>
+
+
+
+    </main>
+
+</div>
+
+
+
+</body>
+</html>

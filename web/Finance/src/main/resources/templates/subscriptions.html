@@ -14,10 +14,10 @@
 
         <div class="main-routes">
 
-            <div class="nav-pannel">
+            <div class="nav-panel">
                 <a th:href="@{/dashboard}">Dashboard</a>
             </div>
-            <div class="nav-pannel">
+            <div class="nav-panel">
                 <a th:href="@{/subscriptions/create}">Adicionar Assinatura</a>
             </div>
 
@@ -32,13 +32,20 @@
 
     <main class="subscriptions-main" th:unless="${subscriptions.isEmpty()}">
 
-        <section class="current-subscriptions-summary">
+        <section class="subscriptions-data-section">
+
             <h2>Resumo do Mês</h2>
-            <div class="current-subscriptions-summary-container">
+            <div class="subscription-data-container">
                 <div class="summary-data" th:text="'Total: ' + ${summary.currencySymbol()} + ' ' + ${#numbers.formatDecimal(summary.totalAmount(), 1, 2)}"></div>
+            </div>
+
+            <div class="subscription-data-container">
                 <div class="summary-data" th:text="'Assinaturas: ' + ${subscriptions.size()}"> </div>
             </div>
+
         </section>
+
+
 
     </main>
 

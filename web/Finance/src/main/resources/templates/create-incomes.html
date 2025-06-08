@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Depósito</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+<div layout:fragment="content">
+    <nav>
+        <a onclick="window.history.back()" class="nav-panel">Retornar</a>
+    </nav>
+
+    <form th:method="post">
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <h2>Adicione informações do seu depósito</h2>
+
+        <label for="currencyId">Selecione a moeda</label>
+        <select name="currencyId" id="currencyId" required>
+            <option th:each="currencyOpt : ${currencies}" th:value="${currencyOpt.getId()}" th:text="${currencyOpt.currencyFlag}"></option>
+        </select>
+
+        <label for="incomeAmount">Selecione a quantia</label>
+        <input type="text" name="incomeAmount" id="incomeAmount" required>
+
+        <label for="paymentMethodId">Selecione a forma de pagamento</label>
+        <select name="paymentMethodId" id="paymentMethodId" required>
+            <option th:each="paymentMethod : ${paymentMethods}" th:value="${paymentMethod.getId()}" th:text="${paymentMethod.getDescription()}"></option>
+        </select>
+
+        <label for="incomeDate">Seleciona uma data</label>
+        <input type="date" name="incomeDate" id="incomeDate" required>
+
+        <label for="incomeDescription"></label>
+        <textarea name="incomeDescription" id="incomeDescription" cols="30" rows="10" placeholder="Detalhes sobre o depósito"></textarea>
+
+
+        <button type="submit">Enviar</button>
+
+    </form>
+</div>
+
+<script type="module" th:src="@{/js/incomes.js}"></script>
+
+</body>
+</html>

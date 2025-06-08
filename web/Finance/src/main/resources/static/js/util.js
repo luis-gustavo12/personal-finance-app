@@ -1,6 +1,7 @@
 
 
-function allValuesAreNumbers(str) {
+
+export function allValuesAreNumbers(str) {
 
 
     for (let i = 0; i < str.length; i++) {
@@ -11,4 +12,17 @@ function allValuesAreNumbers(str) {
         return true;
     }
 
+}
+
+
+export function isFloat(value) {
+
+    let decimalRegex = new RegExp("^\\d+[.,]\\d{1,3}$");
+
+    if (value.trim() !== '') {
+        return decimalRegex.test(value);
+
+    }
+
+    return false;
 }

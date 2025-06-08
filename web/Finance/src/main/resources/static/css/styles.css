@@ -8,7 +8,10 @@
     --lilac: #C297B8;
     --font-family: "Montserrat", sans-serif;
     --font-style: normal;
-    
+
+    --sidebar-width: 180px;
+    --sidebar-padding: 24px;
+
 }
 
 
@@ -19,7 +22,7 @@
 }
 
 
-.nav-pannel {
+.nav-panel {
     width: 80%;
     background-color: var(--lilac);
     padding: 12px 0;
@@ -31,7 +34,7 @@
 
 
 
-.nav-pannel a {
+.nav-panel a {
     color: black;
     font-weight: 500;
     display: block;
@@ -50,16 +53,16 @@
     flex-direction: column;
     align-items: center;
     padding: 24px 0;
-    z-index: 100;
+    z-index: 10;
 }
 
 
-.nav-pannel:hover, .nav-pannel:focus-within {
+.nav-panel:hover, .nav-panel:focus-within {
     color: white;
     transition: 0.3s;
 }
 
-.nav-pannel:hover a, .nav-pannel:focus-within a {
+.nav-panel:hover a, .nav-panel:focus-within a {
     color: white;
 }
 

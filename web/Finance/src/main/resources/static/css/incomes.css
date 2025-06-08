@@ -1,0 +1,7 @@
+
+
+main {
+    position: relative;
+    margin-left: var(--sidebar-width);
+    padding: 20px;
+}

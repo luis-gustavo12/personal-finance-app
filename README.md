@@ -20,7 +20,6 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 - Autenticação (Spring Security e Encriptação BCrypt)
 - Rastreamento de assinaturas mensais
 - Adicionar cartões de crédito e outros métodos de pagamento
-- Adicionar renda de Conta para Conta
 
 ---
 
@@ -32,7 +31,6 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 - Spring Security
 - MySQL
 - Lombok
-- Spring Mail
 
 ---
 
