@@ -34,6 +34,12 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 
 ---
 
+## Estrutura do Projeto
+
+- No momento, existe somente a parte de web. O diretório root do Spring, localiza-se no caminho **web/Finance**
+
+---
+
 ## Rodando a Aplicação
 
 
@@ -50,13 +56,20 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
     ```bash
     git clone https://github.com/luis-gustavo12/personal-finance-app.git
     ```
+
+    - Depois de feito o clone, mude o diretório para o root do Spring Boot.
+
+    ```bash
+    cd web/Finance
+    ```
+
 2. **Configure o Banco de Dados MySQL**
     - Dê um nome ao banco de dados (exemplo: `finances_app`)
-    - Configure o arquivo `src/main/resources/application.properties`
+    - Crie o arquivo `src/main/resources/application.properties`, e coloque as seguintes informações nele
 
     ```properties
     spring.datasource.url=jdbc:mysql://localhost:3306/finances_app
-    spring.datasource.username=user
+    spring.datasource.username=my_user
     spring.datasource.password=pwd
     ```
 
@@ -65,7 +78,15 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
     CREATE DATABASE finances_app;
     ```
 
-    - Os arquivos do Flyway Migration cuidará de criar as tabelas
+    - Não se esqueça de dar acesso ao usuário dentro do banco de dados.
+
+    ```SQL
+    CREATE USER 'my_user'@'localhost' IDENTIFIED BY 'pwd';
+    GRANT ALL PRIVILEGES ON finances_app.* TO 'my_user'@'localhost';
+    FLUSH PRIVILEGES;
+    ```
+
+    - Os arquivos de migração do Flyway Migration cuidarão de criar as tabelas
 
 3. **Adicione as variáveis de ambiente necessárias para rodar a aplicação, de acordo com o sistema operacional**
     - Para o Flyway:
@@ -73,7 +94,11 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
         - As variáveis em questão já estão referenciadas no _POM.xml_
 
     - Para usar a encriptação:
-        - Crie a variável para a chave de encriptação AES: *AES_SECRET_KEY*
+        - Crie uma chave própria, e crie a variável para a chave de encriptação AES: *AES_SECRET_KEY*
+        - Você pode criar uma digitando o comando no Linux
+        ```bash
+        openssl rand -hex 16
+        ```
         - Referencie a variável no arquivo _application.properties_
         ```properties
         aes.secret.key=${AES_SECRET_KEY}
@@ -81,7 +106,7 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
     - Para acessar a API do Exchange Rate (para conversão em tempo real de moedas):
         - Crie a variável *EXCHANGE_RATE_API_KEY*
         - Preencha com o valor referente à chave
-        - Você pode criar uma no [site](https://exchangerate.host/signup/free)
+        - Você pode se registrar e criar uma no [website](https://exchangerate.host/signup/free)
         
 
 4. **Compile o projeto**
