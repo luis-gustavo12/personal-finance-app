@@ -3,6 +3,8 @@ package com.github.Finance.services;
 import java.util.List;
 
 import com.github.Finance.dtos.views.SubscriptionsSummaryView;
+import com.github.Finance.provider.currencyexchange.CurrencyExchangeProvider;
+import com.github.Finance.provider.currencyexchange.FrankfurterCurrencyProvider;
 import org.springframework.stereotype.Service;
 
 import com.github.Finance.dtos.forms.AddSubscriptionForm;
@@ -21,7 +23,8 @@ public class SubscriptionService {
     private final PaymentMethodsService paymentMethodsService;
     private final ExchangeRateService exchangeRateService;
 
-    public SubscriptionService (SubscriptionRepository repository, AuthenticationService authenticationService, CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExchangeRateService exchangeRateService) {
+
+    public SubscriptionService (SubscriptionRepository repository, AuthenticationService authenticationService, CurrencyService currencyService, PaymentMethodsService paymentMethodsService, CurrencyExchangeProvider currencyExchangeProvider, FrankfurterCurrencyProvider frankfurterCurrencyProvider, ExchangeRateService exchangeRateService) {
         this.repository = repository;
         this.authenticationService = authenticationService;
         this.currencyService = currencyService;

@@ -1,20 +1,24 @@
 package com.github.Finance.services;
 
 import com.github.Finance.dtos.UserIncomeSumDTO;
+import com.github.Finance.dtos.forms.IncomeFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
+import com.github.Finance.dtos.response.IncomesDetailResponse;
 import com.github.Finance.models.Currency;
 import com.github.Finance.models.Income;
 import com.github.Finance.models.PaymentMethod;
 import com.github.Finance.models.User;
+import com.github.Finance.provider.currencyexchange.CurrencyExchangeProvider;
 import com.github.Finance.repositories.IncomeRepository;
+import com.github.Finance.specifications.IncomesSpecification;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -26,7 +30,7 @@ public class IncomesService {
     private final AuthenticationService authenticationService;
     private final ExchangeRateService exchangeRateService;
 
-    public IncomesService(IncomeRepository incomeRepository, PaymentMethodsService paymentMethodsService, CurrencyService currencyService, AuthenticationService authenticationService, ExchangeRateService exchangeRateService) {
+    public IncomesService(IncomeRepository incomeRepository, PaymentMethodsService paymentMethodsService, CurrencyService currencyService, AuthenticationService authenticationService, CurrencyExchangeProvider currencyExchangeProvider, ExchangeRateService exchangeRateService) {
         this.incomeRepository = incomeRepository;
         this.paymentMethodsService = paymentMethodsService;
         this.currencyService = currencyService;
@@ -84,7 +88,14 @@ public class IncomesService {
         for (Income income : incomes) {
 
             if (!income.getCurrency().getCurrencyFlag().equals(userCurrency)) {
-                sum += exchangeRateService.handleRequest(income.getCurrency().getCurrencyFlag(), income.getIncomeDate());
+
+                try {
+                    sum += exchangeRateService.getExchangeRate(income.getCurrency().getCurrencyFlag(), userCurrency, income.getIncomeDate());
+                } catch (Exception e) {
+                    log.error("Error while getting exchange rate: [{}]!!", e.getMessage());
+                    sum += income.getAmount().doubleValue();
+                }
+
                 continue;
             }
 
@@ -92,11 +103,42 @@ public class IncomesService {
 
         }
 
-        log.info("Sum for currency {}: [{}]", userCurrency ,sum);;
+        log.info("Sum for currency {}: [{}]", userCurrency, sum);
 
         return new UserIncomeSumDTO(userCurrency, sum);
     }
 
+    public List<Currency> getUserListedCurrencies() {
+        User user = authenticationService.getCurrentAuthenticatedUser();
+
+        return incomeRepository.findDistinctCurrenciesByUser(user);
+    }
+
+    // Ajax Requests
+
+    public IncomesDetailResponse getIncomesDetails(IncomeFilterForm form) {
+
+        Specification<Income> user = IncomesSpecification.setUser(authenticationService.getCurrentAuthenticatedUser());
+        Specification<Income> month = IncomesSpecification.hasMonth(form.month());
+        Specification<Income> year = IncomesSpecification.hasYear(form.year());
+        Specification<Income> currency = IncomesSpecification.hasCurrency(form.currencyFlag());
+        Specification<Income> paymentMethods = IncomesSpecification.hasPaymentMethod(form.paymentMethodId());
+        Specification<Income> min = IncomesSpecification.hasMinimum(form.minimumAmount());
+        Specification<Income> max = IncomesSpecification.hasMaximum(form.maximumAmount());
+
+        Specification<Income> specification = Specification
+            .where(user)
+            .and(month)
+            .and(year)
+            .and(currency)
+            .and(paymentMethods)
+            .and(min)
+            .and(max);
+
+        List<Income> incomes = incomeRepository.findAll(specification);
+
+        return null;
+    }
 
 
 }

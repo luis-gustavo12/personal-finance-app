@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/incomes.css}">
     <link rel="stylesheet" th:href="@{/css/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/search-bar.css}">
 </head>
 <body>
 <div layout:fragment="content">
@@ -24,15 +25,75 @@
 
     <main>
 
-        <!-- something for other data on top -->
-        <section>
-
-        </section>
-
         <p th:if="${incomesData.isEmpty()}">
             Você não tem nenhum rendimento!!
             <a th:href="@{/incomes/create}">Clique aqui para criar um</a>
         </p>
+
+        <!-- something for other data on top -->
+        <section th:unless="${incomesData.isEmpty()}">
+            <form class="controls-section" method="GET" action="/incomes" id="filter-incomes-form">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="month-select">Month</label>
+                        <select id="month-select" name="month" class="form-control">
+                            <option value="">All</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="year-select">Year</label>
+                        <select id="year-select" name="year" class="form-control">
+                            <option value="">All</option>
+                            <option th:each="year : ${years}" th:value="${year}" th:text="${year}"></option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="currency-select">Currency</label>
+                        <select id="currency-select" name="currencyFlag" class="form-control">
+                            <option value="">All</option>
+                            <option th:each="currency : ${currencies}" th:value="${currency}" th:text="${currency}"></option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="payment-method-select">Payment</label>
+                        <select id="payment-method-select" name="paymentMethodId" class="form-control">
+                            <option value="">All</option>
+                            <option th:each="pm : ${paymentMethods}" th:text="${pm.description}" th:value="${pm.id}"></option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="amount-min">Amount Min</label>
+                        <input type="number" step="0.01" min="0" id="amount-min" name="minimumAmount" class="form-control decimal-field" placeholder="Min">
+                    </div>
+                    <div class="filter-item">
+                        <label for="amount-max">Amount Max</label>
+                        <input type="number" step="0.01" min="0" id="amount-max" name="maximumAmount" class="form-control decimal-field" placeholder="Max">
+                    </div>
+                    <div class="filter-item">
+                        <label for="desc-search">Description</label>
+                        <input type="text" id="desc-search" name="description" class="form-control" placeholder="Search description">
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary" id="apply-filter">Apply</button>
+                    <button type="reset" class="btn btn-secondary" id="reset-filter">Reset</button>
+                </div>
+            </form>
+        </section>
+
+
 
         <section th:unless="${incomesData.isEmpty()}" class="month-incomes">
 
@@ -44,7 +105,7 @@
                     <tr>
                         <th>Moeda</th>
                         <th>Quantia</th>
-                        <th>Forma de Pagamento</th>
+                        <th>Forma de Pagamentos</th>
                         <th>Data</th>
                         <th>Extra</th>
                     </tr>
@@ -54,13 +115,18 @@
                         <td th:text="${income.currency.currencyFlag}"></td>
                         <td th:text="${income.amount}"></td>
                         <td th:text="${income.paymentMethod.description}"></td>
-                        <td th:text="${income.incomeDate}"></td>
+                        <td th:text="${#temporals.format(income.incomeDate, 'dd/MM/yyyy')}"></td>
                         <td th:text="${income.description}"></td>
                     </tr>
                 </tbody>
 
                 <tfoot>
-                    <td th:text="'Total: ' + ${sum.userCurrency} + ' ' + ${#numbers.formatDecimal(sum.sum, 1, 2)}"></td>
+                    <tr>
+                        <td th:text="'Total: ' + ${sum.userCurrency} + ' ' + ${#numbers.formatDecimal(sum.sum, 1, 2)}"></td>
+
+
+                    </tr>
+
                 </tfoot>
 
 
@@ -75,7 +141,7 @@
 
 </div>
 
-
+<script type="module" th:src="@{/js/incomes.js}"></script>
 
 </body>
 </html>

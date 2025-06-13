@@ -1,108 +1,59 @@
 package com.github.Finance.services;
 
 import com.github.Finance.dtos.views.SubscriptionsSummaryView;
-import com.github.Finance.models.Currency;
+import com.github.Finance.factories.CurrencyExchangeProviderFactory;
 import com.github.Finance.models.Subscription;
+import com.github.Finance.provider.currencyexchange.CurrencyExchangeProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
 public class ExchangeRateService {
 
-    private final CurrencyService currencyService;
+    private final CurrencyExchangeProvider provider = CurrencyExchangeProviderFactory.create();
 
-    private final RestTemplate restTemplate = new RestTemplate();
 
-    private final String EXCHANGE_URL = "https://api.exchangerate.host/historical?date=%s&base=%s&symbols=%s&access_key=%s";
-
-    @Value("${EXCHANGE_RATE_API_KEY}")
-    private String apiKey;
-
-    public ExchangeRateService(CurrencyService currencyService) {
-        this.currencyService = currencyService;
+    public Double getExchangeRate(String currencyFlag, String userCurrency, LocalDate incomeDate) {
+        return provider.getExchangeRate(currencyFlag, userCurrency, incomeDate);
     }
+
 
     /**
      *
-     * Method responsible for getting all the subscriptions, and bring an estimate calculation
-     * of the costs to the user. The idea isn't
+     * Method responsible for getting a sum of the subscriptions cost, in the users' preferred currency
      *
-     * @param subscriptions - User's subscriptions
-     * @return the view containing all the data
-     * <p>
-     * NOTE: For now, it's running runtime calculations, but it'd be interesting to make this
-     * a cache.
-     *
-     *
-     * TODO: make this flow be a cash, and probably, delete it later
-     *
+     * @param subscriptions A list of all the subscriptions
+     * @return The summary view, basically a Map, of currency and cost
      */
-
     public SubscriptionsSummaryView getSubscriptionsSummary(List<Subscription> subscriptions) {
 
-        double fullAmount = 0.0;
+        Double totalAmount = 0.0;
+        String currency = "BRL";
 
 
         for (Subscription subscription : subscriptions) {
 
-            if (!subscription.getCurrency().getCurrencyFlag().equals("BRL")) {
-                Double dailyQuotation = handleRequest(subscription.getCurrency().getCurrencyFlag(), LocalDate.now());
-                fullAmount += dailyQuotation * subscription.getCost().doubleValue();
+            Double dailyQuotation;
+
+            if (!subscription.getCurrency().getCurrencyFlag().equals(currency)) {
+                dailyQuotation = provider.getExchangeRate(currency, subscription.getCurrency().getCurrencyFlag(), LocalDate.now());
+                log.info("1 unit of {} equals {}{}", currency, subscription.getCurrency().getCurrencySymbol() ,dailyQuotation);
+                totalAmount = (dailyQuotation * subscription.getCost().doubleValue());
             }
 
             else
-                fullAmount += subscription.getCost().doubleValue();
+                dailyQuotation = subscription.getCost().doubleValue();
+
+            log.info("Total amount: {}", totalAmount);
+
         }
 
-        return new SubscriptionsSummaryView(
-                fullAmount, "BRL"
-        );
+        log.info("Final total amount: {}", totalAmount);
+        return new SubscriptionsSummaryView(totalAmount, "BRL");
 
     }
-
-    @Cacheable(value = "exchangeRates", key = "#currencyFlag + '-' + #date")
-    public Double handleRequest(String currencyFlag, LocalDate date) {
-
-        String url = String.format(
-            EXCHANGE_URL,
-            //date,
-            date.isAfter(LocalDate.now()) ? LocalDate.now() : date,
-            // Fow now, hardcoding it
-            currencyFlag,
-            "BRL",
-            apiKey
-        );
-
-        log.info("Date: {}, Requested Currency: {}", LocalDate.now().toString(), currencyFlag);
-
-        Map<?, ?> response = restTemplate.getForObject(url, Map.class);
-
-        log.info("Response: {}", response);
-
-        // Again, hardcoded for now
-        String desiredQuote = currencyFlag + "BRL";
-
-        log.info("Desired Quote: {}", desiredQuote);
-
-        Map<String, Double> rates = (Map<String, Double>) response.get("quotes");
-
-        Double rate = (Double) rates.get(desiredQuote);
-
-        log.info("Rate: {}", rate);
-
-        return rate;
-
-    }
-
-
 }
