@@ -3,6 +3,7 @@ package com.github.Finance.controllers.web;
 
 import com.github.Finance.dtos.forms.IncomeFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
+import com.github.Finance.dtos.response.IncomesDetailResponse;
 import com.github.Finance.models.Income;
 import com.github.Finance.services.IncomesService;
 import jakarta.validation.Valid;
@@ -75,8 +76,8 @@ public class IncomesController {
     @GetMapping("/filter")
     public ResponseEntity<?> getIncomesFilter(IncomeFilterForm form) {
         System.out.println("IncomesController.getIncomesFilter()");
-        incomesService.getIncomesDetails(form);
-        return ResponseEntity.ok("Hello World");
+        List<IncomesDetailResponse> responses = incomesService.getIncomesDetails(form);
+        return ResponseEntity.ok(responses);
     }
 
 

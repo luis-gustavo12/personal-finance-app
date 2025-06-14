@@ -13,7 +13,9 @@ table.entity-display-table {
     text-align: left;
     font-size: 0.9em;
     min-width: 450px;
+    width: 100%;
     border-radius: 5px;
+    table-layout: fixed;
     overflow: hidden;
 
 }

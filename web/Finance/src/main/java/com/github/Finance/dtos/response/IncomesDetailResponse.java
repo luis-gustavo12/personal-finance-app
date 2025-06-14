@@ -1,4 +1,14 @@
 package com.github.Finance.dtos.response;
 
-public class IncomesDetailResponse {
+import java.time.LocalDate;
+
+public record IncomesDetailResponse (
+
+    String currency,
+    Double amount,
+    String paymentForm,
+    LocalDate date,
+    String extraInfo
+
+) {
 }

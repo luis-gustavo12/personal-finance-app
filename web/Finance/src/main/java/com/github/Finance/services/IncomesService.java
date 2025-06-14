@@ -4,6 +4,7 @@ import com.github.Finance.dtos.UserIncomeSumDTO;
 import com.github.Finance.dtos.forms.IncomeFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
 import com.github.Finance.dtos.response.IncomesDetailResponse;
+import com.github.Finance.mappers.IncomesMapper;
 import com.github.Finance.models.Currency;
 import com.github.Finance.models.Income;
 import com.github.Finance.models.PaymentMethod;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -116,7 +118,7 @@ public class IncomesService {
 
     // Ajax Requests
 
-    public IncomesDetailResponse getIncomesDetails(IncomeFilterForm form) {
+    public List<IncomesDetailResponse> getIncomesDetails(IncomeFilterForm form) {
 
         Specification<Income> user = IncomesSpecification.setUser(authenticationService.getCurrentAuthenticatedUser());
         Specification<Income> month = IncomesSpecification.hasMonth(form.month());
@@ -137,7 +139,9 @@ public class IncomesService {
 
         List<Income> incomes = incomeRepository.findAll(specification);
 
-        return null;
+        return incomes.stream()
+            .map(IncomesMapper::incomesToIncome)
+            .collect(Collectors.toList());
     }
 
 

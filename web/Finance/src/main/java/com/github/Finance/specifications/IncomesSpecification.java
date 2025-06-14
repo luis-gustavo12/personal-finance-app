@@ -54,7 +54,7 @@ public class IncomesSpecification {
             @Override
             public Predicate toPredicate(Root<Income> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 
-                if (currency == null) return null;
+                if (currency == null || currency.trim().isEmpty()) return null;
 
                 return criteriaBuilder.equal(root.get("currency").get("currencyFlag"), currency);
 
