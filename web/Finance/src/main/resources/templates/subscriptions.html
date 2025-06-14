@@ -6,6 +6,7 @@
     <title>Assinaturas</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/subscriptions.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
 </head>
 <body>
 <div layout:fragment="content">
@@ -26,25 +27,68 @@
     </nav>
 
     <div th:if="${subscriptions.isEmpty()}" class="no-subscription">
-        <p>Você não tem nenhum assinatura</p>
+        <p>Você não tem nenhuma assinatura</p>
         <a th:href="@{/subscriptions/create}">Clique aqui para ser redirecionado</a>
     </div>
 
-    <main class="subscriptions-main" th:unless="${subscriptions.isEmpty()}">
+    <main class="main-content" th:unless="${subscriptions.isEmpty()}">
 
-        <section class="subscriptions-data-section">
+<!--        <section class="subscriptions-data-section">-->
 
-            <h2>Resumo do Mês</h2>
-            <div class="subscription-data-container">
-                <div class="summary-data" th:text="'Total: ' + ${summary.currencySymbol()} + ' ' + ${#numbers.formatDecimal(summary.totalAmount(), 1, 2)}"></div>
-            </div>
+<!--            <h2>Resumo do Mês</h2>-->
+<!--            <div class="subscription-data-container">-->
+<!--                <div class="summary-data" th:text="'Total: ' + ${summary.currencySymbol()} + ' ' + ${#numbers.formatDecimal(summary.totalAmount(), 1, 2)}"></div>-->
+<!--            </div>-->
 
-            <div class="subscription-data-container">
-                <div class="summary-data" th:text="'Assinaturas: ' + ${subscriptions.size()}"> </div>
-            </div>
+<!--            <div class="subscription-data-container">-->
+<!--                <div class="summary-data" th:text="'Assinaturas: ' + ${subscriptions.size()}"> </div>-->
+<!--            </div>-->
+
+<!--        </section>-->
+
+        <section>
+            <form class="controls-section" method="get" action="/subscriptions/">
+
+                <div class="filter-group">
+                    <div class="filter-item">
+
+                    </div>
+                </div>
+
+            </form>
 
         </section>
 
+    <section>
+
+        <h2 th:text="Asinaturas"></h2>
+
+        <table class="entity-display-table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Valor</th>
+                    <th>Método de Pagamento</th>
+                    <th>Categoria</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="sub : ${subscriptions}">
+                    <td th:text="${sub.name}"></td>
+                    <td th:text="${sub.currency.currencySymbol} + ' ' + ${sub.cost}"></td>
+                    <td th:text="${sub.paymentMethod.description}"></td>
+                    <td th:text="${sub.categories}"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td th:text="'Total: ' + ${summary.currencySymbol} + ' ' + ${#numbers.formatDecimal(summary.totalAmount, 1, 2)}"></td>
+                </tr>
+            </tfoot>
+        </table>
+
+    </section>
 
 
     </main>

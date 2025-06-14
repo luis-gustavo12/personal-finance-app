@@ -5,6 +5,7 @@ const filterForm = document.getElementById('filter-incomes-form');
 const decimals = document.querySelectorAll('.decimal-field');
 let displayTable = document.querySelector('.entity-display-table');
 
+
 filterForm.addEventListener('submit', function(event) {
 
     event.preventDefault();
@@ -123,3 +124,5 @@ function updateTable(incomes) {
 
     footerCell.colSpan = 5;
 }
+
+

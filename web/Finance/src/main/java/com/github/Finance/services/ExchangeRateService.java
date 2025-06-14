@@ -31,22 +31,22 @@ public class ExchangeRateService {
      */
     public SubscriptionsSummaryView getSubscriptionsSummary(List<Subscription> subscriptions) {
 
-        Double totalAmount = 0.0;
+        double totalAmount = 0.0;
         String currency = "BRL";
 
 
         for (Subscription subscription : subscriptions) {
 
-            Double dailyQuotation;
+
 
             if (!subscription.getCurrency().getCurrencyFlag().equals(currency)) {
-                dailyQuotation = provider.getExchangeRate(currency, subscription.getCurrency().getCurrencyFlag(), LocalDate.now());
+                Double dailyQuotation = provider.getExchangeRate(currency, subscription.getCurrency().getCurrencyFlag(), LocalDate.now());
                 log.info("1 unit of {} equals {}{}", currency, subscription.getCurrency().getCurrencySymbol() ,dailyQuotation);
-                totalAmount = (dailyQuotation * subscription.getCost().doubleValue());
+                totalAmount += (dailyQuotation * subscription.getCost().doubleValue());
             }
 
             else
-                dailyQuotation = subscription.getCost().doubleValue();
+                totalAmount += subscription.getCost().doubleValue();
 
             log.info("Total amount: {}", totalAmount);
 

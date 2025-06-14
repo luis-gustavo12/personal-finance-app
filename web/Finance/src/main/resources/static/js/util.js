@@ -17,7 +17,7 @@ export function allValuesAreNumbers(str) {
 
 export function isFloat(value) {
 
-    let decimalRegex = new RegExp("^\\d+[.,]\\d{1,3}$");
+    let decimalRegex = new RegExp("^\\d+([.,]\\d{1,3})?$");
 
     if (value.trim() !== '') {
         return decimalRegex.test(value);

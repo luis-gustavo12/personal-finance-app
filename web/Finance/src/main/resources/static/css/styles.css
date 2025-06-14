@@ -74,10 +74,17 @@ nav {
     padding: 10px;
 }
 
-
-
 a {
     text-decoration: none;
+}
+
+a.redirect-anchor {
+    font-weight: 600;
+    color: var(--main-blue);
+}
+
+a.redirect-anchor:hover {
+    color: var(--aqua);
 }
 
 
@@ -95,3 +102,7 @@ a {
     margin-bottom: 24px;
 }
 
+.main-content {
+    margin-left: 180px;
+    padding: 24px;
+}
