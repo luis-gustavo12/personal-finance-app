@@ -162,8 +162,8 @@ public class ExpensesController {
                     session.setAttribute("expenseId", id);
                     return "redirect:/expenses/details/fill-expense/" + id;
                 }
-                model.addAttribute("firstDigits", encryptionService.decrypt(cardExpense.getCard().getFirstSixDigits()));
-                model.addAttribute("lastDigits", encryptionService.decrypt(cardExpense.getCard().getLastFourDigits()));
+//                model.addAttribute("firstDigits", encryptionService.decrypt(cardExpense.getCard().getFirstSixDigits()));
+//                model.addAttribute("lastDigits", encryptionService.decrypt(cardExpense.getCard().getLastFourDigits()));
                 model.addAttribute("cardDetail", cardExpense);
                 return "credit-card-details";
             }

@@ -9,15 +9,12 @@ public class CardMapper {
 
     public static CardView fromEntityToView(Card card) {
 
-        return new CardView(
-            card.getCardholderName(),
-            card.getExpirationMonth(),
-            card.getExpirationYear(),
-            card.getFirstSixDigits(),
-            card.getLastFourDigits(),
-            card.getBrandName(),
-            card.getCardType()
-        );
+//        return new CardView(
+//            card.getBrandName(),
+//            card.getCardType()
+//        );
+
+        return null;
 
     }
 

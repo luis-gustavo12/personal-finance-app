@@ -23,12 +23,14 @@ public class CardService {
     private final CardRepository repository;
     private final AuthenticationService authenticationService;
     private final EncryptionService encryptionService;
+    private final CardGatewayService cardGatewayService;
 
     public CardService(CardRepository cardRepository, AuthenticationService authenticationService,
-    EncryptionService encryptionService ) {
+            EncryptionService encryptionService, CardGatewayService cardGatewayService) {
         this.repository = cardRepository;
         this.authenticationService = authenticationService;
         this.encryptionService = encryptionService;
+        this.cardGatewayService = cardGatewayService;
     }
 
 
@@ -36,22 +38,15 @@ public class CardService {
         return Arrays.asList(CardType.values());
     }
 
-    public CardView addCard(AddCardForm form) {
+    public void addCard(AddCardForm form) {
 
         Card card = new Card();
 
         card.setUser(authenticationService.getCurrentAuthenticatedUser());
-        card.setCardholderName(form.cardholderName());
-        card.setFirstSixDigits( encryptionService.encrypt(form.firstSixDigits()) );
-        card.setLastFourDigits( encryptionService.encrypt(form.lastFourDigits()) );
-        card.setExpirationMonth(form.expirationMonth());
-        card.setExpirationYear(form.expirationYear());
+        card.setToken(form.stripeToken());
         card.setCardType(CardType.valueOf(form.cardType()));
-        card.setBrandName(form.brandName());
-
+        card.setCardDescription(form.cardDescription());
         card = repository.save(card);
-
-        return CardMapper.fromEntityToView(card);
 
     }
 
@@ -67,10 +62,10 @@ public class CardService {
         // Decrypting the stored card digits, to deliver it to the view
         for (Card card : cards) {
 
-            card.setFirstSixDigits(encryptionService.decrypt(card.getFirstSixDigits()));
-            card.setLastFourDigits(encryptionService.decrypt(card.getLastFourDigits()));
-            cardViews.add( CardMapper.fromEntityToView(card) );
-
+            CardView cardView = new CardView();
+            cardView.setCardType(card.getCardType());
+            cardGatewayService.getCardDetails(cardView, card.getToken());
+            cardViews.add(cardView);
         }
         
 
@@ -81,8 +76,10 @@ public class CardService {
     public Card getCardByFirstAndLastDigits(String firstDigits, String lastDigits) {
         String encryptedFirstDigits = encryptionService.encrypt(firstDigits);
         String encryptedLastDigits = encryptionService.encrypt(lastDigits);
-        return repository.findByFirstSixDigitsAndLastFourDigits(encryptedFirstDigits, encryptedLastDigits).
-            orElseThrow(() -> new ResourceNotFoundException("Couldn't find card given the first and last digits!!"));
+//        return repository.findByFirstSixDigitsAndLastFourDigits(encryptedFirstDigits, encryptedLastDigits).
+//            orElseThrow(() -> new ResourceNotFoundException("Couldn't find card given the first and last digits!!"));
+
+        return null;
     }
 
 

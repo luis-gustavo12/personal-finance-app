@@ -4,32 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
     <title>Cartões</title>
 </head>
 <body>
 
 <div layout:fragment="content">
 
-    <nav>
+    <nav class="sidebar">
 
-        <a th:href="@{/dashboard}" class="nav-panel">Dashboard</a>
-        
-        <a th:href="@{/cards/create}" class="nav-panel">Adicionar cartão</a>
-        
-        <a href="#" class="nav-panel">Atualizar informação do cartão</a>
-        
-        <a href="#" class="nav-panel">Deletar cartão</a>
+        <div class="main-routes">
+            <div class="nav-panel">
+                <a th:href="@{/cards/create}" class="nav-panel">Adicionar cartão</a>
+            </div>
+
+            <div class="nav-panel">
+                <a href="#" class="nav-panel">Atualizar informação do cartão</a>
+            </div>
+
+            <div class="nav-panel">
+                <a href="#" class="nav-panel">Deletar cartão</a>
+            </div>
+
+
+
+        </div>
+
         
     </nav>
 
 
-    <div th:if="${cardViews.isEmpty()}">
-        <p>Vazio</p>
-    </div>
 
-    <main th:unless="${cardViews.isEmpty()}">
 
-        <table>
+    <main class="main-content">
+
+
+        <div th:if="${cardViews.isEmpty()}">
+            <p>Você não tem nenhum cartão!! Clique <a class="redirect-anchor" th:href="@{cards/create}">aqui</a>
+            para adicionar um à lista</p>
+        </div>
+
+        <table th:unless="${cardViews.isEmpty()}" class="entity-display-table">
             <thead>
                 <tr>
                     <th>Número</th>
@@ -42,7 +57,7 @@
             </thead>
             <tbody>
                 <tr th:each="cardView : ${cardViews}">
-                    <td th:text="${cardView.firstDigits} + '*********' + ${cardView.lastDigits}"></td>
+                    <td th:text="'*********' + ${cardView.lastDigits}"></td>
                     <td th:text="${cardView.cardName}"></td>
                     <td th:text="${cardView.expirationMonth}"></td>
                     <td th:text="${cardView.expirationYear}"></td>

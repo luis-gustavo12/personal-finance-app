@@ -2,6 +2,9 @@ package com.github.Finance.controllers.web;
 
 import java.util.List;
 
+import com.github.Finance.services.CardGatewayService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +21,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 @RequestMapping("/cards")
 public class CardsController {
-    
+
 
     private final CardService service;
+    private final CardGatewayService cardGatewayService;
 
-    public CardsController(CardService cardService) {
+    public CardsController(CardService cardService, CardGatewayService cardGatewayService) {
         this.service = cardService;
+        this.cardGatewayService = cardGatewayService;
     }
 
 
@@ -37,12 +42,13 @@ public class CardsController {
     @GetMapping("/create")
     public String createCardString(Model model) {
         List<CardType> cardTypes = service.getAllCardTypes();
+        model.addAttribute("publicKey", cardGatewayService.getPublicToken());
         model.addAttribute("cardTypes", cardTypes); 
         return "create-card";
     }
 
     @PostMapping("/create")
-    public String createCardForm(AddCardForm form) {
+    public String createCardForm(@Valid AddCardForm form) {
         
         service.addCard(form);
         

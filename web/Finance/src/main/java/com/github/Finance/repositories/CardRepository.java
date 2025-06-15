@@ -14,6 +14,4 @@ public interface CardRepository extends JpaRepository<Card, Long>  {
     
     List<Card> findAllByUser(User user);
 
-    Optional<Card> findByFirstSixDigitsAndLastFourDigits(String firstSixDigits, String lastFourDigits);
-
 }

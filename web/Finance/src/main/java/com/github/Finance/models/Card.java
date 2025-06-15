@@ -30,28 +30,17 @@ public class Card {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "first_six_digits")
-    private String firstSixDigits;
+    @Column(name = "token")
+    private String token;
 
-    @Column(name = "last_four_digits")
-    private String lastFourDigits;
-
-    @Column(name = "cardholder_name")
-    private String cardholderName;
-
-    @Column(name = "expiration_month")
-    private int expirationMonth;
-
-    @Column(name = "expiration_year")
-    private int expirationYear;
-
-    @Column(name = "brand_name")
-    private String brandName;
+    @Column(name = "card_description")
+    private String cardDescription;
 
     @Column(name = "card_type")
     @Enumerated(EnumType.STRING)
     private CardType cardType;
 
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
 

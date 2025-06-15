@@ -7,57 +7,56 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/forms.css}">
     <link rel="stylesheet" th:href="@{/css/backgrounds.css}">
+    <script src="https://js.stripe.com/v3/"></script>
+
 </head>
 <body class="green-to-blue-bg">
     
     <div layout:fragment="content">
 
-        <form th:action="@{/cards/create}" th:method="post">
+        <form th:action="@{/cards/create}" th:method="post" id="cardForm">
+            <!-- CSRF Token for Spring Security -->
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-            <label for="firstSixDigits">Insira os primeiros 6 dígitos</label>
-            <input type="number" name="firstSixDigits" id="firstSixDigits" required>
+            <!-- Hidden input to hold the Stripe Token -->
+            <input type="hidden" name="stripeToken" id="stripeToken" />
+
+            <label for="cardholderName">Nome no cartão</label>
+            <input type="text" id="cardholderName" name="cardholderName" required />
 
             <br>
 
-            <label for="lastFourDigits">Insira os últimos 4 dígitos do cartão</label>
-            <input type="number" name="lastFourDigits" id="lastFourDigits" required>
+            <label for="cardDescription">Insira uma descrição para o Cartão (Ex.: Cartão Itaú Click)</label>
+            <input type="text" id="cardDescription" name="cardDescription">
+
+
+            <label for="card-element">Dados do Cartão (Número, Validade e CVC)</label>
+            <div id="card-element"></div>
+
+
+            <div id="card-errors" role="alert" style="color: red; margin-top: 10px;"></div>
 
             <br>
 
-            <label for="cardholderName">Insira o nome no cartão</label>
-            <input type="text" name="cardholderName" id="cardholderName" required>
-
-            <br>
-
-            <label for="expirationMonth">Insira o mês de vencimento</label>
-            <input type="number" name="expirationMonth" id="expirationMonth" required max="12" min="1">
-
-            <br>
-
-            <label for="expirationYear">Insira o ano de expiração</label>
-            <input type="number" name="expirationYear" id="expirationYear" min="2002" required>
-
-            <br>
-
-            <label for="cardType">Insira o tipo do cartão</label>
+            <label for="cardType">Tipo do cartão</label>
             <select name="cardType" id="cardType" required>
                 <option th:each="cardType : ${cardTypes}" th:value="${cardType}" th:text="${cardType}">
                 </option>
-            </select>          
+            </select>
 
             <br>
 
-            <label for="brandName">Insira a marca do cartão</label>
-            <input type="text" name="brandName" id="brandName" required> 
 
 
             <button type="submit">Enviar</button>
-
         </form>
 
     </div>
-
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.stripePublishableKey = /*[[${publicKey}]]*/ '';
+        /*]]>*/
+    </script>
     <script th:src="@{/js/create-card.js}"></script>
     <script th:src="@{/js/util.js}"></script>
 

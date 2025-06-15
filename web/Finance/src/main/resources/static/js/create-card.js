@@ -1,53 +1,76 @@
 
-const firstSixDigitsElem = document.getElementById('firstSixDigits');
-firstSixDigitsElem.addEventListener('blur', validateFirstSixDigits)
+const stripePublishableKey = window.stripePublishableKey
 
 
-const fourLastDigitsElem = document.getElementById('lastFourDigits');
-fourLastDigitsElem.addEventListener('blur', validateLastFourDigits);
+// 1. Initialize Stripe.js with your publishable key
+const stripe = Stripe(stripePublishableKey);
+const elements = stripe.elements();
 
 
-
-
-function validateFirstSixDigits() {
-
-    var value = firstSixDigitsElem.value.trim();
-
-    if (value != '') {
-        if (value.length != 6) {
-            alert('Preencha o campo com 6 dígitos numéricos!!');
-            firstSixDigitsElem.value = '';
-            return;
+// 2. Optional: Add styling to the Stripe Element for a better look and feel.
+const style = {
+    base: {
+        color: '#32325d',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+            color: '#aab7c4'
         }
-        if (!allValuesAreNumbers(value)) {
-            alert('Caractér invalido encontrado!! Digite apenas valores numéricos');
-            firstSixDigitsElem.value = '';
-        }
+    },
+    invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
     }
+};
 
 
+// 3. Create and mount the Card Element to your div
+const cardElement = elements.create('card', { style: style });
+cardElement.mount('#card-element');
 
 
-}
-
-function validateLastFourDigits() {
-
-    var value = fourLastDigitsElem.value.trim();
-
-    if (value != '') {
-        if (value.length != 4) {
-            alert('Preencha o campo com 4 dígitos numéricos!!');
-            fourLastDigitsElem.value = '';
-            return;
-        }
-        if (!allValuesAreNumbers(value)) {
-            alert('Caractér invalido encontrado!! Digite apenas valores numéricos');
-            fourLastDigitsElem.value = '';
-            return;
-        }
+// 4. Handle real-time validation errors from the card element
+cardElement.addEventListener('change', function(event) {
+    const displayError = document.getElementById('card-errors');
+    if (event.error) {
+        displayError.textContent = event.error.message;
+    } else {
+        displayError.textContent = '';
     }
+});
 
-    
 
+// 5. Handle the form submission
+const form = document.getElementById('cardForm');
+const cardholderNameInput = document.getElementById('cardholderName');
 
-}
+form.addEventListener('submit', async (event) => {
+    // We stop the form from submitting to our server immediately
+    event.preventDefault();
+
+    // Disable the button to prevent multiple submissions
+    document.querySelector('button').disabled = true;
+
+    // Use Stripe.js to create a payment token from the card element
+    const { token, error } = await stripe.createToken(cardElement, {
+        name: cardholderNameInput.value,
+    });
+
+    if (error) {
+        // If Stripe returns an error, display it to the user
+        const errorElement = document.getElementById('card-errors');
+        errorElement.textContent = error.message;
+
+        // Re-enable the button so the user can try again
+        document.querySelector('button').disabled = false;
+    } else {
+        // If successful, we have a token!
+        // Set the token ID in our hidden form input
+        const hiddenInput = document.getElementById('stripeToken');
+        hiddenInput.value = token.id;
+
+        // Now, submit the form to your Spring Boot server
+        form.submit();
+    }
+});
