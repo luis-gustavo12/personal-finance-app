@@ -19,7 +19,7 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 
 - Autenticação (Spring Security e Encriptação BCrypt)
 - Rastreamento de assinaturas mensais
-- Adicionar cartões de crédito e outros métodos de pagamento
+- Adicionar cartões de crédito e outros métodos de pagamento (complicente com o PCI DCSS)
 
 ---
 
@@ -88,25 +88,18 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 
     - Os arquivos de migração do Flyway Migration cuidarão de criar as tabelas
 
-3. **Adicione as variáveis de ambiente necessárias para rodar a aplicação, de acordo com o sistema operacional**
-    - Para o Flyway:
-        - Crie uma variável para o usuário, senha, e link para o banco de dados, para o flyway, sendo eles *FLYWAY_USER*, *FLYWAY_PASSWORD*, e *FLYWAY_URL* respectivamente.
-        - As variáveis em questão já estão referenciadas no _POM.xml_
+3. **Adicione as configurações necessárias para rodar a aplicação**
 
-    - Para usar a encriptação:
-        - Crie uma chave própria, e crie a variável para a chave de encriptação AES: *AES_SECRET_KEY*
-        - Você pode criar uma digitando o comando no Linux
-        ```bash
-        openssl rand -hex 16
-        ```
-        - Referencie a variável no arquivo _application.properties_
+    - Para uso de gateway de cartões
+        - Ir no _application.properties_, e preencher o seguinte campo, da seguinte maneira:  *cardgateway.provider=STRIPE*
+        - Logo após, você precisa da suas chaves públicas e privadas da stripe, e referenciar também no _application.properties_:
         ```properties
-        aes.secret.key=${AES_SECRET_KEY}
+        cardgateway.provider=STRIPE
+        cardgateway.public-key=PUBLIC_KEY
+        cardgateway.private-key=PRIVATE_KEY
         ```
-    - Para acessar a API do Exchange Rate (para conversão em tempo real de moedas):
-        - Crie a variável *EXCHANGE_RATE_API_KEY*
-        - Preencha com o valor referente à chave
-        - Você pode se registrar e criar uma no [website](https://exchangerate.host/signup/free)
+
+        - Você pode criar uma no [website](https://docs.stripe.com/keys)
         
 
 4. **Compile o projeto**
