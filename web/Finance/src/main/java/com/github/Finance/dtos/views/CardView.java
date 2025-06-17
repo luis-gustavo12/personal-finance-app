@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CardView {
+    private Long id;
     private String cardName;
     private int expirationMonth;
     private int expirationYear;

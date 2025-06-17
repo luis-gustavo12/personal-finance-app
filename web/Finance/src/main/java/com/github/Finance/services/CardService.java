@@ -65,6 +65,7 @@ public class CardService {
             CardView cardView = new CardView();
             cardView.setCardType(card.getCardType());
             cardGatewayService.getCardDetails(cardView, card.getToken());
+            cardView.setId(card.getId());
             cardViews.add(cardView);
         }
         
@@ -80,6 +81,10 @@ public class CardService {
 //            orElseThrow(() -> new ResourceNotFoundException("Couldn't find card given the first and last digits!!"));
 
         return null;
+    }
+
+    public Card getCardById(Long cardId) {
+        return repository.findById(cardId).orElse(null);
     }
 
 

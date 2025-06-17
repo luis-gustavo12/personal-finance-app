@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes Assinatura de Cartão de Crédito</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <link rel="stylesheet" th:href="@{/css/cards.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+<div layout:fragment="content">
+
+
+    <nav>
+        <a onclick="window.history.back()" class="nav-panel">Retornar</a>
+    </nav>
+
+    <div class="card-wrapper"></div>
+
+    <form th:method="post">
+
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <input type="hidden" id="selectedCardId" name="selectedCardId" value="">
+
+        <h2>Selecione o cartão de crédito escolhido</h2>
+
+        <ul class="custom-card-select">
+            <li th:each="card : ${cards}" class="card-option" th:attr="data-card-id=${card.id}" onclick="selectCardOption(this)">
+
+                <div class="icon" th:switch="${card.brand}">
+                    <i th:case="'Visa'" class="fab fa-cc-visa" style="color: #1a1f71;"></i>
+                    <i th:case="'MasterCard'" class="fab fa-cc-mastercard" style="color: #eb001b;"></i>
+                    <i th:case="'Amex'" class="fab fa-cc-amex" style="color: #2e77bc;"></i>
+                    <i th:case="'Discover'" class="fab fa-cc-discover" style="color: #f68121;"></i>
+                    <i th:case="*" class="fas fa-credit-card" style="color: #555;"></i>
+                </div>
+
+                <div class="text" th:text="'Terminado em ' + ${card.lastDigits}">
+                </div>
+            </li>
+        </ul>
+
+        <button type="submit">Enviar</button>
+
+    </form>
+
+
+
+
+</div>
+<script>
+    function selectCardOption(element) {
+
+        const cardId = element.getAttribute('data-card-id');
+
+        document.getElementById('selectedCardId').value = cardId;
+
+        const allOptions = document.querySelectorAll('.card-option');
+        allOptions.forEach(option => {
+            option.classList.remove('selected');
+        });
+
+        element.classList.add('selected');
+    }
+</script>
+</body>
+</html>

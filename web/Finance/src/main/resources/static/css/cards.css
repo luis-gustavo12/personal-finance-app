@@ -1,0 +1,44 @@
+/* CSS for our custom card selector */
+.custom-card-select {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-width: 400px;
+}
+
+.card-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    border-bottom: 1px solid #eee;
+}
+
+.card-option:last-child {
+    border-bottom: none;
+}
+
+.card-option:hover {
+    background-color: #f0f0f0;
+}
+
+/* This is the style for the selected card */
+.card-option.selected {
+    background-color: #e0eafc; /* A light blue to indicate selection */
+    font-weight: bold;
+}
+
+.card-option .icon {
+    font-size: 1.8em; /* Make the icon bigger */
+    margin-right: 15px;
+    width: 40px; /* Give it a fixed width for alignment */
+    text-align: center;
+}
+
+.card-option .text {
+    font-family: sans-serif;
+    color: #333;
+}

@@ -1,11 +1,15 @@
 package com.github.Finance.controllers.web;
 
+import com.github.Finance.models.Subscription;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.github.Finance.dtos.forms.AddSubscriptionForm;
@@ -49,12 +53,38 @@ public class SubscriptionsController {
     @PostMapping("create")
     public String createNewSubscription(AddSubscriptionForm form) {
         
-        service.createNewSubscription(form);
-        
+        Subscription subscription = service.createNewSubscription(form);
+
+        Long paymentMethodId = subscription.getPaymentMethod().getId();
+
+        // Card payment methods
+        if (paymentMethodId == 3 || paymentMethodId == 4) {
+            log.info("New credit card subscription has been created, redirecting for filling details");
+            log.info("Route: [{}]", ("card-details/" + paymentMethodId ));
+            return "redirect:/card-details/" + paymentMethodId;
+        }
+
+        log.debug("New subscription has been created");
         return "dashboard";
     }
-    
-    
+
+    // You need this id path variable for post mapping, so ignore unused variable warning
+    @GetMapping("card-details/{id}")
+    public String cardDetails(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("cards", service.getUserRegisteredCards());
+        return "subscription-card-details";
+    }
+
+    @PostMapping("card-details/{id}")
+    public String cardDetails(Long selectedCardId, @PathVariable("id") Long id) {
+        service.addCardSubscriptionDetailWithSubscription(selectedCardId, id);
+        return "redirect:/subscriptions/";
+    }
+
+    @GetMapping("/{id}")
+    public String subscriptionOverview(Model model, @PathVariable("id") Long id) {
+        return "subscription-overview";
+    }
 
     
 }

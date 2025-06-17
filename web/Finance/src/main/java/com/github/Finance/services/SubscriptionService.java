@@ -2,16 +2,15 @@ package com.github.Finance.services;
 
 import java.util.List;
 
+import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.dtos.views.SubscriptionsSummaryView;
+import com.github.Finance.models.*;
 import com.github.Finance.provider.currencyexchange.CurrencyExchangeProvider;
 import com.github.Finance.provider.currencyexchange.FrankfurterCurrencyProvider;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.github.Finance.dtos.forms.AddSubscriptionForm;
-import com.github.Finance.models.Currency;
-import com.github.Finance.models.PaymentMethod;
-import com.github.Finance.models.Subscription;
-import com.github.Finance.models.User;
 import com.github.Finance.repositories.SubscriptionRepository;
 
 @Service
@@ -22,18 +21,22 @@ public class SubscriptionService {
     private final CurrencyService currencyService;
     private final PaymentMethodsService paymentMethodsService;
     private final ExchangeRateService exchangeRateService;
+    private final CardService cardService;
+    private final CardSubscriptionDetailsService cardSubscriptionDetailsService;
 
 
-    public SubscriptionService (SubscriptionRepository repository, AuthenticationService authenticationService, CurrencyService currencyService, PaymentMethodsService paymentMethodsService, CurrencyExchangeProvider currencyExchangeProvider, FrankfurterCurrencyProvider frankfurterCurrencyProvider, ExchangeRateService exchangeRateService) {
+    public SubscriptionService (SubscriptionRepository repository, AuthenticationService authenticationService, CurrencyService currencyService, PaymentMethodsService paymentMethodsService, CurrencyExchangeProvider currencyExchangeProvider, FrankfurterCurrencyProvider frankfurterCurrencyProvider, ExchangeRateService exchangeRateService, CardService cardService, CardSubscriptionDetailsService cardSubscriptionDetailsService) {
         this.repository = repository;
         this.authenticationService = authenticationService;
         this.currencyService = currencyService;
         this.paymentMethodsService = paymentMethodsService;
         this.exchangeRateService = exchangeRateService;
+        this.cardService = cardService;
+        this.cardSubscriptionDetailsService = cardSubscriptionDetailsService;
     }
 
 
-    public void createNewSubscription(AddSubscriptionForm form) {
+    public Subscription createNewSubscription(AddSubscriptionForm form) {
 
         Subscription subscription = new Subscription();
         subscription.setUser(authenticationService.getCurrentAuthenticatedUser());
@@ -44,7 +47,7 @@ public class SubscriptionService {
         subscription.setValidFrom(form.subscriptionStart());
         subscription.setCategories(form.subscriptionCategory());
 
-        repository.save(subscription);
+        return repository.save(subscription);
 
     }
 
@@ -67,5 +70,27 @@ public class SubscriptionService {
         return exchangeRateService.getSubscriptionsSummary(subscriptions);
     }
 
-    
+
+    public List<CardView> getUserRegisteredCards() {
+        return cardService.getUserRegisteredCards();
+    }
+
+    public Subscription getSubscriptionById(Long subscriptionId) {
+        return repository.findById(subscriptionId).orElse(null);
+    }
+
+    /**
+     *
+     * method that links the subscription with the card details
+     *
+     * @param cardId The card that links to the subscription
+     * @param subscriptionId Subscription id
+     */
+    @PreAuthorize("@cardService.getCardById(#cardId).getUser() == authentication.principal.id &&" +
+    "@subscriptionService.getSubscriptionById(#subscriptionId) == authentication.principal.id")
+    public void addCardSubscriptionDetailWithSubscription(Long cardId, Long subscriptionId) {
+        Subscription subscription = getSubscriptionById(subscriptionId);
+        cardSubscriptionDetailsService.saveNewCardSubscription(subscription, cardId);
+    }
+
 }

@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/subscriptions.css}">
     <link rel="stylesheet" th:href="@{/css/tables.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
 <div layout:fragment="content">
@@ -70,6 +71,7 @@
                     <th>Valor</th>
                     <th>Método de Pagamento</th>
                     <th>Categoria</th>
+                    <th>Detalhes</th>
                 </tr>
             </thead>
 
@@ -79,6 +81,12 @@
                     <td th:text="${sub.currency.currencySymbol} + ' ' + ${sub.cost}"></td>
                     <td th:text="${sub.paymentMethod.description}"></td>
                     <td th:text="${sub.categories}"></td>
+                    <td>
+                        <a th:href="@{'/subscriptions/' + ${sub.id}}" class="details-link" aria-label="Ver detalhes">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
+                    </td>
+
                 </tr>
             </tbody>
             <tfoot>
