@@ -29,7 +29,7 @@
 
     <div th:if="${subscriptions.isEmpty()}" class="no-subscription">
         <p>Você não tem nenhuma assinatura</p>
-        <a th:href="@{/subscriptions/create}">Clique aqui para ser redirecionado</a>
+        <a th:href="@{/subscriptions/create}" class="redirect-anchor">Clique aqui para ser redirecionado</a>
     </div>
 
     <main class="main-content" th:unless="${subscriptions.isEmpty()}">

@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "subscriptions")
@@ -59,7 +60,8 @@ public class Subscription {
     @Column(name = "valid_until")
     LocalDate validUntil;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", insertable = false, updatable = false)
+    @CreationTimestamp
     LocalDateTime createdAt;
 
     @Column(name = "categories")

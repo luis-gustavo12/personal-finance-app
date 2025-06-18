@@ -2,6 +2,7 @@ package com.github.Finance.services;
 
 import java.util.List;
 
+import com.github.Finance.dtos.SubscriptionDetailsDTO;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.dtos.views.SubscriptionsSummaryView;
 import com.github.Finance.models.*;
@@ -81,16 +82,35 @@ public class SubscriptionService {
 
     /**
      *
+     *
      * method that links the subscription with the card details
      *
      * @param cardId The card that links to the subscription
      * @param subscriptionId Subscription id
      */
-    @PreAuthorize("@cardService.getCardById(#cardId).getUser() == authentication.principal.id &&" +
-    "@subscriptionService.getSubscriptionById(#subscriptionId) == authentication.principal.id")
+    @PreAuthorize("@cardService.getCardById(#cardId).getUser().getEmail() == authentication.name &&" +
+    "@subscriptionService.getSubscriptionById(#subscriptionId).getUser().getEmail() == authentication.name")
     public void addCardSubscriptionDetailWithSubscription(Long cardId, Long subscriptionId) {
         Subscription subscription = getSubscriptionById(subscriptionId);
         cardSubscriptionDetailsService.saveNewCardSubscription(subscription, cardId);
+    }
+
+    @PreAuthorize("@subscriptionService.getSubscriptionById(#subscriptionId).getUser().getEmail() == authentication.name")
+    public SubscriptionDetailsDTO getSubscriptionDetail(Long subscriptionId) {
+
+        Subscription subscription = getSubscriptionById(subscriptionId);
+
+        return new SubscriptionDetailsDTO(
+            subscription.getCurrency(),
+            subscription.getCost().doubleValue(),
+            subscription.getPaymentMethod(),
+            subscription.getValidUntil() == null ? "Active" : "Not Active",
+            subscription.getCreatedAt(),
+            subscription.getValidFrom(),
+            subscription.getCategories()
+        );
+
+
     }
 
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Assinatura</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
+</head>
+<body>
+<div layout:fragment="content">
+
+    <nav class="sidebar">
+
+        <div class="main-routes">
+
+            <div class="nav-panel">
+                <a th:href="@{/dashboard/}">Dashboard</a>
+            </div>
+            <div class="nav-panel">
+                <a onclick="window.history.back()">Retornar</a>
+            </div>
+
+        </div>
+
+    </nav>
+
+
+    <main class="main-content">
+
+        <table class="entity-display-table">
+
+            <thead>
+                <tr>
+                    <th>Custo</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Status</th>
+                    <th>Data de Criação</th>
+                    <th>Valido desde</th>
+                    <th>Categoria</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="data : ${overview}">
+                    <td th:text="${overview.currency.currencySymbol} + ' ' + ${overview.subscriptionCost}"></td>
+                    <td th:text="${overview.paymentMethod.description}"></td>
+                    <td th:text="${overview.status}"></td>
+                    <td th:text="${#temporals.format(overview.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(overview.validSince, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${overview.category}"></td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </main>
+
+
+</div>
+</body>
+</html>

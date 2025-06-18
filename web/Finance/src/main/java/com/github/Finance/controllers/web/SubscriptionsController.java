@@ -54,14 +54,15 @@ public class SubscriptionsController {
     public String createNewSubscription(AddSubscriptionForm form) {
         
         Subscription subscription = service.createNewSubscription(form);
+        Long subscriptionId = subscription.getId();
 
         Long paymentMethodId = subscription.getPaymentMethod().getId();
 
         // Card payment methods
         if (paymentMethodId == 3 || paymentMethodId == 4) {
             log.info("New credit card subscription has been created, redirecting for filling details");
-            log.info("Route: [{}]", ("card-details/" + paymentMethodId ));
-            return "redirect:/card-details/" + paymentMethodId;
+            log.info("Route: [{}]", ("card-details/" + subscriptionId ));
+            return "redirect:/subscriptions/card-details/" + subscriptionId;
         }
 
         log.debug("New subscription has been created");
@@ -83,6 +84,7 @@ public class SubscriptionsController {
 
     @GetMapping("/{id}")
     public String subscriptionOverview(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("overview", service.getSubscriptionDetail(id));
         return "subscription-overview";
     }
 
