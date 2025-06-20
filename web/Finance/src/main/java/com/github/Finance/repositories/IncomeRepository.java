@@ -15,7 +15,7 @@ import java.util.List;
 public interface IncomeRepository extends JpaRepository<Income, Long>, JpaSpecificationExecutor<Income> {
     List<Income> findAllByUser(User user);
 
-    @Query("SELECT i FROM Income i WHERE i.user = :user AND YEAR(i.incomeDate) = :year AND MONTH(i.incomeDate) = :month")
+    @Query("SELECT i FROM Income i WHERE i.user = :user AND YEAR(i.createdAt) = :year AND MONTH(i.createdAt) = :month")
     List<Income> findAllIncomesByMonth(
         @Param("user") User user,
         @Param("month") int month,

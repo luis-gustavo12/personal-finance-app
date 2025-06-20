@@ -42,7 +42,7 @@ public class Income {
     @Column(name = "date")
     private LocalDate incomeDate;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false,  insertable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "income_description")
