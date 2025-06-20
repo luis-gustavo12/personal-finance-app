@@ -64,6 +64,7 @@
 
 .nav-panel:hover a, .nav-panel:focus-within a {
     color: white;
+    cursor: pointer;
 }
 
 
