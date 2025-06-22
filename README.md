@@ -100,6 +100,20 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
         ```
 
         - Você pode criar uma no [website](https://docs.stripe.com/keys)
+
+    - Para usar dos serviços de criptografia
+        - Adicionar a seguinte linha no application.properties
+        ```properties
+        aes.secret.key=SECRET_KEY
+        ```
+        - De recomendação, é possível adicionar uma variável de ambiente, para nao divulgar a chave de encriptação
+        ```properties
+        aes.secret.key=${SECRET_KEY}
+        ```
+        - Para gerar uma, você pode rodar o seguinte comando no Linux:
+        ```bash
+        openssl rand -base64 32
+        ``` 
         
 
 4. **Compile o projeto**
