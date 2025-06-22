@@ -31,6 +31,8 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 - Spring Security
 - MySQL
 - Lombok
+- Spring Scheduler
+- Quartz
 
 ---
 
@@ -114,7 +116,14 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
         ```bash
         openssl rand -base64 32
         ``` 
-        
+    - Para usar o Quartz
+        - Adicionar a seguinte linha no application.properties
+        ```properties        
+        spring.quartz.jdbc.initialize-schema=never
+        spring.quartz.job-store-type=jdbc
+        spring.quartz.properties.org.quartz.jobStore.tablePrefix=QRTZ_
+        spring.quartz.properties.org.quartz.threadPool.threadCount=10
+        ```        
 
 4. **Compile o projeto**
     ```bash
