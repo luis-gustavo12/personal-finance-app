@@ -1,6 +1,7 @@
 package com.github.Finance.models;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -47,7 +48,10 @@ public class Expense {
     )
     private User user;
 
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "expense_date", nullable = false)
+    private LocalDate date;
+
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
     
 }
