@@ -102,4 +102,20 @@ button[type="submit"]:hover {
   box-shadow: 0 4px 16px rgba(44, 62, 80, 0.15); 
 }
 
+.warning-field {
+  background-color: #fff3cd;
+  color: #856404;
+  border-radius: 3px;
 
+  padding: 1px 3px 1px 3px;
+  margin-bottom: 2px;
+}
+
+.warning-field p,
+.warning-field a{
+  color: #856404;
+}
+
+.warning-field a {
+  font-weight: 500;
+}

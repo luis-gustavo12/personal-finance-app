@@ -22,6 +22,9 @@
         <form th:unless="${paymentMethods.isEmpty()}" th:action="@{/expenses/create}" th:method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <h2>Adicione uma despesa</h2>
+            <div th:if="${!hasCreditCards}" class="warning-field">
+                <p>Você não tem nenhum cartão registrado!!!<br> Registre-se <a th:href="@{/cards/create}">aqui</a></p>
+            </div>
             <label for="paymentMethodId">Selecione a forma de pagamento</label>
             <select name="paymentMethodId" id="paymentMethodId">
                 <option th:each="method : ${paymentMethods}" th:value="${method.id}" th:text="${method.description}">
