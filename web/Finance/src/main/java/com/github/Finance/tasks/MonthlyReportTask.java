@@ -14,7 +14,7 @@ public class MonthlyReportTask {
 
     }
 
-    @Scheduled(fixedRate = 12000)
+    @Scheduled(cron = "0 0 0 2 * ?")
     public void execute() {
         try {
             log.info("Starting monthly report task");
