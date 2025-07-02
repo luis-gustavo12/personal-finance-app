@@ -45,7 +45,7 @@ public class Income {
     @Column(name = "created_at", updatable = false,  insertable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "income_description")
+    @Column(name = "description")
     private String description;
 
 
