@@ -3,6 +3,8 @@ package com.github.Finance.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.Finance.dtos.views.CardView;
+import com.github.Finance.models.Card;
 import org.springframework.stereotype.Service;
 
 
@@ -26,12 +28,14 @@ public class ExpenseService {
     private final CurrencyService currencyService;
     private final PaymentMethodsService paymentMethodsService;
     private final AuthenticationService authenticationService;
+    private final CardService cardService;
 
-    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService) {
+    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService) {
         this.currencyService = currencyService;
         this.paymentMethodsService = paymentMethodsService;
         this.repository = expenseRepository;
         this.authenticationService = authenticationService;
+        this.cardService = cardService;
     }
 
 
@@ -56,9 +60,13 @@ public class ExpenseService {
         return list;
     }
 
+    public List<Expense> getUserExpensesByTime(User user, int month, int year) {
+        return repository.findExpensesByMonthAndYear(user, month, year);
+    }
+
     /**
      * 
-     * Iterates osver Expense, and generate one link for each expense
+     * Iterates over Expense, and generate one link for each expense
      * 
      * The idea is that on the expenses.html file, an extra column gets the link for that
      * expense in specific
@@ -104,7 +112,9 @@ public class ExpenseService {
 
     }
 
-    
+    public List<CardView> getUserCards() {
+        return cardService.getUserRegisteredCards();
+    }
 
 
 }

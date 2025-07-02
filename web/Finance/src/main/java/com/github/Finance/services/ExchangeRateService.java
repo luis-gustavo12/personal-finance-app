@@ -16,9 +16,19 @@ public class ExchangeRateService {
 
     private final CurrencyExchangeProvider provider = CurrencyExchangeProviderFactory.create();
 
-
-    public Double getExchangeRate(String currencyFlag, String userCurrency, LocalDate incomeDate) {
-        return provider.getExchangeRate(currencyFlag, userCurrency, incomeDate);
+    /**
+     * Gets the exchange rate for a given date between two currencies.
+     *
+     * @param currencyFlag The currency you have (e.g., "BRL").
+     * @param userCurrency The currency you want (e.g., "USD").
+     * @param date The date for the exchange rate (e.g., LocalDate.of(2024, 1, 1)).
+     * @return The amount of toCurrency equivalent to one unit of fromCurrency on the given date.
+     *
+     * Example: getExchangeRate("BRL", "USD", LocalDate.of(2024, 1, 1))
+     * returns how many USD one BRL was worth on 2024-01-01.
+     */
+    public Double getExchangeRate(String currencyFlag, String userCurrency, LocalDate date) {
+        return provider.getExchangeRate(currencyFlag, userCurrency, date);
     }
 
 
@@ -56,4 +66,9 @@ public class ExchangeRateService {
         return new SubscriptionsSummaryView(totalAmount, "BRL");
 
     }
+
+    public Double calculateExchangeRate(String currency, String userCurrency, LocalDate incomeDate) {
+        return provider.getExchangeRate(currency, userCurrency, incomeDate);
+    }
+
 }

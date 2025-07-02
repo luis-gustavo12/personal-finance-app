@@ -1,6 +1,7 @@
 package com.github.Finance.services;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -71,5 +72,8 @@ public class UserService implements UserDetailsService {
         return repository.findByEmail(email).orElse(null);
     }
 
+    public List<User> getAllRegularUsers() {
+        return repository.findAllRegularUsers();
+    }
 
 }

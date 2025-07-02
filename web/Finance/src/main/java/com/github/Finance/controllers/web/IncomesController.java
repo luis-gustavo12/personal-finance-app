@@ -32,8 +32,8 @@ public class IncomesController {
 
     @GetMapping("")
     public String incomes(Model model) {
-        List<Income> incomes = incomesService.getUserMonthIncomes();
-        model.addAttribute("incomesData", incomesService.getUserMonthIncomes());
+        List<Income> incomes = incomesService.getCurrentMonthUserIncomes();
+        model.addAttribute("incomesData", incomesService.getCurrentMonthUserIncomes());
         model.addAttribute("month", LocalDate.now().getMonthValue());
         model.addAttribute("sum", incomesService.getIncomesSum(incomes));
 

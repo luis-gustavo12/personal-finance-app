@@ -55,7 +55,7 @@ public class SubscriptionTransaction {
     @Column(name = "payment_date")
     LocalDate paymentDate;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", insertable = false, updatable = false)
     LocalDateTime createdAt;
 
     

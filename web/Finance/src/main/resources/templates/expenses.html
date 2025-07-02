@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/expenses.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
     <title>Despesas</title>
 </head>
 <body>
@@ -27,11 +28,11 @@
     <main class="main-content">
 
         <p th:if="${expenses.isEmpty}">
-            Você não tem nenhuma despesa!!! Clique <a th:href="@{/incomes/create}" class="redirect-anchor">aqui </a> para criar uma
+            Você não tem nenhuma despesa!!! Clique <a th:href="@{/expenses/create}" class="redirect-anchor">aqui </a> para criar uma
         </p>
 
         <div th:unless="${expenses.isEmpty}" class="expense-table">
-            <table>
+            <table class="entity-display-table">
                 <tr>
                     <thead>
                     <th>ID</th>

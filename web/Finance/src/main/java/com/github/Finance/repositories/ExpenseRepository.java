@@ -8,12 +8,13 @@ import com.github.Finance.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.github.Finance.models.Expense;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
 
     List<Expense> findByUser(User user);
 
-    
-
-    
+    @Query("SELECT e FROM Expense e WHERE e.user =  :user AND YEAR(e.date) = :year AND " +
+    "MONTH(e.date) = :month")
+    List<Expense> findExpensesByMonthAndYear(User user, int month, int year);
 }

@@ -14,7 +14,6 @@ import com.github.Finance.repositories.IncomeRepository;
 import com.github.Finance.specifications.IncomesSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -64,10 +63,14 @@ public class IncomesService {
 
     }
 
-    public List<Income> getUserMonthIncomes() {
+    public List<Income> getCurrentMonthUserIncomes() {
         User user = authenticationService.getCurrentAuthenticatedUser();
         LocalDate today = LocalDate.now();
         return incomeRepository.findAllIncomesByMonth(user, today.getMonthValue(), today.getYear());
+    }
+
+    public List<Income> getMonthUserIncomes(int month, int year ,User user) {
+        return incomeRepository.findAllIncomesByMonth(user, month, year);
     }
 
     /**

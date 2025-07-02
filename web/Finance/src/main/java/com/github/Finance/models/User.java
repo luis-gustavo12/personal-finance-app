@@ -42,10 +42,10 @@ public class User {
     )
     private Role role;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "last_update")
+    @Column(name = "last_update", insertable = false, updatable = false)
     private LocalDateTime lastUpdate;
 
     @Column(name = "first_name")
@@ -57,6 +57,9 @@ public class User {
     @Column(name = "password_valid_until")
     private LocalDateTime validUntil;
 
-    
-
+    @ManyToOne
+    @JoinColumn(
+        name = "preferred_currency"
+    )
+    private Currency preferredCurrency;
 }

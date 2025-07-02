@@ -113,4 +113,8 @@ public class SubscriptionService {
 
     }
 
+    public List<CardView> getAuthenticatedUserCards() {
+        return cardService.getUserRegisteredCards();
+    }
+
 }

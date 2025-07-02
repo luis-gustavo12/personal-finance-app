@@ -17,8 +17,8 @@ import lombok.Setter;
 public class Role {
 
     public static final long ROLE_ADMIN = 1L;
-    public static final long ROLE_SUPPORT = 2L;
-    public static final long ROLE_USER = 3L;
+    public static final long ROLE_USER = 2L;
+    public static final long ROLE_SUPPORT = 3L;
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

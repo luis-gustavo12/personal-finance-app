@@ -60,7 +60,12 @@ public class SubscriptionsController {
 
         // Card payment methods
         if (paymentMethodId == 3 || paymentMethodId == 4) {
-            log.info("New credit card subscription has been created, redirecting for filling details");
+
+            if (service.getAuthenticatedUserCards().isEmpty()) {
+                log.info("No cards found, redirecting user to registering a new card!!");
+            }
+
+            log.info("New credit card subscription has been created, redirecting for filling card details");
             log.info("Route: [{}]", ("card-details/" + subscriptionId ));
             return "redirect:/subscriptions/card-details/" + subscriptionId;
         }
