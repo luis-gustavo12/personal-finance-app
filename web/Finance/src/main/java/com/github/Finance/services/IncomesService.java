@@ -176,6 +176,10 @@ public class IncomesService {
             .collect(Collectors.toList());
     }
 
+    public List<Income> getIncomesByUserAndPeriod(User user, LocalDate startDate, LocalDate endDate) {
+        return incomeRepository.findIncomesByPeriodOfTime(user, startDate, endDate);
+    }
+
 
 }
 

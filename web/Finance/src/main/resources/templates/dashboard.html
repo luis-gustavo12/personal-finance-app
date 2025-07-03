@@ -38,7 +38,9 @@
 
 
     <main class="main-content">
-
+        <div th:if="${incomesSum != null}">
+            <div th:text="'Depósitos: ' + ${incomesSum}"></div>
+        </div>
     </main>
 
 

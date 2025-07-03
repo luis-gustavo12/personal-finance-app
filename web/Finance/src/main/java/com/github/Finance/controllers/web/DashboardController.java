@@ -1,8 +1,11 @@
 package com.github.Finance.controllers.web;
 
+import com.github.Finance.dtos.dashboard.DashboardDTO;
+import com.github.Finance.models.Income;
 import com.github.Finance.models.Report;
 import com.github.Finance.models.User;
 import com.github.Finance.services.AuthenticationService;
+import com.github.Finance.services.IncomesService;
 import com.github.Finance.services.MonthlyReportService;
 import com.github.Finance.services.ReportService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -20,12 +26,12 @@ public class DashboardController {
 
     private final ReportService reportService;
     private final AuthenticationService authenticationService;
-    private final MonthlyReportService monthlyReportService;
+    private final IncomesService incomesService;
 
-    public DashboardController(ReportService reportService, AuthenticationService authenticationService, MonthlyReportService monthlyReportService) {
+    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService) {
         this.reportService = reportService;
         this.authenticationService = authenticationService;
-        this.monthlyReportService = monthlyReportService;
+        this.incomesService = incomesService;
     }
 
 
@@ -34,11 +40,24 @@ public class DashboardController {
 
         User user = authenticationService.getCurrentAuthenticatedUser();
 
-        List<Report> reports = reportService.getReports(user);
 
-        if (reports.isEmpty()) {
-            log.info("No report found for current user!!");
-        }
+        // Show to the user the incomes and expenses of the last 15 days.
+        // Something interesting would be to query data that were created within 15 days, since
+        // you can declare an expense of an older date
+        List<Income> lastPeriodIncome = incomesService.getIncomesByUserAndPeriod(
+            authenticationService.getCurrentAuthenticatedUser(),LocalDate.now().minusDays(15), LocalDate.now()
+        );
+
+        log.info("Found {} incomes for the last 15 days", lastPeriodIncome.size());
+
+        List<Double> incomesAmount = lastPeriodIncome.stream()
+            .map(Income::getAmount)
+            .map(BigDecimal::doubleValue)
+            .toList();
+
+        Double incomesSum = incomesAmount.stream().mapToDouble(Double::doubleValue).sum();
+
+        model.addAttribute("incomesSum", incomesSum);
 
         return "dashboard";
     }
