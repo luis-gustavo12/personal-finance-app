@@ -16,3 +16,58 @@ body {
     min-height: 100vh;
     background: #f5f7fa;
 }
+
+.financial-summary-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: fit-content;
+    min-width: 250px;
+}
+
+.financial-summary-card h3 {
+    color: #333;
+    font-size: 1.2em;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.financial-summary-card .amount {
+    font-size: 2.2em;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.financial-summary-card .currency-symbol {
+    font-size: 0.7em;
+    font-weight: 500;
+    margin-right: 4px;
+    color: #555;
+}
+
+.financial-summary-card .amount-value {
+    color: var(--main-green);
+}
+
+.dashboard-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.dashboard-header h1 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.dashboard-header p {
+    font-size: 1.1em;
+    color: #666;
+}
