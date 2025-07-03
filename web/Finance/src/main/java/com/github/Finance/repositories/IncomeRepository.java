@@ -22,7 +22,7 @@ public interface IncomeRepository extends JpaRepository<Income, Long>, JpaSpecif
         @Param("year") int year
     );
 
-    @Query("SELECT DISTINCT i.currency FROM Income i")
+    @Query("SELECT DISTINCT i.currency FROM Income i WHERE i.user = :user")
     List<Currency> findDistinctCurrenciesByUser(User user);
 
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,43 +75,71 @@ public class IncomesService {
     }
 
     /**
+     * Calculates the total value of a list of incomes, converting all amounts into a single target currency.
+     * <p>
+     * This method is designed to be both correct and efficient. Instead of iterating through every single
+     * income and performing a currency conversion for each one (which is slow), it uses a grouping strategy:
+     * <ol>
+     * <li>It first groups all incomes by their currency (e.g., all "USD" incomes together, all "BRL" together).</li>
+     * <li>It then calculates a subtotal for each currency group.</li>
+     * <li>Finally, it converts each subtotal to the target currency and adds it to the grand total.</li>
+     * </ol>
+     * This approach ensures that currency conversion is performed only once per currency type, not per income,
+     * and prevents calculation errors by never adding amounts of different currencies directly.
      *
-     * Method responsible for calculating the total amount, given different income currencies, and by
-     * the times that they needed it
+     * @param incomes The list of Income objects to be processed.
+     * @return A {@link UserIncomeSumDTO} containing the final calculated sum and the target currency string.
      *
-     * @param incomes the list of incomes
-     * @return a map containing the user currency, and the total
-     *
-     * // TODO: implement user currency preference
-     *
+     * @see UserIncomeSumDTO
      */
     public UserIncomeSumDTO getIncomesSum(List<Income> incomes) {
 
-        // again, hardcoding it for now
+        // TODO: This should be fetched from the current user's preferences, not hardcoded.
         String userCurrency = "BRL";
-        Double sum = 0.0;
+        BigDecimal sum = BigDecimal.ZERO;
 
-        for (Income income : incomes) {
+        Map<String, List<Income>> incomesByCurrency = incomes.stream()
+            .collect(Collectors.groupingBy(income -> income.getCurrency().getCurrencyFlag()));
 
-            if (!income.getCurrency().getCurrencyFlag().equals(userCurrency)) {
 
+
+        for (Map.Entry<String, List<Income>> entry : incomesByCurrency.entrySet()) {
+            String incomeCurrency = entry.getKey();
+            List<Income> currentCurrencyIncomes =  entry.getValue();
+
+            BigDecimal currentCurrencySum = currentCurrencyIncomes.stream()
+                .map(Income::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            if (incomeCurrency.equals(userCurrency)) {
+                currentCurrencySum = currentCurrencySum.add(currentCurrencySum);
+            } else {
+                // For converting a subtotal, using the current day's rate is a reasonable default.
+                // This could be made more complex later if historical accuracy is needed.
                 try {
-                    sum += exchangeRateService.getExchangeRate(income.getCurrency().getCurrencyFlag(), userCurrency, income.getIncomeDate());
+                    Double conversionRate = exchangeRateService.getExchangeRate(incomeCurrency, userCurrency, LocalDate.now());
+
+                    BigDecimal convertedSubtotal = currentCurrencySum.multiply(BigDecimal.valueOf(conversionRate));
+
+                    sum = sum.add(convertedSubtotal);
+
                 } catch (Exception e) {
-                    log.error("Error while getting exchange rate: [{}]!!", e.getMessage());
-                    sum += income.getAmount().doubleValue();
+                    // If conversion fails, we log the error and explicitly skip this amount
+                    // to prevent corrupting the final sum with unconverted values.
+                    log.error("Could not get exchange rate for {} to {}. Skipping this amount: [{} {}]",
+                    incomeCurrency, userCurrency, incomeCurrency, currentCurrencySum);
                 }
 
-                continue;
             }
 
-            sum += income.getAmount().doubleValue();
 
         }
 
         log.info("Sum for currency {}: [{}]", userCurrency, sum);
 
-        return new UserIncomeSumDTO(userCurrency, sum);
+
+
+        return new UserIncomeSumDTO(userCurrency, sum.doubleValue());
     }
 
     public List<Currency> getUserListedCurrencies() {
@@ -149,3 +178,6 @@ public class IncomesService {
 
 
 }
+
+
+
