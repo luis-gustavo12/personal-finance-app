@@ -40,6 +40,9 @@ public class IncomesService {
         this.exchangeRateService = exchangeRateService;
     }
 
+    public Income findIncomeById(Long id) {
+        return incomeRepository.findById(id).orElse(null);
+    }
 
     public List<PaymentMethod> getPaymentMethods() {
         return paymentMethodsService.getAllPaymentMethods();
