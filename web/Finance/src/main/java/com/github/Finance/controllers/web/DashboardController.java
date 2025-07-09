@@ -40,26 +40,31 @@ public class DashboardController {
 
         User user = authenticationService.getCurrentAuthenticatedUser();
 
+        calculateIncomes(user, model);
 
+        return "dashboard";
+    }
+
+
+    private void calculateIncomes(User user, Model model) {
         // Show to the user the incomes and expenses of the last 15 days.
         // Something interesting would be to query data that were created within 15 days, since
         // you can declare an expense of an older date
         List<Income> lastPeriodIncome = incomesService.getIncomesByUserAndPeriod(
-            authenticationService.getCurrentAuthenticatedUser(),LocalDate.now().minusDays(15), LocalDate.now()
+            user,LocalDate.now().minusDays(15), LocalDate.now()
         );
 
         log.info("Found {} incomes for the last 15 days", lastPeriodIncome.size());
 
         List<Double> incomesAmount = lastPeriodIncome.stream()
-            .map(Income::getAmount)
-            .map(BigDecimal::doubleValue)
-            .toList();
+        .map(Income::getAmount)
+        .map(BigDecimal::doubleValue)
+        .toList();
 
         Double incomesSum = incomesAmount.stream().mapToDouble(Double::doubleValue).sum();
 
         model.addAttribute("incomesSum", incomesSum);
 
-        return "dashboard";
     }
     
 
