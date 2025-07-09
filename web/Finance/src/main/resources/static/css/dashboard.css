@@ -17,6 +17,10 @@ body {
     background: #f5f7fa;
 }
 
+section.main-panel {
+    display: block;
+}
+
 .financial-summary-card {
     background-color: #fff;
     border-radius: 12px;

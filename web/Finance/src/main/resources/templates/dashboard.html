@@ -38,7 +38,7 @@
 
 
     <main class="main-content">
-        <section>
+        <section class="main-panel">
             <div th:if="${incomesSum != null}" class="financial-summary-card">
                 <h3>Total de Depósitos</h3>
                 <div class="amount">
@@ -46,6 +46,15 @@
                     <span class="amount-value" th:text="${#numbers.formatDecimal(incomesSum, 1, 'POINT', 2, 'COMMA')}"></span>
                 </div>
             </div>
+
+            <div th:if="${expensesSum != null}" class="financial-summary-card">
+                <h3>Total de Despesas</h3>
+                <div class="amount">
+                    <span class="currency-symbol">R$</span>
+                    <span class="amount-value" th:text="${#numbers.formatDecimal(expensesSum, 1, 'POINT', 2, 'COMMA')}"></span>
+                </div>
+            </div>
+
         </section>
     </main>
 
