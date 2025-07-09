@@ -2,6 +2,7 @@
 
 package com.github.Finance.repositories;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.github.Finance.models.User;
@@ -17,4 +18,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     @Query("SELECT e FROM Expense e WHERE e.user =  :user AND YEAR(e.date) = :year AND " +
     "MONTH(e.date) = :month")
     List<Expense> findExpensesByMonthAndYear(User user, int month, int year);
+
+    @Query("SELECT e FROM Expense e WHERE e.user = :user AND e.date BETWEEN :startDate AND :endDate")
+    List<Expense> findExpensesByUserAndPeriod(User user, LocalDate startDate, LocalDate endDate);
 }

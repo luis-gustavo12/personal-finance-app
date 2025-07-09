@@ -1,5 +1,6 @@
 package com.github.Finance.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,5 +117,8 @@ public class ExpenseService {
         return cardService.getUserRegisteredCards();
     }
 
+    public List<Expense> findExpenseByUserAndPeriod(User user, LocalDate startDate, LocalDate endDate) {
+        return repository.findExpensesByUserAndPeriod(user, startDate, endDate);
+    }
 
 }

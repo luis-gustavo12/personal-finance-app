@@ -1,13 +1,11 @@
 package com.github.Finance.controllers.web;
 
 import com.github.Finance.dtos.dashboard.DashboardDTO;
+import com.github.Finance.models.Expense;
 import com.github.Finance.models.Income;
 import com.github.Finance.models.Report;
 import com.github.Finance.models.User;
-import com.github.Finance.services.AuthenticationService;
-import com.github.Finance.services.IncomesService;
-import com.github.Finance.services.MonthlyReportService;
-import com.github.Finance.services.ReportService;
+import com.github.Finance.services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,11 +25,13 @@ public class DashboardController {
     private final ReportService reportService;
     private final AuthenticationService authenticationService;
     private final IncomesService incomesService;
+    private final ExpenseService expenseService;
 
-    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService) {
+    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService) {
         this.reportService = reportService;
         this.authenticationService = authenticationService;
         this.incomesService = incomesService;
+        this.expenseService = expenseService;
     }
 
 
@@ -41,6 +41,7 @@ public class DashboardController {
         User user = authenticationService.getCurrentAuthenticatedUser();
 
         calculateIncomes(user, model);
+        calculateExpenses(user, model);
 
         return "dashboard";
     }
@@ -67,6 +68,21 @@ public class DashboardController {
 
     }
     
+    private void calculateExpenses(User user, Model model) {
 
+        // Same case as incomes
+        List<Expense> expenses = expenseService.findExpenseByUserAndPeriod(user, LocalDate.now().minusDays(15), LocalDate.now());
+        log.info("Found {} expenses for the last 15 days", expenses.size());
+
+        List<Double> incomesAmount = expenses.stream()
+            .map(Expense::getAmount)
+            .map(BigDecimal::doubleValue)
+            .toList();
+
+        Double expensesSum =  incomesAmount.stream().mapToDouble(Double::doubleValue).sum();
+
+        model.addAttribute("expensesSum", expensesSum);
+
+    }
     
 }
