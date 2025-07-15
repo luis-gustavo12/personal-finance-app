@@ -124,6 +124,27 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
         spring.quartz.properties.org.quartz.jobStore.tablePrefix=QRTZ_
         spring.quartz.properties.org.quartz.threadPool.threadCount=10
         ```        
+    - Para tokens JWT
+        - Adicionar a seguinte linha no application.properties
+        ```properties
+        jwt.secret.key=SECRET_KEY
+        ```
+        - De recomendação, é possibile adicionar uma variável de ambiente, para nao divulgar a chave de encriptação
+        ```properties
+        jwt.secret.key=${SECRET_KEY}
+        ```
+    - Para usar o Spring Mail:
+        - Adicionar a seguinte linha no application.properties
+        ```properties
+        spring.mail.host=smtp.gmail.com
+        spring.mail.port=587
+        spring.mail.username=EMAIL
+        spring.mail.password=PASSWORD
+        spring.mail.properties.mail.smtp.auth=true
+        spring.mail.properties.mail.smtp.starttls.enable=true
+        ```
+
+
 
 4. **Compile o projeto**
     ```bash

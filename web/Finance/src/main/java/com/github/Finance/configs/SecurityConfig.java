@@ -28,6 +28,7 @@ public class SecurityConfig {
                requests -> requests
                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                .requestMatchers("/register/**", "/register", "/register/").permitAll()
+               .requestMatchers("/recover/**").permitAll()
                .anyRequest().authenticated()
             )
 

@@ -76,4 +76,17 @@ public class UserService implements UserDetailsService {
         return repository.findAllRegularUsers();
     }
 
+    /**
+     * Update a new password for the user
+     * @param user The targeted user
+     * @param newPassword Password to be updated. MUST BE ALREADY ENCRYPTED/HASHED
+     * @return The modified user.
+     */
+    public User updateUserPassword(User user, String newPassword) {
+        user.setPassword(newPassword);
+        User newUser = repository.save(user);
+
+        return newUser;
+
+    }
 }
