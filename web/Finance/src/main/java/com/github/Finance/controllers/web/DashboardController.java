@@ -52,11 +52,11 @@ public class DashboardController {
         // Something interesting would be to query data that were created within 15 days, since
         // you can declare an expense of an older date
         List<Income> lastPeriodIncome = incomesService.getIncomesByUserAndPeriod(
-            user,LocalDate.now().minusDays(15), LocalDate.now()
+            user,LocalDate.now().minusDays(45), LocalDate.now()
         );
 
-        log.info("Found {} incomes for the last 15 days", lastPeriodIncome.size());
-
+        log.info("Found {} incomes for the last 45 days", lastPeriodIncome.size());
+''
         List<Double> incomesAmount = lastPeriodIncome.stream()
         .map(Income::getAmount)
         .map(BigDecimal::doubleValue)
@@ -71,8 +71,8 @@ public class DashboardController {
     private void calculateExpenses(User user, Model model) {
 
         // Same case as incomes
-        List<Expense> expenses = expenseService.findExpenseByUserAndPeriod(user, LocalDate.now().minusDays(15), LocalDate.now());
-        log.info("Found {} expenses for the last 15 days", expenses.size());
+        List<Expense> expenses = expenseService.findExpenseByUserAndPeriod(user, LocalDate.now().minusDays(45), LocalDate.now());
+        log.info("Found {} expenses for the last 45 days", expenses.size());
 
         List<Double> incomesAmount = expenses.stream()
             .map(Expense::getAmount)
