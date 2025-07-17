@@ -1,0 +1,3 @@
+
+ALTER TABLE expenses
+MODIFY COLUMN expense_date DATETIME NOT NULL;

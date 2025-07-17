@@ -49,6 +49,7 @@ public class ExpenseService {
             expense.setExtraInfo(form.extra());
         expense.setPaymentMethod(paymentMethodsService.findPaymentMethod(form.paymentMethodId()));
         expense.setUser(authenticationService.getCurrentAuthenticatedUser());
+        expense.setDate(form.date());
         expense = repository.save(expense);
         
 
