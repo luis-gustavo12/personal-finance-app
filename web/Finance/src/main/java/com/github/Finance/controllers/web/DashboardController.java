@@ -56,7 +56,7 @@ public class DashboardController {
         );
 
         log.info("Found {} incomes for the last 45 days", lastPeriodIncome.size());
-''
+
         List<Double> incomesAmount = lastPeriodIncome.stream()
         .map(Income::getAmount)
         .map(BigDecimal::doubleValue)
