@@ -11,9 +11,9 @@ import com.github.Finance.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
-    public Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.role.id = 2")
-    public List<User> findAllRegularUsers();
+    List<User> findAllRegularUsers();
 
 }
