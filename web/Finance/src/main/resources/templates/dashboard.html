@@ -1,43 +1,41 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/base}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <th:block layout:fragment="page-css">
+        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    </th:block>
 </head>
 <body>
-    <div layout:fragment="content">
-        <nav class="sidebar">
-            <div class="main-routes">
-                <div class="nav-panel">
-                    <a href="#">Faturas</a>
-                </div>
-                <div class="nav-panel">
-                    <a th:href="@{/incomes}">Depósitos</a>
-                </div>
-                <div class="nav-panel">
-                    <a th:href="@{/expenses}">Despesas</a>
-                </div>
-                <div class="nav-panel">
-                    <a th:href="@{/cards}">Cartões</a>
-                </div>
-                <div class="nav-panel">
-                    <a th:href="@{/subscriptions}">Assinaturas</a>
-                </div>
+
+    <nav class="sidebar" layout:fragment="sidebar">
+        <div class="main-routes">
+            <div class="nav-panel">
+                <a href="#">Faturas</a>
             </div>
-
-            <div class="user-config">
-                <div class="nav-panel">
-                    <a href="#">Configurações</a>
-                </div>
+            <div class="nav-panel">
+                <a th:href="@{/incomes}">Depósitos</a>
             </div>
-        </nav>
-    </div>
+            <div class="nav-panel">
+                <a th:href="@{/expenses}">Despesas</a>
+            </div>
+            <div class="nav-panel">
+                <a th:href="@{/cards}">Cartões</a>
+            </div>
+            <div class="nav-panel">
+                <a th:href="@{/subscriptions}">Assinaturas</a>
+            </div>
+        </div>
+
+        <div class="user-config">
+            <div class="nav-panel">
+                <a href="#">Configurações</a>
+            </div>
+        </div>
+    </nav>
 
 
-    <main class="main-content">
+    <main class="main-content" layout:fragment="content">
         <section class="main-panel">
             <div th:if="${incomesSum != null}" class="financial-summary-card">
                 <h3>Total de Depósitos</h3>

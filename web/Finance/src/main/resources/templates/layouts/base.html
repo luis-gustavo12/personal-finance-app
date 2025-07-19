@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT - $LAYOUT_TITLE"></title>
+
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <th:block layout:fragment="page-css"></th:block>
+</head>
+<body>
+<nav class="sidebar" layout:fragment="sidebar"></nav>
+
+<main class="main-content" layout:fragment="content"></main>
+
+<footer>
+    <th:block layout:fragment="footer"></th:block>
+</footer>
+
+<th:block layout:fragment="page-js"></th:block>
+</body>
+</html>
