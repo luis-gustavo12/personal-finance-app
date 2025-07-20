@@ -4,6 +4,7 @@ import com.github.Finance.dtos.UserIncomeSumDTO;
 import com.github.Finance.dtos.forms.IncomeFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
 import com.github.Finance.dtos.response.IncomesDetailResponse;
+import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.mappers.IncomesMapper;
 import com.github.Finance.models.Currency;
 import com.github.Finance.models.Income;
@@ -183,7 +184,54 @@ public class IncomesService {
         return incomeRepository.findIncomesByPeriodOfTime(user, startDate, endDate);
     }
 
+    /**
+     * Finds the income by Id, and also checks if it belongs to the authenticated User
+     * @param id Desired id
+     * @return The income
+     */
+    public Income findIncomeByIdForAuthenticatedUser(Long id) {
+        Income income = incomeRepository.findById(id).orElse(null);
 
+        if (income == null) {
+            throw new ResourceNotFoundException("Income with id " + id + " not found");
+        }
+        User authenticatedUser = authenticationService.getCurrentAuthenticatedUser();
+
+        if (!income.getUser().getId().equals(authenticatedUser.getId())) {
+            log.info("IDOR detected");
+            throw new SecurityException("Not authorized");
+        }
+
+        return income;
+    }
+
+
+    public Income updateExistentIncome(Long incomeId, RegisterIncomeForm form) {
+
+
+        Income existingIncome = incomeRepository.findById(incomeId).orElse(null);
+
+        if (existingIncome == null) {
+            log.info("Income with id {} not found", incomeId);
+            throw new ResourceNotFoundException("Income with id " + incomeId + " not found");
+        }
+
+        User authenticatedUser = authenticationService.getCurrentAuthenticatedUser();
+
+        if (!existingIncome.getUser().getId().equals(authenticatedUser.getId())) {
+            log.info("IDOR detected");
+            throw new SecurityException("Not authorized");
+        }
+
+        existingIncome.setCurrency(currencyService.findCurrency(form.currencyId()));
+        existingIncome.setAmount(BigDecimal.valueOf(form.incomeAmount()));
+        existingIncome.setPaymentMethod(paymentMethodsService.findPaymentMethod(form.paymentMethodId()));
+        existingIncome.setIncomeDate(form.incomeDate());
+        existingIncome.setDescription(form.incomeDescription());
+
+        return incomeRepository.save(existingIncome);
+
+    }
 }
 
 

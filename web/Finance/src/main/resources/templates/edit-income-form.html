@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar rendimento</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+
+    <div th:insert="~{layouts/return-nav-button :: backButtonNav}">
+    </div>
+
+    <form th:method="post">
+
+        <div th:insert="~{layouts/hidden-csrf-token :: hiddenCsrf}"></div>
+
+        <h2>Atualize as despesas</h2>
+
+        <label for="currencyId">Selecione a moeda</label>
+        <select name="currencyId" id="currencyId">
+            <option th:each="currency : ${currencies}" th:text="${currency.currencyFlag}"
+            th:value="${currency.id}"></option>
+        </select>
+
+        <label for="incomeAmount">Quantia</label>
+        <input type="text" name="incomeAmount" id="incomeAmount" th:value="${income.amount}">
+
+        <label for="incomeDate">Data da despesa</label>
+        <input type="date" name="incomeDate" id="incomeDate" th:value="${income.incomeDate}">
+
+        <label for="paymentMethodId">Método de Pagamento</label>
+        <select name="paymentMethodId" id="paymentMethodId">
+            <option th:value="${income.paymentMethod.id}" th:text="${income.paymentMethod.description}"></option>
+            <option th:each="pm : ${paymentMethods}" th:text="${pm.description}" th:value="${pm.id}"></option>
+        </select>
+
+        <label for="incomeDescription">Informação extra</label>
+        <textarea name="incomeDescription" id="incomeDescription" cols="30" rows="10" th:text="${income.description}" ></textarea>
+
+        <button type="submit">Enviar</button>
+
+    </form>
+
+
+
+</div>
+
+</body>
+</html>

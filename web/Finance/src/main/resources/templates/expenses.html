@@ -33,16 +33,16 @@
 
         <div th:unless="${expenses.isEmpty}" class="expense-table">
             <table class="entity-display-table">
-                <tr>
-                    <thead>
-                    <th>ID</th>
-                    <th>Método de Pagamento</th>
-                    <th>Moeda</th>
-                    <th>Quantidade</th>
-                    <th>Extra</th>
-                    <th>Detalhes</th>
-                    </thead>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Método de Pagamento</th>
+                        <th>Moeda</th>
+                        <th>Quantidade</th>
+                        <th>Extra</th>
+                        <th>Detalhes</th>
+                    </tr>
+                </thead>
 
                 <tbody>
                 <tr th:each="expense, expenseCount : ${expenses}">

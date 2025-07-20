@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
+    <title>Editar Rendimento</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <nav class="sidebar">
+        <div class="main-routes">
+            <a th:href="@{/dashboard}" class="nav-panel">Dashboard</a>
+        </div>
+        <div class="main-routes">
+            <a th:href="@{/incomes}" class="nav-panel"></a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <table class="entity-display-table">
+            <thead>
+                <tr>
+                    <th>Moeda</th>
+                    <th>Quantia</th>
+                    <th>Método de Pagamento</th>
+                    <th>Data da despesa</th>
+                    <th>Descrição</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="income : ${incomes}">
+                    <td th:text="${income.currency.currencyFlag}"></td>
+                    <td th:text="${income.amount}"></td>
+                    <td th:text="${income.paymentMethod.description}"></td>
+                    <td th:text="${income.incomeDate}"></td>
+                    <td th:text="${income.description}"></td>
+                    <td>
+                        <a th:href="@{/incomes/edit/{id}(id=${income.id})}">Link</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </main>
+
+
+</div>
+
+
+</body>
+</html>
