@@ -49,6 +49,23 @@
 
 
 </div>
+<script th:src="@{/js/dist/numeric.js}" type="module"></script>
+<script type="module">
+    import { isDecimal } from '/js/dist/numeric.js';
 
+    const incomeAmountInput = document.getElementById('incomeAmount');
+    if (incomeAmountInput) {
+        incomeAmountInput.addEventListener('blur', () => {
+            let value = incomeAmountInput.value.trim()
+
+            if (value !== '') {
+                if (!isDecimal(value)) {
+                    window.alert('Valor decimal necessário, com pontos (.) !!!');
+                    incomeAmountInput.value = '';
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>
