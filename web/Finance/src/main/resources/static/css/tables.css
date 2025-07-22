@@ -52,4 +52,36 @@ table.entity-display-table tfoot td {
     color: white;
 }
 
+.action-icons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
 
+.action-icons a {
+    text-decoration: none;
+    color: inherit;
+    font-size: 1.2em;
+    transition: color 0.2s ease-in-out;
+}
+
+.action-icons a:hover {
+    color: var(--main-blue);
+}
+
+.edit-icon {
+    color: #28a745;
+}
+
+.delete-icon {
+    color: #dc3545;
+}
+
+.action-icons a:hover .edit-icon {
+    color: #218838;
+}
+
+.action-icons a:hover .delete-icon {
+    color: #c82333;
+}

@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/incomes.css}">
     <link rel="stylesheet" th:href="@{/css/tables.css}">
     <link rel="stylesheet" th:href="@{/css/search-bar.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <div layout:fragment="content">
@@ -111,6 +112,7 @@
                         <th>Forma de Pagamentos</th>
                         <th>Data</th>
                         <th>Extra</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -120,6 +122,16 @@
                         <td th:text="${income.paymentMethod.description}"></td>
                         <td th:text="${#temporals.format(income.incomeDate, 'dd/MM/yyyy')}"></td>
                         <td th:text="${income.description}"></td>
+                        <td>
+                            <div class="action-icons">
+                                <a th:href="@{/incomes/edit/{id}(id=${income.id})}" title="Editar">
+                                    <i class="fas fa-pencil-alt edit-icon"></i>
+                                </a>
+                                <a th:href="@{/incomes/delete/{id}(id=${income.id})}" title="Excluir">
+                                    <i class="fas fa-times delete-icon"></i>
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
 
