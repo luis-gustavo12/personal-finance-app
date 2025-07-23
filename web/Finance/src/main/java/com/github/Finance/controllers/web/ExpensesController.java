@@ -224,5 +224,15 @@ public class ExpensesController {
 
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteExpense(@PathVariable Long id) {
+
+        expenseService.validateExpenseByUser(expenseService.findExpenseById(id));
+        expenseService.deleteExpense(id);
+
+        return "redirect:/expenses";
+
+    }
+
     
 }

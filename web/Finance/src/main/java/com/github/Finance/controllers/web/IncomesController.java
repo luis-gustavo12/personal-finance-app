@@ -123,4 +123,12 @@ public class IncomesController {
         return "redirect:/incomes";
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteIncome(@PathVariable Long id) {
+
+        incomesService.deleteIncomeById(id);
+
+        return "redirect:/incomes";
+    }
+
 }

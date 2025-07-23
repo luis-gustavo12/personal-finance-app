@@ -149,4 +149,24 @@ public class ExpenseService {
         log.info("New expense updated successfully!!!");
 
     }
+
+    public void deleteExpense(Long id) {
+
+        if (!repository.existsById(id)) {
+            throw new ResourceNotFoundException("Expense not found!!!");
+        }
+
+        User currentUser = authenticationService.getCurrentAuthenticatedUser();
+
+        Expense expense = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Expense not found!!!"));
+
+        if (!expense.getUser().getId().equals(currentUser.getId())) {
+            throw new SecurityException("You are not allowed to perform this operation");
+        }
+
+        repository.deleteById(id);
+        log.info("Expense with id {} deleted successfully!!!", id);
+
+
+    }
 }

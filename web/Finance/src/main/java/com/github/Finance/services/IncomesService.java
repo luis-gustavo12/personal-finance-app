@@ -232,6 +232,23 @@ public class IncomesService {
         return incomeRepository.save(existingIncome);
 
     }
+
+    public void deleteIncomeById(Long id) {
+
+        if (!incomeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Income with id " + id + " not found");
+        }
+
+        User authenticatedUser = authenticationService.getCurrentAuthenticatedUser();
+
+        if (!findIncomeById(id).getUser().getId().equals(authenticatedUser.getId())) {
+            throw new SecurityException("Not authorized");
+        }
+
+        incomeRepository.deleteById(id);
+        log.info("Income with id {} deleted", id);
+
+    }
 }
 
 
