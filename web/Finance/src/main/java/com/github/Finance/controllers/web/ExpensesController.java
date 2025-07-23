@@ -3,6 +3,7 @@ package com.github.Finance.controllers.web;
 import java.util.List;
 
 
+import com.github.Finance.dtos.UpdateExpenseDTO;
 import com.github.Finance.dtos.views.*;
 import com.github.Finance.dtos.forms.AddExpenseDetailsForm;
 import com.github.Finance.dtos.forms.AddExpenseForm;
@@ -197,6 +198,30 @@ public class ExpensesController {
 
 
         return "redirect:/dashboard";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editIncome(@PathVariable Long id, Model model) {
+
+        Expense expense = expenseService.findExpenseById(id);
+        expenseService.validateExpenseByUser(expense);
+
+        model.addAttribute("expense", expense);
+        model.addAttribute("paymentMethods", paymentMethodsService.getAllPaymentMethods());
+        model.addAttribute("currencies", currencyService.findAllCurrencies());
+
+
+        return "edit-expense";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String editIncomeResponse(@PathVariable Long id, UpdateExpenseDTO expense) {
+
+        expenseService.validateExpenseByUser(expenseService.findExpenseById(id));
+        expenseService.updateExpense(expense, id);
+
+        return "redirect:/expenses";
+
     }
 
     

@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/expenses.css}">
     <link rel="stylesheet" th:href="@{/css/tables.css}">
     <title>Despesas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     
@@ -41,6 +42,7 @@
                         <th>Quantidade</th>
                         <th>Extra</th>
                         <th>Detalhes</th>
+                        <th>Editar</th>
                     </tr>
                 </thead>
 
@@ -48,11 +50,21 @@
                 <tr th:each="expense, expenseCount : ${expenses}">
                     <td th:text="${expense.id}"></td>
                     <td th:text="${expense.paymentMethod.description}"></td>
-                    <td th:text="${expense.currency.currencySymbol}"></td>
+                    <td th:text="${expense.currency.currencyFlag}"></td>
                     <td th:text="${expense.amount}"></td>
                     <td th:if="${expense.extraInfo != ''}" th:text="${expense.extraInfo}"></td>
                     <td>
                         <a th:href="${expense.detailedLink}" th:text="Detalhes"></a>
+                    </td>
+                    <td>
+                        <div class="action-icons">
+                            <a th:href="@{/expenses/edit/{id}(id=${expense.id})}" title="Editar">
+                                <i class="fas fa-pencil-alt edit-icon"></i>
+                            </a>
+                            <a th:href="@{/expenses/edit/{id}(id=${expense.id})}" title="Excluir">
+                                <i class="fas fa-times delete-icon"></i>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

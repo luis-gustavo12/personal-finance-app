@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.Finance.dtos.UpdateExpenseDTO;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.models.Card;
 import org.springframework.stereotype.Service;
@@ -122,4 +123,30 @@ public class ExpenseService {
         return repository.findExpensesByUserAndPeriod(user, startDate, endDate);
     }
 
+    public void validateExpenseByUser(Expense expense) {
+
+        User currentUser = authenticationService.getCurrentAuthenticatedUser();
+
+        if (!expense.getUser().getId().equals(currentUser.getId())) {
+            throw new SecurityException("You are not allowed to perform this operation");
+        }
+
+
+    }
+
+    public void updateExpense(UpdateExpenseDTO expenseToUpdate, Long id) {
+
+        Expense expense = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Expense not found!!"));
+
+        expense.setCurrency(currencyService.findCurrency(expenseToUpdate.currency()));
+        expense.setAmount(expenseToUpdate.amount());
+        expense.setPaymentMethod(paymentMethodsService.findPaymentMethod(expenseToUpdate.paymentMethod()));
+        expense.setExtraInfo(expenseToUpdate.extraInfo());
+        expense.setDate(expenseToUpdate.date());
+
+        repository.save(expense);
+
+        log.info("New expense updated successfully!!!");
+
+    }
 }

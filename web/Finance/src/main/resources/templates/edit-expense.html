@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div th:insert="~{layouts/return-nav-button :: backButtonNav}"></div>
+
+    <form th:method="post">
+
+        <div th:insert="~{layouts/hidden-csrf-token :: hiddenCsrf}"></div>
+
+        <label for="currency">Selecione a moeda</label>
+        <select name="currency" id="currency">
+            <option th:each="currency : ${currencies}" th:text="${currency.currencyFlag}" th:value="${currency.id}"></option>
+        </select>
+
+        <label for="paymentMethod">Selecione o método de pagamento</label>
+        <select name="paymentMethod" id="paymentMethod">
+            <option th:each="pm : ${paymentMethods}" th:text="${pm.description}" th:value="${pm.id}">
+
+            </option>
+        </select>
+
+        <label for="amount">Quantia</label>
+        <input type="text" name="amount" id="amount" th:value="${expense.amount}">
+
+        <label for="extraInfo">Informação extra</label>
+        <textarea name="extraInfo" id="extraInfo" cols="30" rows="10" th:text="${expense.extraInfo}"></textarea>
+
+        <label for="date">Data</label>
+        <input type="date" name="date" id="date" th:value="${expense.date}">
+
+        <button type="submit">Enviar</button>
+
+    </form>
+
+
+</div>
+
+</body>
+</html>
