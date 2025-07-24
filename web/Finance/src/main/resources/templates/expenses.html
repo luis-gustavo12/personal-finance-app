@@ -36,7 +36,6 @@
             <table class="entity-display-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Método de Pagamento</th>
                         <th>Moeda</th>
                         <th>Quantidade</th>
@@ -48,7 +47,6 @@
 
                 <tbody>
                 <tr th:each="expense, expenseCount : ${expenses}">
-                    <td th:text="${expense.id}"></td>
                     <td th:text="${expense.paymentMethod.description}"></td>
                     <td th:text="${expense.currency.currencyFlag}"></td>
                     <td th:text="${expense.amount}"></td>
