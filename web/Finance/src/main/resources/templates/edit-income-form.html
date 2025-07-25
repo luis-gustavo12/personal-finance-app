@@ -6,6 +6,8 @@
     <title>Atualizar rendimento</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/forms.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
 </head>
 <body>
 
@@ -50,6 +52,8 @@
 
 </div>
 <script th:src="@{/js/dist/numeric.js}" type="module"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
 <script type="module">
     import { isDecimal } from '/js/dist/numeric.js';
 
@@ -66,6 +70,17 @@
             }
         });
     }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr("#incomeDate", {
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d/m/Y",
+            locale: flatpickr.l10ns.pt,
+            allowInput: true
+        });
+    });
 </script>
 </body>
 </html>

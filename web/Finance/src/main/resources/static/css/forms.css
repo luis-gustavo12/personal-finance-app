@@ -119,3 +119,7 @@ button[type="submit"]:hover {
 .warning-field a {
   font-weight: 500;
 }
+
+.flatpickr-calendar {
+  font-family: Inter, sans-serif; /* Or your preferred font */
+}

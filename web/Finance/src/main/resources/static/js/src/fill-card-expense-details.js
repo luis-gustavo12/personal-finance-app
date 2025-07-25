@@ -5,7 +5,7 @@ var installmentButton = document.getElementById('installmentCheck');
 // This var contains all the inputs that must be shown, once the 
 let installmentShownInputs = [
     document.getElementById('splits'),
-    // document.getElementById('interestRate'),
+    document.getElementById('interestRate'),
     document.getElementById('rawAmount')
 ];
 
