@@ -27,7 +27,7 @@
         <label for="cardsSelect">Selecione o cartão</label>
         <select name="cardsSelect" id="cardsSelect" required>
             <option value="" disabled selected>Selecione um cartão</option>
-            <option th:each="card : ${cardsList}" th:value="${card.firstDigits} + '#' + ${card.lastDigits}" th:text="${card.firstDigits} + '******' + ${card.lastDigits}">
+            <option th:each="card : ${cardsList}" th:value="${card.id}" th:text="'******' + ${card.lastDigits}">
             </option>
         </select>
 

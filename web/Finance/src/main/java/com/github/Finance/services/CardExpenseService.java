@@ -1,16 +1,15 @@
 package com.github.Finance.services;
 
+import com.github.Finance.models.*;
 import org.springframework.stereotype.Service;
 
 import com.github.Finance.dtos.forms.AddExpenseDetailsForm;
 import com.github.Finance.exceptions.ResourceNotFoundException;
-import com.github.Finance.models.Card;
-import com.github.Finance.models.CardExpense;
-import com.github.Finance.models.Expense;
-import com.github.Finance.models.ExpenseCardEnum;
 import com.github.Finance.repositories.CardExpenseRepository;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -19,18 +18,20 @@ public class CardExpenseService {
     private final CardExpenseRepository repository;
     private final CardService cardService;
     private final ExpenseService expenseService;
+    private final AuthenticationService authenticationService;
 
-    public CardExpenseService (CardExpenseRepository cardExpenseRepository, CardService cardService, ExpenseService expenseService) {
+    public CardExpenseService (CardExpenseRepository cardExpenseRepository, CardService cardService, ExpenseService expenseService, AuthenticationService authenticationService) {
         this.repository = cardExpenseRepository;
         this.cardService = cardService;
         this.expenseService = expenseService;
+        this.authenticationService = authenticationService;
     }
 
 
     /**
      * 
      * Gets the expense on CardExpense table. Note that the function
-     * returns null instead of an execpetion. I think it's better,
+     * returns null instead of an exception. I think it's better,
      * because there are scenarios where null can be a possibility,
      * and forcing above classes that calls this functions to use
      * try catch, may get dirtier
@@ -44,36 +45,40 @@ public class CardExpenseService {
 
     public void processExpenseDetails(AddExpenseDetailsForm form, Long expenseId) {
 
-        Card card;
-        Expense expense;
-        CardExpense cardExpense = new CardExpense();
-        String firstDigits = form.cardsSelect().split("#")[0];
-        String lastDigits = form.cardsSelect().split("#")[1];
-        
-        try {
-            card = cardService.getCardByFirstAndLastDigits(firstDigits, lastDigits);
-            expense = expenseService.findExpenseById(expenseId);
-        } catch (ResourceNotFoundException ex) {
-            log.error("Resource not found: {}", ex.getMessage());
-            return;
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+
+        Card card = cardService.findCardById(form.cardsSelect());
+
+        if (!card.getUser().getId().equals(user.getId())) {
+            throw new SecurityException("Not allowed!!");
         }
 
+        Expense expense = expenseService.findExpenseById(expenseId);
+
+        if (expense == null) {
+            throw new ResourceNotFoundException("Expense with ID " + expenseId + " not found");
+        }
+
+        CardExpense cardExpense = new CardExpense();
         cardExpense.setCard(card);
         cardExpense.setExpense(expense);
-
         if (form.installmentCheck() != null) {
+            cardExpense.setInstallment(true);
             cardExpense.setSplits(form.splits());
             if (form.interestRate() != null) {
-                cardExpense.setHasInterestRate(true);
                 cardExpense.setInterestRate(form.interestRate());
             }
         }
 
-        cardExpense.setStatus(ExpenseCardEnum.valueOf(form.status()) );
+        cardExpense.setStatus(ExpenseCardEnum.valueOf(form.status()));
         cardExpense.setTransactionDate(form.transactionDate());
-        
+
         cardExpense = repository.save(cardExpense);
-        log.debug("Card expense with ID {} created", cardExpense);
+
+        log.info("New card expense created!!");
+
+
 
     }
 

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record AddExpenseDetailsForm (
-    String cardsSelect,
+    Long cardsSelect,
     Boolean installmentCheck,
     Integer splits,
     BigDecimal interestRate,

@@ -38,7 +38,7 @@ public class CardService {
         return Arrays.asList(CardType.values());
     }
 
-    public void addCard(AddCardForm form) {
+    public Card addCard(AddCardForm form) {
 
         Card card = new Card();
 
@@ -46,7 +46,7 @@ public class CardService {
         card.setToken(form.stripeToken());
         card.setCardType(CardType.valueOf(form.cardType()));
         card.setCardDescription(form.cardDescription());
-        card = repository.save(card);
+        return repository.save(card);
 
     }
 
@@ -88,4 +88,7 @@ public class CardService {
     }
 
 
+    public Card findCardById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
 }
