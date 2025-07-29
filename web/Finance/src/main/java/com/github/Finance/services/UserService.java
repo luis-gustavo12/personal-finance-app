@@ -26,10 +26,12 @@ public class UserService implements UserDetailsService {
     private final UserRepository repository;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
     private final RoleService roleService;
+    private final CurrencyService currencyService;
 
-    public UserService (UserRepository repository, RoleService roleService) {
+    public UserService (UserRepository repository, RoleService roleService, CurrencyService currencyService) {
         this.repository = repository;
         this.roleService = roleService;
+        this.currencyService = currencyService;
     }
 
 
@@ -41,7 +43,7 @@ public class UserService implements UserDetailsService {
         user.setLastName(form.lastName());
         user.setPassword( encoder.encode(form.password()) );
         user.setRole( roleService.findRepositoryById(Role.ROLE_USER)  );
-        
+        user.setPreferredCurrency(currencyService.findCurrencyByCurrencyFlag(form.currency()));
         return repository.save(user);
 
     }

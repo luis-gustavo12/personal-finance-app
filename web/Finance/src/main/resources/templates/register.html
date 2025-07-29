@@ -26,6 +26,14 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" required minlength="6">
             </div>
+            <div id="currency-field">
+                <label for="currency">Selecione sua moeda de preferencia</label>
+                <select name="currency" id="currency" required>
+                    <option value="" disabled selected>Selecione uma moeda</option>
+                    <option th:each="currency : ${currencies}" th:value="${currency.currencyFlag}"
+                            th:text="${currency.currencyName}"></option>
+                </select>
+            </div>
             <div id="btn-div">
                 <button type="submit">Register</button>
             </div>

@@ -1,6 +1,9 @@
 package com.github.Finance.controllers.web;
 
+import com.github.Finance.models.Currency;
+import com.github.Finance.services.CurrencyService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,6 +13,7 @@ import com.github.Finance.services.UserService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
 
 
 @Controller
@@ -17,13 +21,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class RegisterController {
 
     private final UserService userService;
+    private final CurrencyService currencyService;
 
-    public RegisterController(UserService userService) {
+    public RegisterController(UserService userService, CurrencyService currencyService) {
         this.userService = userService;
+        this.currencyService = currencyService;
     }
 
     @GetMapping
-    public String registerPage() {
+    public String registerPage(Model model) {
+        List<Currency> currencyList = currencyService.findAllCurrencies();
+        model.addAttribute("currencies", currencyList);
         return "register";
     }
 

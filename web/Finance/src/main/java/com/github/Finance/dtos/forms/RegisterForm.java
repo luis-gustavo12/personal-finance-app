@@ -4,7 +4,8 @@ public record RegisterForm (
         String firstName,
         String lastName,
         String email,
-        String password
+        String password,
+        String currency
     )
 {
 
