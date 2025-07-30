@@ -11,11 +11,7 @@ import com.github.Finance.models.Card;
 import com.github.Finance.models.CardExpense;
 import com.github.Finance.models.Currency;
 import com.github.Finance.models.Expense;
-import com.github.Finance.services.CardExpenseService;
-import com.github.Finance.services.CardService;
-import com.github.Finance.services.CurrencyService;
-import com.github.Finance.services.EncryptionService;
-import com.github.Finance.services.ExpenseService;
+import com.github.Finance.services.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.github.Finance.models.PaymentMethod;
-import com.github.Finance.services.PaymentMethodsService;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -51,9 +46,10 @@ public class ExpensesController {
     private final CardExpenseService cardExpenseService;
     private final CardService cardService;
     private final EncryptionService encryptionService;
+    private final CategoryService categoryService;
 
     public ExpensesController(PaymentMethodsService paymentMethodsService, CurrencyService currencyService, ExpenseService expenseService,
-    CardExpenseService cardExpenseService, CardService cardService, EncryptionService encryptionService) {
+                              CardExpenseService cardExpenseService, CardService cardService, EncryptionService encryptionService, CategoryService categoryService) {
 
         this.paymentMethodsService = paymentMethodsService;
         this.currencyService = currencyService;
@@ -61,6 +57,7 @@ public class ExpensesController {
         this.cardExpenseService = cardExpenseService;
         this.cardService = cardService;
         this.encryptionService = encryptionService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("")
@@ -79,6 +76,7 @@ public class ExpensesController {
         model.addAttribute("hasCreditCards", !expenseService.getUserCards().isEmpty());
         model.addAttribute("currencies", currencies);
         model.addAttribute("paymentMethods", paymentMethods);
+        model.addAttribute("categories", categoryService.getAllUserCategories());
         return "create-expense";
     }
 

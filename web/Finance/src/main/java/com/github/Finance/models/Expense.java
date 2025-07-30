@@ -53,5 +53,11 @@ public class Expense {
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(
+        name = "category_id"
+    )
+    private Category category;
     
 }

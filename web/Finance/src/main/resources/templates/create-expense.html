@@ -39,6 +39,11 @@
                 </option>
             </select>
             <br>
+            <label for="category">Selecione a categoria</label>
+            <select name="category" id="category">
+                <option th:each="ctg : ${categories}" th:value="${ctg.id}" th:text="${ctg.categoryName}"></option>
+            </select>
+            <br>
             <label for="amount">Insira a quantidade</label>
             <input type="text" name="amount" id="amount" placeholder="Use valores decimais" required>
             <br>

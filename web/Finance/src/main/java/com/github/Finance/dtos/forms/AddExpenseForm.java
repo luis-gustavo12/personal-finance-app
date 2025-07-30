@@ -8,6 +8,7 @@ public record AddExpenseForm(
         Long currencyId,
         BigDecimal amount,
         String extra,
-        LocalDate date
+        LocalDate date,
+        Long category
 ) {
 }

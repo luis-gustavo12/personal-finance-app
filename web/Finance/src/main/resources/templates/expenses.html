@@ -40,6 +40,7 @@
                         <th>Moeda</th>
                         <th>Quantidade</th>
                         <th>Extra</th>
+                        <th>Categoria</th>
                         <th>Detalhes</th>
                         <th>Editar</th>
                     </tr>
@@ -51,6 +52,7 @@
                     <td th:text="${expense.currency.currencyFlag}"></td>
                     <td th:text="${expense.amount}"></td>
                     <td th:if="${expense.extraInfo != ''}" th:text="${expense.extraInfo}"></td>
+                    <td th:text="${expense.category.categoryName}"></td>
                     <td>
                         <a th:href="${expense.detailedLink}" th:text="Detalhes"></a>
                     </td>

@@ -31,13 +31,15 @@ public class ExpenseService {
     private final PaymentMethodsService paymentMethodsService;
     private final AuthenticationService authenticationService;
     private final CardService cardService;
+    private final CategoryService categoryService;
 
-    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService) {
+    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService) {
         this.currencyService = currencyService;
         this.paymentMethodsService = paymentMethodsService;
         this.repository = expenseRepository;
         this.authenticationService = authenticationService;
         this.cardService = cardService;
+        this.categoryService = categoryService;
     }
 
 
@@ -51,6 +53,10 @@ public class ExpenseService {
         expense.setPaymentMethod(paymentMethodsService.findPaymentMethod(form.paymentMethodId()));
         expense.setUser(authenticationService.getCurrentAuthenticatedUser());
         expense.setDate(form.date());
+        if (!categoryService.validCategory(form.category())) {
+            throw new ResourceNotFoundException("User can't access this resource!!");
+        }
+        expense.setCategory(categoryService.getCategoryById(form.category()));
         expense = repository.save(expense);
         
 
@@ -108,6 +114,7 @@ public class ExpenseService {
             obj.setAmount(expense.getAmount());
             obj.setExtraInfo(expense.getExtraInfo());
             obj.setDetailedLink(String.format("/expenses/details/%d", expense.getId()));
+            obj.setCategory(expense.getCategory());
             expenseDetails.add(obj);
         }
 
