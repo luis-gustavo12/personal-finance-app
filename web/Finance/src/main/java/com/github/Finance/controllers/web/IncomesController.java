@@ -69,7 +69,7 @@ public class IncomesController {
     @GetMapping("/create")
     public String getIncomePage(Model model) {
         model.addAttribute("paymentMethods", incomesService.getPaymentMethods());
-        model.addAttribute("currencies", incomesService.getCurrencies());
+        model.addAttribute("currencies", incomesService.getAllUserCurrenciesByIncome());
         return "create-incomes";
     }
 
@@ -96,7 +96,6 @@ public class IncomesController {
     public String incomeEditView(Model model) {
 
         // List all the incomes for views
-        List<Income> incomes = incomesService.getCurrentMonthUserIncomes();
         model.addAttribute("incomes", incomesService.getCurrentMonthUserIncomes());
         return "edit-incomes";
     }
@@ -110,7 +109,7 @@ public class IncomesController {
         Income income = incomesService.findIncomeByIdForAuthenticatedUser(id);
         model.addAttribute("income", income);
         model.addAttribute("paymentMethods", incomesService.getPaymentMethods());
-        model.addAttribute("currencies", incomesService.getCurrencies());
+        model.addAttribute("currencies", incomesService.getAllUserCurrenciesByIncome());
         return "edit-income-form";
     }
 

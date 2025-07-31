@@ -249,7 +249,12 @@ public class IncomesService {
         log.info("Income with id {} deleted", id);
 
     }
+
+    public List<Currency> getAllUserCurrenciesByIncome() {
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+
+        return currencyService.findAllCurrenciesByUserAndIncome(user);
+    }
+
 }
-
-
-

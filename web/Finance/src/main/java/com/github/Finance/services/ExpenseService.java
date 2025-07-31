@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.github.Finance.dtos.UpdateExpenseDTO;
 import com.github.Finance.dtos.views.CardView;
-import com.github.Finance.models.Card;
+import com.github.Finance.models.Currency;
 import org.springframework.stereotype.Service;
 
 
@@ -65,8 +65,7 @@ public class ExpenseService {
 
     public List<Expense> getUserExpenses() {
         User user = authenticationService.getCurrentAuthenticatedUser();
-        List<Expense> list = repository.findByUser(user);
-        return list;
+        return repository.findByUser(user);
     }
 
     public List<Expense> getUserExpensesByTime(User user, int month, int year) {
@@ -176,4 +175,10 @@ public class ExpenseService {
 
 
     }
+
+    public List<Currency> findAllCurrenciesByUser() {
+        User user = authenticationService.getCurrentAuthenticatedUser();
+        return currencyService.findAllCurrenciesByUserAndExpense(user);
+    }
+
 }

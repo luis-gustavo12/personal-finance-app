@@ -72,7 +72,7 @@ public class ExpensesController {
     public String displayExpense(Model model) {
 
         List<PaymentMethod> paymentMethods = paymentMethodsService.getAllPaymentMethods();
-        List<Currency> currencies = currencyService.findAllCurrencies();
+        List<Currency> currencies = expenseService.findAllCurrenciesByUser();
         model.addAttribute("hasCreditCards", !expenseService.getUserCards().isEmpty());
         model.addAttribute("currencies", currencies);
         model.addAttribute("paymentMethods", paymentMethods);
@@ -106,7 +106,7 @@ public class ExpensesController {
 
         model.addAttribute("expense", expense);
         model.addAttribute("paymentMethods", paymentMethodsService.getAllPaymentMethods());
-        model.addAttribute("currencies", currencyService.findAllCurrencies());
+        model.addAttribute("currencies", expenseService.findAllCurrenciesByUser());
 
 
         return "edit-expense";
