@@ -1,6 +1,9 @@
 package com.github.Finance.controllers.web;
 
 import com.github.Finance.models.Subscription;
+import com.github.Finance.services.CategoryService;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -8,6 +11,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +30,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class SubscriptionsController {
     
     private final SubscriptionService service;
+    private final CategoryService categoryService;
 
-    public SubscriptionsController(SubscriptionService service) {
+    public SubscriptionsController(SubscriptionService service, CategoryService categoryService) {
         this.service = service;
+        this.categoryService = categoryService;
     }
 
 
@@ -43,16 +49,17 @@ public class SubscriptionsController {
     @GetMapping("create")
     public String createSubscription(Model model) {
         
-        List<Currency> currencies = service.getCurrencies();
+        List<Currency> currencies = service.getUserCurrencies();
         List<PaymentMethod> paymentMethods = service.getPaymentMethods();
         model.addAttribute("currencies", currencies);
         model.addAttribute("methods", paymentMethods);
+        model.addAttribute("categories", categoryService.getAllUserCategories());
         return "create-subscription";
     }
 
     @PostMapping("create")
-    public String createNewSubscription(AddSubscriptionForm form) {
-        
+    public String createNewSubscription(@Valid AddSubscriptionForm form) {
+
         Subscription subscription = service.createNewSubscription(form);
         Long subscriptionId = subscription.getId();
 
@@ -63,6 +70,7 @@ public class SubscriptionsController {
 
             if (service.getAuthenticatedUserCards().isEmpty()) {
                 log.info("No cards found, redirecting user to registering a new card!!");
+                return "redirect:/cards/create";
             }
 
             log.info("New credit card subscription has been created, redirecting for filling card details");
@@ -71,7 +79,7 @@ public class SubscriptionsController {
         }
 
         log.debug("New subscription has been created");
-        return "dashboard";
+        return "redirect:/subscriptions";
     }
 
     // You need this id path variable for post mapping, so ignore unused variable warning

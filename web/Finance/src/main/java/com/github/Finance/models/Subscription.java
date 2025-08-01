@@ -54,6 +54,9 @@ public class Subscription {
     @Column(name = "recurrence_rule")
     String recurrenceRule;
 
+    @Column(name = "day_of_charging")
+    Byte dayOfCharging;
+
     @Column(name = "valid_from", nullable = false)
     LocalDate validFrom;
 
@@ -64,8 +67,12 @@ public class Subscription {
     @CreationTimestamp
     LocalDateTime createdAt;
 
-    @Column(name = "categories")
-    String categories;
+    @ManyToOne
+    @JoinColumn(
+        name = "category_id"
+    )
+    Category category;
+
 
     
 }

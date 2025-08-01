@@ -80,7 +80,7 @@
                     <td th:text="${sub.name}"></td>
                     <td th:text="${sub.currency.currencySymbol} + ' ' + ${sub.cost}"></td>
                     <td th:text="${sub.paymentMethod.description}"></td>
-                    <td th:text="${sub.categories}"></td>
+                    <td th:text="${sub.category.categoryName}"></td>
                     <td>
                         <a th:href="@{'/subscriptions/' + ${sub.id}}" class="details-link" aria-label="Ver detalhes">
                             <i class="fa-solid fa-eye"></i>

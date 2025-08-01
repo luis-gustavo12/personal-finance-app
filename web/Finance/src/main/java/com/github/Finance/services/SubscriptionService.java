@@ -1,5 +1,6 @@
 package com.github.Finance.services;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.github.Finance.dtos.SubscriptionDetailsDTO;
@@ -8,6 +9,8 @@ import com.github.Finance.dtos.views.SubscriptionsSummaryView;
 import com.github.Finance.models.*;
 import com.github.Finance.provider.currencyexchange.CurrencyExchangeProvider;
 import com.github.Finance.provider.currencyexchange.FrankfurterCurrencyProvider;
+import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +27,10 @@ public class SubscriptionService {
     private final ExchangeRateService exchangeRateService;
     private final CardService cardService;
     private final CardSubscriptionDetailsService cardSubscriptionDetailsService;
+    private final CategoryService categoryService;
 
 
-    public SubscriptionService (SubscriptionRepository repository, AuthenticationService authenticationService, CurrencyService currencyService, PaymentMethodsService paymentMethodsService, CurrencyExchangeProvider currencyExchangeProvider, FrankfurterCurrencyProvider frankfurterCurrencyProvider, ExchangeRateService exchangeRateService, CardService cardService, CardSubscriptionDetailsService cardSubscriptionDetailsService) {
+    public SubscriptionService (SubscriptionRepository repository, AuthenticationService authenticationService, CurrencyService currencyService, PaymentMethodsService paymentMethodsService, CurrencyExchangeProvider currencyExchangeProvider, FrankfurterCurrencyProvider frankfurterCurrencyProvider, ExchangeRateService exchangeRateService, CardService cardService, CardSubscriptionDetailsService cardSubscriptionDetailsService, CategoryService categoryService) {
         this.repository = repository;
         this.authenticationService = authenticationService;
         this.currencyService = currencyService;
@@ -34,10 +38,16 @@ public class SubscriptionService {
         this.exchangeRateService = exchangeRateService;
         this.cardService = cardService;
         this.cardSubscriptionDetailsService = cardSubscriptionDetailsService;
+        this.categoryService = categoryService;
     }
 
 
     public Subscription createNewSubscription(AddSubscriptionForm form) {
+
+
+        if (form.dayOfCharging() > 31 || form.dayOfCharging() < 0) {
+            throw new RuntimeException("Invalid day of charging");
+        }
 
         Subscription subscription = new Subscription();
         subscription.setUser(authenticationService.getCurrentAuthenticatedUser());
@@ -45,9 +55,10 @@ public class SubscriptionService {
         subscription.setCost(form.subscriptionCost());
         subscription.setCurrency( currencyService.findCurrency(form.currencySelect()) );
         subscription.setPaymentMethod( paymentMethodsService.findPaymentMethod(form.subscriptionPaymentForm()) );
-        subscription.setValidFrom(form.subscriptionStart());
-        subscription.setCategories(form.subscriptionCategory());
-
+        subscription.setDayOfCharging(form.dayOfCharging());
+        subscription.setValidFrom(LocalDate.now());
+        categoryService.validCategory(form.subscriptionCategory());
+        subscription.setCategory(categoryService.getCategoryById(form.subscriptionCategory()));
         return repository.save(subscription);
 
     }
@@ -107,7 +118,7 @@ public class SubscriptionService {
             subscription.getValidUntil() == null ? "Active" : "Not Active",
             subscription.getCreatedAt(),
             subscription.getValidFrom(),
-            subscription.getCategories()
+            subscription.getCategory().getCategoryName()
         );
 
 
@@ -115,6 +126,17 @@ public class SubscriptionService {
 
     public List<CardView> getAuthenticatedUserCards() {
         return cardService.getUserRegisteredCards();
+    }
+
+    /**
+     * Retrieves all currencies, ordered by the relevance of their expenses
+     * @return The ordered list with the currencies
+     */
+    public List<Currency> getUserCurrencies() {
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+        return currencyService.findAllCurrenciesByUserAndExpense(user);
+
     }
 
 }

@@ -38,11 +38,13 @@
         <label for="subscriptionCost">Valor da Assinatura</label>
         <input type="text" name="subscriptionCost" id="subscriptionCost">
 
-        <label for="subscriptionStart">Data de início da Assinatura</label>
-        <input type="date" name="subscriptionStart" id="subscriptionStart">
+        <label for="dayOfCharging">Dia de cobrança</label>
+        <input type="text" name="dayOfCharging" id="dayOfCharging" placeholder="Insira de 1 a 31    ">
 
         <label for="subscriptionCategory">Selecione uma categoria</label>
-        <input type="text" name="subscriptionCategory" id="subscriptionCategory">
+        <select name="subscriptionCategory" id="subscriptionCategory" required>
+            <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.categoryName}"></option>
+        </select>
 
         <button type="submit">Enviar</button>
 

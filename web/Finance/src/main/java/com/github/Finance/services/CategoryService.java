@@ -24,9 +24,8 @@ public class CategoryService {
     public List<Category> getAllUserCategories() {
         User user = authenticationService.getCurrentAuthenticatedUser();
 
-        var s = categoryRepository.findDefaultAndUserCategories(user);
+        return categoryRepository.findDefaultAndUserCategories(user);
 
-        return s;
     }
 
     /**

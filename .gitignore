@@ -4,3 +4,10 @@ html-sketch
 *.gz
 *.log
 ideas
+web/Finance/src/main/resources/static/js/node/
+
+web/Finance/src/main/resources/static/js/node/node
+web/Finance/src/main/resources/static/js/node/npm
+web/Finance/src/main/resources/static/js/node/npm.cmd
+web/Finance/src/main/resources/static/js/node/npx
+web/Finance/src/main/resources/static/js/node/npx.cmd

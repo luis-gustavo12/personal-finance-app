@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 
 public record AddSubscriptionForm(
@@ -11,8 +12,8 @@ public record AddSubscriptionForm(
     @NotNull Long currencySelect,
     @NotNull Long subscriptionPaymentForm,
     @NotNull BigDecimal subscriptionCost,
-    @NotNull LocalDate subscriptionStart,
-    @NotBlank String subscriptionCategory
+    @NotNull @Max(31) Byte dayOfCharging, // day of the month that it is charged
+    @NotNull Long subscriptionCategory
 ) 
 
 {
