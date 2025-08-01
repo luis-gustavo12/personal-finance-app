@@ -33,12 +33,12 @@ public interface CurrencyRepository extends JpaRepository<Currency, Long> {
     "        COUNT(id) AS count_expenses\n" +
     "    FROM\n" +
     "        expenses\n" +
-    "    WHERE user_id = 4\n" +
+    "    WHERE user_id = :#{#user.id}\n" +
     "    GROUP BY\n" +
     "        currency_id\n" +
     ") AS expense_counts ON c.id = expense_counts.currency_id\n" +
     "LEFT JOIN\n" +
-    "    users u ON u.id = 4\n" +
+    "    users u ON u.id = :#{#user.id}\n" +
     "WHERE u.id IS NOT NULL\n" +
     "ORDER BY\n" +
     "    CASE\n" +
@@ -65,12 +65,12 @@ public interface CurrencyRepository extends JpaRepository<Currency, Long> {
     "        COUNT(id) AS count_incomes\n" +
     "    FROM\n" +
     "        incomes\n" +
-    "    WHERE user_id = 4\n" +
+    "    WHERE user_id = :#{#user.id}\n" +
     "    GROUP BY\n" +
     "        currency_code\n" +
     ") AS incomes_count ON c.id = incomes_count.currency_code\n" +
     "LEFT JOIN\n" +
-    "    users u ON u.id = 4\n" +
+    "    users u ON u.id = :#{#user.id}\n" +
     "WHERE u.id IS NOT NULL\n" +
     "ORDER BY\n" +
     "    CASE\n" +
