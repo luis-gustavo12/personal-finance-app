@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div th:insert="~{layouts/return-nav-button :: backButtonNav}"></div>
+
+    <form th:method="post">
+
+        <div th:insert="~{layouts/hidden-csrf-token}"></div>
+
+        <label for="subscriptionName">Nome da Assinatura</label>
+        <input type="text" name="subscriptionName" id="subscriptionName" th:value="${subscription.subscriptionName}" required>
+
+        <label for="currencySelect">Selecione a moeda</label>
+        <select name="currencySelect" id="currencySelect" required>
+            <option th:each="c : ${currencies}" th:value="${c.id}" th:text="${c.currencyFlag}"></option>
+        </select>
+
+        <label for="subscriptionCost">Quantia (Valores decimais com '.')</label>
+        <input type="text" name="subscriptionCost" id="subscriptionCost" th:value="${subscription.subscriptionCost}" required>
+
+        <label for="subscriptionPaymentForm">Selecione o metodo de pagamento</label>
+        <select name="subscriptionPaymentForm" id="subscriptionPaymentForm" required>
+            <option th:each="pm : ${paymentMethods}" th:value="${pm.id}" th:text="${pm.description}"></option>
+        </select>
+
+        <label for="dayOfCharging">Selecione o dia de cobrança</label>
+        <input type="text" name="dayOfCharging" id="dayOfCharging" th:value="${subscription.dayOfCharge}" required>
+
+        <label for="subscriptionCategory">Categorias</label>
+        <select name="subscriptionCategory" id="subscriptionCategory" required>
+            <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.categoryName}"
+                th:selected="${subscription.category == cat.categoryName}">
+            </option>
+        </select>
+
+        <button type="submit">Enviar</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -72,6 +72,7 @@
                     <th>Método de Pagamento</th>
                     <th>Categoria</th>
                     <th>Detalhes</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
 
@@ -86,7 +87,14 @@
                             <i class="fa-solid fa-eye"></i>
                         </a>
                     </td>
-
+                    <td class="action-icons">
+                        <a th:href="@{/subscriptions/edit/{id}(id=${sub.id})}" title="Editar">
+                            <i class="fas fa-pencil-alt edit-icon"></i>
+                        </a>
+                        <a th:href="@{/subscriptions/delete/{id}(id=${sub.id})}" title="Excluir">
+                            <i class="fas fa-times delete-icon"></i>
+                        </a>
+                    </td>
                 </tr>
             </tbody>
             <tfoot>

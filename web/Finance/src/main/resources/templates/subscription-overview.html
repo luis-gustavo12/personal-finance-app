@@ -37,6 +37,7 @@
                     <th>Status</th>
                     <th>Data de Criação</th>
                     <th>Valido desde</th>
+                    <th>Próxima cobrança esperada</th>
                     <th>Categoria</th>
                 </tr>
             </thead>
@@ -48,6 +49,7 @@
                     <td th:text="${overview.status}"></td>
                     <td th:text="${#temporals.format(overview.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
                     <td th:text="${#temporals.format(overview.validSince, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${#temporals.format(overview.nextExpectedCharge, 'dd/MM/yyyy')}"></td>
                     <td th:text="${overview.category}"></td>
                 </tr>
             </tbody>

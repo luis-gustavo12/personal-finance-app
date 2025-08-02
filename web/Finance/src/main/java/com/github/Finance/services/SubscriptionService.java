@@ -10,6 +10,7 @@ import com.github.Finance.models.*;
 import com.github.Finance.provider.currencyexchange.CurrencyExchangeProvider;
 import com.github.Finance.provider.currencyexchange.FrankfurterCurrencyProvider;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.github.Finance.dtos.forms.AddSubscriptionForm;
 import com.github.Finance.repositories.SubscriptionRepository;
 
+@Slf4j
 @Service
 public class SubscriptionService {
 
@@ -49,6 +51,12 @@ public class SubscriptionService {
             throw new RuntimeException("Invalid day of charging");
         }
 
+        Subscription subscription = getSubscriptionFromForm(form);
+        return repository.save(subscription);
+
+    }
+
+    private Subscription getSubscriptionFromForm(AddSubscriptionForm form) {
         Subscription subscription = new Subscription();
         subscription.setUser(authenticationService.getCurrentAuthenticatedUser());
         subscription.setName(form.subscriptionName());
@@ -59,8 +67,7 @@ public class SubscriptionService {
         subscription.setValidFrom(LocalDate.now());
         categoryService.validCategory(form.subscriptionCategory());
         subscription.setCategory(categoryService.getCategoryById(form.subscriptionCategory()));
-        return repository.save(subscription);
-
+        return subscription;
     }
 
     public List<Currency> getCurrencies() {
@@ -118,7 +125,10 @@ public class SubscriptionService {
             subscription.getValidUntil() == null ? "Active" : "Not Active",
             subscription.getCreatedAt(),
             subscription.getValidFrom(),
-            subscription.getCategory().getCategoryName()
+            subscription.getCategory().getCategoryName(),
+            calculateNextCharge(subscription.getDayOfCharging()),
+            subscription.getName(),
+            subscription.getDayOfCharging()
         );
 
 
@@ -139,4 +149,53 @@ public class SubscriptionService {
 
     }
 
+    private LocalDate calculateNextCharge(Byte dayOfCharging) {
+
+        LocalDate now = LocalDate.now();
+
+        if (dayOfCharging >= now.getDayOfMonth()) {
+            return now;
+        }
+
+        return now.plusMonths(1);
+    }
+
+    public Subscription editSubscription(@Valid AddSubscriptionForm form, Long subscriptionId) {
+        Subscription subscription = repository.findById(subscriptionId).orElse(null);
+
+        if (subscription == null) {
+            throw new RuntimeException("Invalid subscription id");
+        }
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+
+        if (!subscription.getUser().getId().equals(user.getId())) {
+            throw new SecurityException("You're not allowed to edit this subscription");
+        }
+
+        Subscription subscriptionToEdit = getSubscriptionFromForm(form);
+
+        return repository.save(subscriptionToEdit);
+
+
+    }
+
+    public void deleteSubscription(Long id) {
+
+        Subscription subscription = repository.findById(id).orElse(null);
+
+        if (subscription == null) {
+            throw new RuntimeException("Invalid subscription id");
+        }
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+
+        if (!subscription.getUser().getId().equals(user.getId())) {
+            throw new SecurityException("You're not allowed to delete this subscription");
+        }
+
+        repository.delete(subscription);
+        log.info("Delete subscription with id: " + id);
+
+    }
 }

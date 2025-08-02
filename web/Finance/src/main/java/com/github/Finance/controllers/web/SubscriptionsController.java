@@ -101,5 +101,27 @@ public class SubscriptionsController {
         return "subscription-overview";
     }
 
-    
+    @GetMapping("/edit/{id}")
+    public String subscriptionEdit(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("currencies", service.getUserCurrencies());
+        model.addAttribute("subscription", service.getSubscriptionDetail(id));
+        model.addAttribute("paymentMethods", service.getPaymentMethods());
+        model.addAttribute("categories", categoryService.getAllUserCategories());
+        return "subscription-edit";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String subscriptionEdit(@Valid AddSubscriptionForm form, @PathVariable("id") Long id) {
+        Subscription subscription =  service.editSubscription(form, id);
+
+        return "redirect:/subscriptions/";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String subscriptionDelete(@PathVariable("id") Long id) {
+        service.deleteSubscription(id);
+        return "redirect:/subscriptions";
+    }
+
+
 }
