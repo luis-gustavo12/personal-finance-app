@@ -18,4 +18,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT c FROM Category c WHERE c.user IS NULL OR c.user = :user")
     List<Category> findDefaultAndUserCategories(@Param("user") User user);
 
+    List<Category> findByUser(User user);
+
 }

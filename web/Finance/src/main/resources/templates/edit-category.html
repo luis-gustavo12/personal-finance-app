@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Categoria</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <form th:method="post">
+        <div th:insert="~{layouts/hidden-csrf-token :: hiddenCsrf}"></div>
+
+        <h2>Atualize a categoria</h2>
+
+        <label for="categoryName">Novo nome</label>
+        <input type="text" name="categoryName" id="categoryName">
+
+        <button type="submit">Enviar</button>
+
+    </form>
+
+
+</div>
+
+</body>
+</html>

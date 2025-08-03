@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/base}">
+<head>
+    <meta charset="UTF-8">
+    <title>Categorias</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/categories.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <nav class="sidebar">
+
+        <div class="main-routes">
+            <div class="nav-panel">
+                <a th:href="@{/dashboard}">Dashboard</a>
+            </div>
+            <div class="nav-panel">
+                <a th:href="@{/categories/create}">Adicionar Categoria</a>
+            </div>
+        </div>
+
+
+    </nav>
+
+    <main>
+
+        <div class="selectable-container">
+
+            <div class="selectable-card" th:each="category : ${categories}">
+                <p th:text="${category.categoryName}"></p>
+                <a th:href="@{/categories/edit/{id}(id=${category.id})}">
+                    <i class="fas fa-pencil-alt edit-icon"></i>
+                </a>
+
+                <a th:href="@{/categories/delete/{id}(id=${category.id})}">
+                    <i class="fas fa-times delete-icon"></i>
+                </a>
+            </div>
+
+        </div>
+
+
+    </main>
+
+</div>
+
+
+</body>
+</html>

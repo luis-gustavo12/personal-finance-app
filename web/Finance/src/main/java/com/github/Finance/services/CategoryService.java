@@ -1,5 +1,6 @@
 package com.github.Finance.services;
 
+import com.github.Finance.dtos.forms.AddCategoryForm;
 import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.models.Category;
 import com.github.Finance.models.User;
@@ -57,5 +58,59 @@ public class CategoryService {
         return categoryRepository.findById(id).orElse(null);
     }
 
+    public Category createNewCategory(AddCategoryForm form) {
 
+        User user = authenticationService.getCurrentAuthenticatedUser();
+        List<Category> userCategories = categoryRepository.findByUser(user);
+
+        // Max 8 categories per user
+        if (userCategories.size() >= 8) {
+            log.info("User already has enough categories");
+            throw new RuntimeException("User already has enough categories");
+        }
+
+        Category category = new Category();
+        category.setCategoryName(form.categoryName());
+        category.setUser(user);
+        return categoryRepository.save(category);
+
+    }
+
+    public void deleteCategory(Long categoryId) {
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() ->  new ResourceNotFoundException("Not found!!"));
+
+        if (category.getUser() == null) {
+            log.info("Default category, not allowed to exclude");
+            throw new ResourceNotFoundException("Not allowed to exclude");
+        }
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+
+        if (!user.getId().equals(category.getUser().getId())) {
+            throw new SecurityException("You are not allowed to remove this category");
+        }
+
+        categoryRepository.delete(category);
+        log.info("Category has been deleted");
+
+    }
+
+    public void editCategory(Long categoryId, AddCategoryForm form) {
+
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() ->  new ResourceNotFoundException("Not found!!"));
+
+        if (category.getUser() == null) {
+            log.info("Default category, not allowed to exclude");
+            throw new ResourceNotFoundException("Not allowed to exclude");
+        }
+
+        category.setCategoryName(form.categoryName());
+        categoryRepository.save(category);
+        log.info("Category has been edited");
+
+
+
+
+    }
 }
