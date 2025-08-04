@@ -56,10 +56,7 @@ public class MonthlyReportService {
         log.info("Generating report for {} users", users.size());
 
         for (User user : users) {
-
             generateUserReport(user);
-
-
 
         }
 
