@@ -6,6 +6,7 @@ import com.github.Finance.models.Income;
 import com.github.Finance.models.Report;
 import com.github.Finance.models.User;
 import com.github.Finance.services.*;
+import com.github.Finance.tasks.MonthlyReportTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,12 +27,14 @@ public class DashboardController {
     private final AuthenticationService authenticationService;
     private final IncomesService incomesService;
     private final ExpenseService expenseService;
+    private final MonthlyReportTask monthlyReportTask;
 
-    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService) {
+    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, MonthlyReportTask monthlyReportTask) {
         this.reportService = reportService;
         this.authenticationService = authenticationService;
         this.incomesService = incomesService;
         this.expenseService = expenseService;
+        this.monthlyReportTask = monthlyReportTask;
     }
 
 

@@ -7,6 +7,7 @@ import java.util.List;
 import com.github.Finance.dtos.UpdateExpenseDTO;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.models.Currency;
+import com.github.Finance.models.Subscription;
 import org.springframework.stereotype.Service;
 
 
@@ -32,14 +33,16 @@ public class ExpenseService {
     private final AuthenticationService authenticationService;
     private final CardService cardService;
     private final CategoryService categoryService;
+    private final SubscriptionService subscriptionService;
 
-    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService) {
+    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService) {
         this.currencyService = currencyService;
         this.paymentMethodsService = paymentMethodsService;
         this.repository = expenseRepository;
         this.authenticationService = authenticationService;
         this.cardService = cardService;
         this.categoryService = categoryService;
+        this.subscriptionService = subscriptionService;
     }
 
 
@@ -180,5 +183,41 @@ public class ExpenseService {
         User user = authenticationService.getCurrentAuthenticatedUser();
         return currencyService.findAllCurrenciesByUserAndExpense(user);
     }
+
+    /**
+     * Method responsible for creating a new expense, given an already
+     * existent subscription. A subscription is a type of expense
+     *
+     */
+    public void generateExpenseFromSubscription() {
+
+        // First things first, query all expenses where the day of charging is today
+        List<Subscription> expensesChargedForToday = subscriptionService.getAllSubscriptionsForToday();
+
+        for (Subscription subscription : expensesChargedForToday) {
+
+            Expense expense = new Expense();
+            expense.setPaymentMethod(subscription.getPaymentMethod());
+            expense.setCurrency(subscription.getCurrency());
+            expense.setAmount(subscription.getCost());
+            expense.setExtraInfo(String.format("Subscription [%s]", subscription.getName()));
+            expense.setCategory(subscription.getCategory());
+            expense.setSubscription(subscription);
+            expense.setDate(LocalDate.now());
+            expense.setUser(subscription.getUser());
+            newExpense(expense);
+            log.info("New expense created successfully!!!");
+        }
+
+
+    }
+
+    public Expense newExpense(Expense expense) {
+        return repository.save(expense);
+    }
+
+
+
+
 
 }

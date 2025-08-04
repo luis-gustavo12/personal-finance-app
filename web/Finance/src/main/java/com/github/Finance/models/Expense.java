@@ -59,5 +59,11 @@ public class Expense {
         name = "category_id"
     )
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(
+        name = "subscription_id"
+    )
+    private Subscription subscription;
     
 }

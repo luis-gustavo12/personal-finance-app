@@ -198,4 +198,10 @@ public class SubscriptionService {
         log.info("Delete subscription with id: " + id);
 
     }
+
+    public List<Subscription> getAllSubscriptionsForToday() {
+
+        return repository.findTodayChargedSubscriptions((byte) LocalDate.now().getDayOfMonth());
+
+    }
 }
