@@ -22,14 +22,13 @@ public class ExpenseConversionJob extends QuartzJobBean {
 
 
     @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException { // <-- 3. Override executeInternal
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         log.info("Executing misfired or scheduled job: ExpenseConversionJob");
         try {
             expenseService.generateExpenseFromSubscription();
             log.info("ExpenseConversionJob finished successfully.");
         } catch (Exception e) {
             log.error("Exception occurred while executing ExpenseConversionJob", e);
-            // This tells Quartz the job failed and it should handle it based on the trigger's policy
             throw new JobExecutionException(e);
         }
     }
