@@ -18,6 +18,8 @@
             <!-- CSRF Token for Spring Security -->
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
+            <input type="hidden" name="redirectUrl" th:value="${redirectUrl}"/>
+
             <!-- Hidden input to hold the Stripe Token -->
             <input type="hidden" name="stripeToken" id="stripeToken" />
 

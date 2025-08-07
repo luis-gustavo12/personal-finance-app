@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -15,7 +16,8 @@ import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.enums.CardType;
 import com.github.Finance.services.CardService;
 import org.springframework.web.bind.annotation.PostMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -40,17 +42,23 @@ public class CardsController {
     }
     
     @GetMapping("/create")
-    public String createCardString(Model model) {
+    public String createCardString(Model model, @RequestParam(name = "redirectUrl", required = false) String redirectUrl) {
         List<CardType> cardTypes = service.getAllCardTypes();
+        model.addAttribute("redirectUrl", redirectUrl);
         model.addAttribute("publicKey", cardGatewayService.getPublicToken());
         model.addAttribute("cardTypes", cardTypes); 
         return "create-card";
     }
 
     @PostMapping("/create")
-    public String createCardForm(@Valid AddCardForm form) {
+    public String createCardForm(@Valid AddCardForm form, BindingResult result, RedirectAttributes redirectAttributes,
+             @RequestParam(name = "redirectUrl", required = false) String redirectUrl) {
         
         service.addCard(form);
+
+        if (!redirectUrl.isEmpty()) {
+            return "redirect:" + redirectUrl;
+        }
         
         return "/dashboard";
     }
