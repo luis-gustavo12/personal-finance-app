@@ -17,6 +17,14 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Main entity responsible for representing cards data in a DB. For being PCI DSS compliant,
+ * we don't handle the sensitive card data, and for now, Stripe does it for us. We just interact with their API,
+ * and store the token. Even if in the future Stripe doesn't fit our needs, and a change for another Payment
+ * Service Provider is required, I think there won't be necessary a change in the DB Schema, since they probably
+ * use a token as well, and our application only would need to extract this token though the API.
+ */
+
 @Table(name = "cards")
 @Entity
 @Getter

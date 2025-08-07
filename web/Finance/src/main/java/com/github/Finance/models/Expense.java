@@ -15,6 +15,13 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ *
+ * One of the most important, and also, more complex parts of the project, because every payment form
+ * has its own peculiarity to be described as an expense. Also, there's another complexity layer
+ * which is the Currency, so many calculations happen from time to time, which the application needs to be aware of
+ *
+ */
 @Table(name = "expenses")
 @Entity
 @Getter
@@ -39,6 +46,7 @@ public class Expense {
     @Column(nullable = false)
     private BigDecimal amount;
 
+    // This is the actual texts that defines the expense. TODO: assign a better name
     @Column(name = "extra_info")
     private String extraInfo;
 
@@ -60,6 +68,9 @@ public class Expense {
     )
     private Category category;
 
+    // Every expense can be assigned to a subscription. There's already a task, defined under
+    // Quartz jobs, that runs every day, listing all the subscriptions, and creating one expense
+    // for a subscription
     @ManyToOne
     @JoinColumn(
         name = "subscription_id"

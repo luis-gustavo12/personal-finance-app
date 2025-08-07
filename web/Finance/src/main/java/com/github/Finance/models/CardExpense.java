@@ -17,6 +17,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ *
+ * This is one extension of the Expenses table, since for every expenses that is used a credit card,
+ * there are different data used from a regular Cash expense, or even Brazilian PIX.
+ *
+ */
 @Entity
 @Table(name = "card_expenses")
 @Getter

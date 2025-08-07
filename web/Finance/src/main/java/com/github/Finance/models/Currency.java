@@ -10,6 +10,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ *
+ * Entity responsible for representing the Currency for our project.
+ *
+ */
 @Table(name = "currencies")
 @Entity
 @Getter
