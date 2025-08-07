@@ -20,14 +20,18 @@ function installmentClick() {
         for(let elem of installmentShownInputs) {
             elem.style.display = 'block';
             elem.labels[0].style.display = 'block';
-            elem.required = true;
+            if (elem.id !== 'interestRate') {
+                elem.required = true;
+            }
         }
 
     } else {
         for(let elem of installmentShownInputs) {
             elem.style.display = 'none';
             elem.labels[0].style.display = 'none';
-            elem.required = false;
+            if (elem.id !== 'interestRate') {
+                elem.required = false;
+            }
         }
     }
 
