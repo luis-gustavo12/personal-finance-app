@@ -51,8 +51,7 @@ public class CardsController {
     }
 
     @PostMapping("/create")
-    public String createCardForm(@Valid AddCardForm form, BindingResult result, RedirectAttributes redirectAttributes,
-             @RequestParam(name = "redirectUrl", required = false) String redirectUrl) {
+    public String createCardForm(@Valid AddCardForm form, @RequestParam(name = "redirectUrl", required = false) String redirectUrl) {
         
         service.addCard(form);
 
