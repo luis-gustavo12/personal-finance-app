@@ -217,7 +217,7 @@ public class ExpenseService {
     }
 
 
-
-
-
+    public Expense saveExpense(Expense expense) {
+        return repository.save(expense);
+    }
 }

@@ -82,7 +82,19 @@ public class CardExpenseService {
 
     }
 
+    public void processExpenseDetails(Expense expense, Card card, boolean installmentCheck, int splits, String status) {
 
+        CardExpense cardExpense = new CardExpense();
+        cardExpense.setExpense(expense);
+        cardExpense.setCard(card);
+        cardExpense.setInstallment(installmentCheck);
+        cardExpense.setSplits(splits);
+        cardExpense.setStatus(ExpenseCardEnum.valueOf(status));
+        cardExpense.setTransactionDate(expense.getDate());
+        repository.save(cardExpense);
+
+
+    }
 
     
 }

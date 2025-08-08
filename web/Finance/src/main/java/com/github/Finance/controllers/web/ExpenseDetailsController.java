@@ -2,20 +2,17 @@ package com.github.Finance.controllers.web;
 
 import com.github.Finance.dtos.forms.AddExpenseDetailsForm;
 import com.github.Finance.dtos.views.CardView;
+import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.models.CardExpense;
 import com.github.Finance.models.Expense;
-import com.github.Finance.services.CardExpenseService;
-import com.github.Finance.services.CardService;
-import com.github.Finance.services.ExpenseDetailsService;
-import com.github.Finance.services.ExpenseService;
+import com.github.Finance.models.ExpenseDeclaration;
+import com.github.Finance.models.User;
+import com.github.Finance.services.*;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,12 +25,18 @@ public class ExpenseDetailsController {
     private final CardExpenseService cardExpenseService;
     private final CardService cardService;
     private final ExpenseDetailsService expenseDetailsService;
+    private final ExpenseDeclarationService expenseDeclarationService;
+    private final PaymentMethodsService paymentMethodsService;
+    private final AuthenticationService authenticationService;
 
-    public ExpenseDetailsController(ExpenseService expenseService, CardExpenseService cardExpenseService, CardService cardService, ExpenseDetailsService expenseDetailsService) {
+    public ExpenseDetailsController(ExpenseService expenseService, CardExpenseService cardExpenseService, CardService cardService, ExpenseDetailsService expenseDetailsService, ExpenseDeclarationService expenseDeclarationService, PaymentMethodsService paymentMethodsService, AuthenticationService authenticationService) {
         this.expenseService = expenseService;
         this.cardExpenseService = cardExpenseService;
         this.cardService = cardService;
         this.expenseDetailsService = expenseDetailsService;
+        this.expenseDeclarationService = expenseDeclarationService;
+        this.paymentMethodsService = paymentMethodsService;
+        this.authenticationService = authenticationService;
     }
 
     /**
@@ -86,30 +89,26 @@ public class ExpenseDetailsController {
 
 
     @GetMapping("/{id}")
-    public String getExpenseDetails(@PathVariable Long id, Model model, HttpSession session) {
+    public String getExpenseDetails(@PathVariable Long id, Model model) {
 
-        Expense expense = expenseService.findExpenseById(id);
+        ExpenseDeclaration expenseDeclaration = expenseDeclarationService.findById(id);
 
-        expenseDetailsService.validateUserAccess(expense.getUser().getId());
-
-        switch (expense.getPaymentMethod().getDescription()) {
-            case "CREDIT CARD":
-            case "DEBIT CARD": {
-                CardExpense cardExpense = cardExpenseService.findCardExpense(id);
-                if (cardExpense == null) {
-                    // If details of the expense id is null, so the user must fill it
-                    session.setAttribute("expenseId", id);
-                    return "redirect:/expenses/details/fill-expense/" + id;
-                }
-                model.addAttribute("cardDetail", cardExpense);
-                return "credit-card-details";
-            }
-
-            default:
-                break;
+        if (expenseDeclaration == null) {
+            throw new ResourceNotFoundException("Expense declaration not found");
         }
 
-        return "dashboard";
+        model.addAttribute("expenseDeclaration", expenseDeclaration);
+        model.addAttribute("paymentForms", paymentMethodsService.getAllPaymentMethods());
+
+        return "payment-method-details";
+    }
+
+    @PostMapping("/{id}")
+    public String addExpenseDetails(@PathVariable Long id, Model model,
+            @RequestParam("paymentForm") Long paymentMethodId) {
+
+        return expenseDetailsService.handlePaymentMethod(id, paymentMethodId);
+
     }
 
 
@@ -135,4 +134,25 @@ public class ExpenseDetailsController {
 
         return "redirect:/dashboard";
     }
+
+    @GetMapping("/fill-card-expense/{id}")
+    public String fillCardExpenseDetails(Model model, @PathVariable("id") Long expenseId) {
+        model.addAttribute("cardsList", cardService.getUserRegisteredCards());
+        return "fill-card-expense-details";
+    }
+
+    @PostMapping("/fill-card-expense/{id}")
+    public String fillCardExpenseDetailsForm(AddExpenseDetailsForm form, @PathVariable("id") Long expenseId) {
+        expenseDetailsService.setFinalConversion(form, expenseId);
+
+        return "redirect:/expenses";
+    }
+
+
+    @GetMapping("/generate-final-expense/{id}")
+    public String generateExpense(Model model, @PathVariable("id") Long expenseId) {
+        return "redirect:/expenses";
+    }
+
+
 }

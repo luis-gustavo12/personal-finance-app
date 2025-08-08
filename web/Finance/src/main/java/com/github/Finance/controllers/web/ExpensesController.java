@@ -7,10 +7,7 @@ import com.github.Finance.dtos.UpdateExpenseDTO;
 import com.github.Finance.dtos.views.*;
 import com.github.Finance.dtos.forms.AddExpenseDetailsForm;
 import com.github.Finance.dtos.forms.AddExpenseForm;
-import com.github.Finance.models.Card;
-import com.github.Finance.models.CardExpense;
-import com.github.Finance.models.Currency;
-import com.github.Finance.models.Expense;
+import com.github.Finance.models.*;
 import com.github.Finance.services.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.github.Finance.models.PaymentMethod;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +42,10 @@ public class ExpensesController {
     private final CardService cardService;
     private final EncryptionService encryptionService;
     private final CategoryService categoryService;
+    private final ExpenseDeclarationService expenseDeclarationService;
 
     public ExpensesController(PaymentMethodsService paymentMethodsService, CurrencyService currencyService, ExpenseService expenseService,
-                              CardExpenseService cardExpenseService, CardService cardService, EncryptionService encryptionService, CategoryService categoryService) {
+                              CardExpenseService cardExpenseService, CardService cardService, EncryptionService encryptionService, CategoryService categoryService, ExpenseDeclarationService expenseDeclarationService) {
 
         this.paymentMethodsService = paymentMethodsService;
         this.currencyService = currencyService;
@@ -58,6 +54,7 @@ public class ExpensesController {
         this.cardService = cardService;
         this.encryptionService = encryptionService;
         this.categoryService = categoryService;
+        this.expenseDeclarationService = expenseDeclarationService;
     }
 
     @GetMapping("")
@@ -75,7 +72,6 @@ public class ExpensesController {
         List<Currency> currencies = expenseService.findAllCurrenciesByUser();
         model.addAttribute("hasCreditCards", !expenseService.getUserCards().isEmpty());
         model.addAttribute("currencies", currencies);
-        model.addAttribute("paymentMethods", paymentMethods);
         model.addAttribute("categories", categoryService.getAllUserCategories());
         return "create-expense";
     }
@@ -91,9 +87,9 @@ public class ExpensesController {
     @PostMapping("/create")
     public String createExpense(AddExpenseForm form) {
 
-        ExpenseView response = expenseService.saveExpense(form);
+        ExpenseDeclaration expenseDeclaration = expenseDeclarationService.saveExpense(form);
 
-        return "redirect:/expenses/details/" + response.getId();
+        return "redirect:/expenses/details/" + expenseDeclaration.getId();
 
     }
 

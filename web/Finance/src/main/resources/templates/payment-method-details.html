@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Forma de Pagamento</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <form th:method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <p th:text="'Valor: ' + ${expenseDeclaration.amount}"></p>
+        <p th:text="'Descrição: ' + ${expenseDeclaration.info}"></p>
+
+        <label for="paymentForm">Selecione sua forma de pagamento</label>
+        <select name="paymentForm" id="paymentForm">
+            <option th:each="paymentForm : ${paymentForms}" th:value="${paymentForm.id}" th:text="${paymentForm.description}"></option>
+        </select>
+
+        <button type="submit">Enviar</button>
+
+    </form>
+
+
+</div>
+
+</body>
+</html>
