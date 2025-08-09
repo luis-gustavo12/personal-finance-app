@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parcelamentos</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <nav class="sidebar">
+        <div class="main-routes">
+            <a th:href="@{/dashboard}" class="nav-panel">Dashboard</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <p th:if="${installments.isEmpty}">
+            Você não tem nenhum parcelamento!! Crie uma despesa, e adicione parcelas
+        </p>
+
+        <div th:unless="${installments.isEmpty}" class="expense-table">
+
+            <table class="entity-display-table">
+
+                <thead>
+                    <tr>
+                        <th>Valor</th>
+                        <th>Parcelas</th>
+                        <th>Descrição</th>
+                        <th>Método de Pagamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="installment : ${installments}">
+                        <td th:text="${installment.amount}"></td>
+                        <td th:text="${installment.splits}"></td>
+                        <td th:text="${installment.description}"></td>
+                        <td th:text="${installment.paymentMethod.description}"></td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

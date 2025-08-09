@@ -76,5 +76,11 @@ public class Expense {
         name = "subscription_id"
     )
     private Subscription subscription;
-    
+
+    @ManyToOne
+    @JoinColumn(
+        name = "installment_id"
+    )
+    private Installment installment;
+
 }

@@ -2,10 +2,7 @@ package com.github.Finance.services;
 
 import com.github.Finance.dtos.forms.AddExpenseDetailsForm;
 import com.github.Finance.exceptions.ResourceNotFoundException;
-import com.github.Finance.models.Card;
-import com.github.Finance.models.Expense;
-import com.github.Finance.models.ExpenseDeclaration;
-import com.github.Finance.models.User;
+import com.github.Finance.models.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,13 +16,15 @@ public class ExpenseDetailsService {
     private final CardService cardService;
     private final ExpenseService expenseService;
     private final CardExpenseService cardExpenseService;
+    private final InstallmentService installmentService;
 
-    public ExpenseDetailsService(AuthenticationService authenticationService, ExpenseDeclarationService expenseDeclarationService, CardService cardService, ExpenseService expenseService, CardExpenseService cardExpenseService) {
+    public ExpenseDetailsService(AuthenticationService authenticationService, ExpenseDeclarationService expenseDeclarationService, CardService cardService, ExpenseService expenseService, CardExpenseService cardExpenseService, InstallmentService installmentService) {
         this.authenticationService = authenticationService;
         this.expenseDeclarationService = expenseDeclarationService;
         this.cardService = cardService;
         this.expenseService = expenseService;
         this.cardExpenseService = cardExpenseService;
+        this.installmentService = installmentService;
     }
 
     public void validateUserAccess(Long id) {
@@ -133,6 +132,17 @@ public class ExpenseDetailsService {
      */
     private void creditCardExpenseFlow(Card card, ExpenseDeclaration expenseDeclaration, Integer splits, String status) {
 
+
+
+        // Before saving the expense, create an installment record
+        Installment installment = installmentService.createInstallment(
+            expenseDeclaration.getAmount().longValue(),
+            splits,
+            expenseDeclaration.getInfo(),
+            expenseDeclaration.getPaymentMethod(),
+            expenseDeclaration.getUser()
+        );
+
         long splitValue = expenseDeclaration.getAmount().longValue() / splits;
         LocalDate date = expenseDeclaration.getDate();
 
@@ -147,6 +157,7 @@ public class ExpenseDetailsService {
             expense.setDate(date);
             expense.setUser(expenseDeclaration.getUser());
             expense.setCategory(expenseDeclaration.getCategory());
+            expense.setInstallment(installment);
             expense = expenseService.saveExpense(expense);
 
             cardExpenseService.processExpenseDetails(expense, card, true, splits, status);
