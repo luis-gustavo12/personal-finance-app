@@ -220,4 +220,17 @@ public class ExpenseService {
     public Expense saveExpense(Expense expense) {
         return repository.save(expense);
     }
+
+    /**
+     * Method responsible for getting the users most recent expenses. So far, expenses
+     * set until today and from 45 days
+     * @return The desired list
+     */
+    public List<Expense> getUserMostRecentExpenses() {
+        User user = authenticationService.getCurrentAuthenticatedUser();
+
+        return repository.findExpensesByUserAndPeriod(user, LocalDate.now().minusDays(45), LocalDate.now());
+
+    }
+
 }

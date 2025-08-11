@@ -59,7 +59,7 @@ public class ExpensesController {
 
     @GetMapping("")
     public String expenses(Model model) {
-        List<Expense> expenses = expenseService.getUserExpenses();
+        List<Expense> expenses = expenseService.getUserMostRecentExpenses();
         List<ExpenseDetails> expenseDetails = expenseService.getExpenseDetails(expenses);
         model.addAttribute("expenses", expenseDetails);
         return "expenses";
