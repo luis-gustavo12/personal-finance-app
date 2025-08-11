@@ -143,7 +143,7 @@ public class ExpenseDetailsService {
             expenseDeclaration.getUser()
         );
 
-        long splitValue = expenseDeclaration.getAmount().longValue() / splits;
+        double splitValue = expenseDeclaration.getAmount().doubleValue() / splits;
         LocalDate date = expenseDeclaration.getDate();
 
         for (int i = 0; i < splits; i++, date = date.plusMonths(1)) {
