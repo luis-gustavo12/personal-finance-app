@@ -1,14 +1,17 @@
 package com.github.Finance.controllers.web;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 import com.github.Finance.dtos.UpdateExpenseDTO;
+import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
+import com.github.Finance.dtos.response.ExpenseResponse;
 import com.github.Finance.dtos.views.*;
-import com.github.Finance.dtos.forms.AddExpenseDetailsForm;
 import com.github.Finance.dtos.forms.AddExpenseForm;
 import com.github.Finance.models.*;
 import com.github.Finance.services.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -62,6 +64,17 @@ public class ExpensesController {
         List<Expense> expenses = expenseService.getUserMostRecentExpenses();
         List<ExpenseDetails> expenseDetails = expenseService.getExpenseDetails(expenses);
         model.addAttribute("expenses", expenseDetails);
+        model.addAttribute("years", expenses.stream()
+                .map(year -> year.getDate().getYear())
+                .distinct()
+                .collect(Collectors.toList()));
+        model.addAttribute("currencies", expenses.stream()
+                .map(expense -> expense.getCurrency().getCurrencyFlag())
+                .distinct()
+                .collect(Collectors.toList()));
+        model.addAttribute("paymentMethods", expenses.stream()
+                .map(Expense::getPaymentMethod)
+                .distinct().collect(Collectors.toList()));
         return "expenses";
     }
 
@@ -126,6 +139,16 @@ public class ExpensesController {
 
         return "redirect:/expenses";
 
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterExpenses(IncomeExpenseFilterForm form) {
+
+        List<Expense> expenses = expenseService.getExpenseFilters(form);
+        List<ExpenseResponse> response = expenses.stream()
+                .map(ExpenseResponse::new)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     

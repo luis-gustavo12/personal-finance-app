@@ -6,6 +6,7 @@
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" th:href="@{/css/expenses.css}">
     <link rel="stylesheet" th:href="@{/css/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/search-bar.css}">
     <title>Despesas</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -18,15 +19,78 @@
 
             <a th:href="@{/expenses/create}" class="nav-panel">Criar Despesa</a>
 
-            <a href="#" class="nav-panel">Atualizar Despesa</a>
         </div>
-
 
     </nav>
 
 
 
     <main class="main-content">
+
+
+        <section>
+            <form method="get" class="controls-section" id="filter-incomes-form">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="month-select">Month</label>
+                        <select name="month" id="month-select" class="form-control">
+                            <option value="">Todos</option>
+                            <option value="1">Janeiro</option>
+                            <option value="2">Fevereiro</option>
+                            <option value="3">Março</option>
+                            <option value="4">Abril</option>
+                            <option value="5">Maio</option>
+                            <option value="6">Junho</option>
+                            <option value="7">Julho</option>
+                            <option value="8">Agosto</option>
+                            <option value="9">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="year-select">Year</label>
+                        <select id="year-select" name="year" class="form-control">
+                            <option value="">Todos</option>
+                            <option th:each="year : ${years}" th:value="${year}" th:text="${year}"></option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="currency-select">Moeda</label>
+                        <select id="currency-select" name="currencyFlag" class="form-control">
+                            <option value="">Todos</option>
+                            <option th:each="currency : ${currencies}" th:value="${currency}" th:text="${currency}"></option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="payment-method-select">Forma de Pagamento</label>
+                        <select id="payment-method-select" name="paymentMethodId" class="form-control">
+                            <option value="">Todos</option>
+                            <option th:each="pm : ${paymentMethods}" th:text="${pm.description}" th:value="${pm.id}"></option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label for="amount-min">Quantia mínima</label>
+                        <input type="number" step="0.01" min="0" id="amount-min" name="minimumAmount" class="form-control decimal-field" placeholder="Min">
+                    </div>
+                    <div class="filter-item">
+                        <label for="amount-max">Quantia máxima</label>
+                        <input type="number" step="0.01" min="0" id="amount-max" name="maximumAmount" class="form-control decimal-field" placeholder="Max">
+                    </div>
+                    <div class="filter-item">
+                        <label for="desc-search">Descrição</label>
+                        <input type="text" id="desc-search" name="description" class="form-control" placeholder="Buscar Descrição">
+                    </div>
+
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary" id="apply-filter">Filtrar</button>
+                    <button type="reset" class="btn btn-secondary" id="reset-filter">Apagar</button>
+                </div>
+
+            </form>
+        </section>
 
         <p th:if="${expenses.isEmpty}">
             Você não tem nenhuma despesa!!! Clique <a th:href="@{/expenses/create}" class="redirect-anchor">aqui </a> para criar uma
@@ -72,6 +136,6 @@
 
 
 </div>
-
+<script type="module" th:src="@{/js/dist/expenses.js}"></script>
 </body>
 </html>

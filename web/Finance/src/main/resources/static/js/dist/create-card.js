@@ -60,3 +60,4 @@ form.addEventListener('submit', async (event) => {
         form.submit();
     }
 });
+//# sourceMappingURL=create-card.js.map

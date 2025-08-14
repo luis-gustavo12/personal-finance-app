@@ -16,3 +16,4 @@ function checkDecimal() {
         incomeAmount.value = '';
     }
 }
+//# sourceMappingURL=create-incomes.js.map

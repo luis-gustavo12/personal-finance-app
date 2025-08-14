@@ -1,7 +1,7 @@
 package com.github.Finance.services;
 
 import com.github.Finance.dtos.UserIncomeSumDTO;
-import com.github.Finance.dtos.forms.IncomeFilterForm;
+import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
 import com.github.Finance.dtos.response.IncomesDetailResponse;
 import com.github.Finance.exceptions.ResourceNotFoundException;
@@ -154,7 +154,7 @@ public class IncomesService {
 
     // Ajax Requests
 
-    public List<IncomesDetailResponse> getIncomesDetails(IncomeFilterForm form) {
+    public List<IncomesDetailResponse> getIncomesDetails(IncomeExpenseFilterForm form) {
 
         Specification<Income> user = IncomesSpecification.setUser(authenticationService.getCurrentAuthenticatedUser());
         Specification<Income> month = IncomesSpecification.hasMonth(form.month());

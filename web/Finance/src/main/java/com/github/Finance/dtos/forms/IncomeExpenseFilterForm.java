@@ -1,6 +1,6 @@
 package com.github.Finance.dtos.forms;
 
-public record IncomeFilterForm(
+public record IncomeExpenseFilterForm(
     Integer month,
     Integer year,
     String currencyFlag,

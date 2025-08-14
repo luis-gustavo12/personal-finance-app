@@ -13,3 +13,4 @@ export function isFloat(value) {
     }
     return false;
 }
+//# sourceMappingURL=util.js.map

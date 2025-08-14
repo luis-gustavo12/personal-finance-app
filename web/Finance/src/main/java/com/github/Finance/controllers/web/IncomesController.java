@@ -1,15 +1,12 @@
 package com.github.Finance.controllers.web;
 
 
-import com.github.Finance.dtos.forms.IncomeFilterForm;
+import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
 import com.github.Finance.dtos.response.IncomesDetailResponse;
-import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.models.Income;
-import com.github.Finance.models.User;
 import com.github.Finance.services.AuthenticationService;
 import com.github.Finance.services.IncomesService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -83,7 +80,7 @@ public class IncomesController {
     // Ajax Requests
 
     @GetMapping("/filter")
-    public ResponseEntity<?> getIncomesFilter(IncomeFilterForm form) {
+    public ResponseEntity<?> getIncomesFilter(IncomeExpenseFilterForm form) {
         List<IncomesDetailResponse> responses = incomesService.getIncomesDetails(form);
         return ResponseEntity.ok(responses);
     }

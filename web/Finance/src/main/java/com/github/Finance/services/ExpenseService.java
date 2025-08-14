@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.Finance.dtos.UpdateExpenseDTO;
+import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.models.Currency;
 import com.github.Finance.models.Subscription;
+import com.github.Finance.specifications.ExpensesSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 
@@ -233,4 +236,26 @@ public class ExpenseService {
 
     }
 
+    public List<Expense> getExpenseFilters(IncomeExpenseFilterForm form) {
+
+        Specification<Expense> user = ExpensesSpecification.setUser(authenticationService.getCurrentAuthenticatedUser());
+        Specification<Expense> month = ExpensesSpecification.hasMonth(form.month());
+        Specification<Expense> year = ExpensesSpecification.hasYear(form.year());
+        Specification<Expense> currency = ExpensesSpecification.hasCurrency(form.currencyFlag());
+        Specification<Expense> paymentMethods = ExpensesSpecification.hasPaymentMethod(form.paymentMethodId());
+        Specification<Expense> min = ExpensesSpecification.hasMinimum(form.minimumAmount());
+        Specification<Expense> max =  ExpensesSpecification.hasMaximum(form.maximumAmount());
+
+        Specification<Expense> spec = Specification
+                .where(user)
+                .and(month)
+                .and(year)
+                .and(currency)
+                .and(paymentMethods)
+                .and(min)
+                .and(max);
+
+        return repository.findAll(spec);
+
+    }
 }

@@ -83,3 +83,4 @@ function updateTable(incomes) {
     footerCell.textContent = `Total: ${currency} ${formattedSum}`;
     footerCell.colSpan = 5;
 }
+//# sourceMappingURL=incomes.js.map
