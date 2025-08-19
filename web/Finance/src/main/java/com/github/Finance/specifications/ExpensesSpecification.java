@@ -105,4 +105,16 @@ public class ExpensesSpecification {
         };
     }
 
+    public static Specification<Expense> hasCategory(Long categoryId) {
+
+        return new  Specification<Expense>() {
+
+            @Override
+            public Predicate toPredicate(Root<Expense> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.equal(root.get("category").get("id"), categoryId);
+            }
+        };
+
+    }
+
 }

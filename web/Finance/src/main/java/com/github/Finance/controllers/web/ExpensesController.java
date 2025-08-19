@@ -38,23 +38,15 @@ import lombok.extern.slf4j.Slf4j;
 public class ExpensesController {
 
     private final PaymentMethodsService paymentMethodsService;
-    private final CurrencyService currencyService;
     private final ExpenseService expenseService;
-    private final CardExpenseService cardExpenseService;
-    private final CardService cardService;
-    private final EncryptionService encryptionService;
     private final CategoryService categoryService;
     private final ExpenseDeclarationService expenseDeclarationService;
 
-    public ExpensesController(PaymentMethodsService paymentMethodsService, CurrencyService currencyService, ExpenseService expenseService,
-                              CardExpenseService cardExpenseService, CardService cardService, EncryptionService encryptionService, CategoryService categoryService, ExpenseDeclarationService expenseDeclarationService) {
+    public ExpensesController(PaymentMethodsService paymentMethodsService, ExpenseService expenseService,
+        CategoryService categoryService, ExpenseDeclarationService expenseDeclarationService) {
 
         this.paymentMethodsService = paymentMethodsService;
-        this.currencyService = currencyService;
         this.expenseService = expenseService;
-        this.cardExpenseService = cardExpenseService;
-        this.cardService = cardService;
-        this.encryptionService = encryptionService;
         this.categoryService = categoryService;
         this.expenseDeclarationService = expenseDeclarationService;
     }
@@ -75,6 +67,8 @@ public class ExpensesController {
         model.addAttribute("paymentMethods", expenses.stream()
                 .map(Expense::getPaymentMethod)
                 .distinct().collect(Collectors.toList()));
+        model.addAttribute("categories", categoryService.getAllUserCategories());
+        model.addAttribute("sum", expenseService.getExpensesSum(expenses));
         return "expenses";
     }
 

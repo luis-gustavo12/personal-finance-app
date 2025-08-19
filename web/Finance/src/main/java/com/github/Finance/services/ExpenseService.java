@@ -1,10 +1,14 @@
 package com.github.Finance.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.github.Finance.dtos.UpdateExpenseDTO;
+import com.github.Finance.dtos.UserSumResultDTO;
 import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.models.Currency;
@@ -37,8 +41,9 @@ public class ExpenseService {
     private final CardService cardService;
     private final CategoryService categoryService;
     private final SubscriptionService subscriptionService;
+    private final ExchangeRateService exchangeRateService;
 
-    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService) {
+    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService, ExchangeRateService exchangeRateService) {
         this.currencyService = currencyService;
         this.paymentMethodsService = paymentMethodsService;
         this.repository = expenseRepository;
@@ -46,6 +51,7 @@ public class ExpenseService {
         this.cardService = cardService;
         this.categoryService = categoryService;
         this.subscriptionService = subscriptionService;
+        this.exchangeRateService = exchangeRateService;
     }
 
 
@@ -245,6 +251,7 @@ public class ExpenseService {
         Specification<Expense> paymentMethods = ExpensesSpecification.hasPaymentMethod(form.paymentMethodId());
         Specification<Expense> min = ExpensesSpecification.hasMinimum(form.minimumAmount());
         Specification<Expense> max =  ExpensesSpecification.hasMaximum(form.maximumAmount());
+        Specification<Expense> category = ExpensesSpecification.hasCategory(form.categoryId());
 
         Specification<Expense> spec = Specification
                 .where(user)
@@ -253,9 +260,55 @@ public class ExpenseService {
                 .and(currency)
                 .and(paymentMethods)
                 .and(min)
-                .and(max);
+                .and(max)
+                .and(category);
 
         return repository.findAll(spec);
 
     }
+
+    /**
+     * Very identical to IncomesService.getIncomesSum method
+     * @param expenses The expenses you want to have the sum of
+     * @return The Sum of the expenses in the user preferred currency
+     */
+    public UserSumResultDTO getExpensesSum(List<Expense> expenses) {
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+
+        String userCurrency = user.getPreferredCurrency().getCurrencyFlag();
+        BigDecimal sum = BigDecimal.ZERO;
+
+        Map<String, List<Expense>> expensesByCurrency = expenses.stream()
+                .collect(Collectors.groupingBy(expense -> expense.getCurrency().getCurrencyFlag()));
+
+        for (Map.Entry<String, List<Expense>> entry : expensesByCurrency.entrySet()) {
+            String currency = entry.getKey();
+            List<Expense> currencyExpenses = entry.getValue();
+
+            BigDecimal currencySum = currencyExpenses.stream()
+                    .map(Expense::getAmount)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            if (currency.equals(userCurrency)) {
+                sum = sum.add(currencySum);
+                continue;
+            }
+
+            try {
+                Double conversionRate = exchangeRateService.getExchangeRate(currency, userCurrency, LocalDate.now());
+                BigDecimal conversion = BigDecimal.valueOf(conversionRate);
+                sum = sum.add(conversion);
+            } catch (Exception e) {
+                log.error("Failed to calculate conversion rate {} ", e.getMessage());
+            }
+
+            log.info("Sum for Currency {}: [{}]", currency, sum);
+
+        }
+
+        return new UserSumResultDTO(userCurrency, sum.doubleValue());
+
+    }
+
 }

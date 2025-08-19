@@ -1,6 +1,6 @@
 package com.github.Finance.services;
 
-import com.github.Finance.dtos.UserIncomeSumDTO;
+import com.github.Finance.dtos.UserSumResultDTO;
 import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
 import com.github.Finance.dtos.response.IncomesDetailResponse;
@@ -92,11 +92,11 @@ public class IncomesService {
      * and prevents calculation errors by never adding amounts of different currencies directly.
      *
      * @param incomes The list of Income objects to be processed.
-     * @return A {@link UserIncomeSumDTO} containing the final calculated sum and the target currency string.
+     * @return A {@link UserSumResultDTO} containing the final calculated sum and the target currency string.
      *
-     * @see UserIncomeSumDTO
+     * @see UserSumResultDTO
      */
-    public UserIncomeSumDTO getIncomesSum(List<Income> incomes) {
+    public UserSumResultDTO getIncomesSum(List<Income> incomes) {
 
 
         User user =  authenticationService.getCurrentAuthenticatedUser();
@@ -147,7 +147,7 @@ public class IncomesService {
 
 
 
-        return new UserIncomeSumDTO(userCurrency, sum.doubleValue());
+        return new UserSumResultDTO(userCurrency, sum.doubleValue());
     }
 
     public List<Currency> getUserListedCurrencies() {

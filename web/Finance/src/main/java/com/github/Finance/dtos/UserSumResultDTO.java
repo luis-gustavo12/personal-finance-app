@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserIncomeSumDTO {
+public class UserSumResultDTO {
 
     private String userCurrency;
     private Double sum;

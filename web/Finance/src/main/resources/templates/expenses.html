@@ -82,6 +82,13 @@
                         <label for="desc-search">Descrição</label>
                         <input type="text" id="desc-search" name="description" class="form-control" placeholder="Buscar Descrição">
                     </div>
+                    <div class="filter-item">
+                        <label for="categories-search">Categoria</label>
+                        <select name="categoryId" id="categories-search" class="form-control">
+                            <option value="">Todos</option>
+                            <option th:each="cat : ${categories}" th:text="${cat.categoryName}" th:value="${cat.id}"></option>
+                        </select>
+                    </div>
 
                 </div>
                 <div class="action-buttons">
@@ -128,6 +135,11 @@
                     </td>
                 </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td th:text="'Total: ' + ${sum.userCurrency} + ' ' + ${#numbers.formatDecimal(sum.sum, 1, 2)}"></td>
+                    </tr>
+                </tfoot>
 
             </table>
         </div>
