@@ -98,8 +98,11 @@ public class IncomesService {
      */
     public UserIncomeSumDTO getIncomesSum(List<Income> incomes) {
 
-        // TODO: This should be fetched from the current user's preferences, not hardcoded.
-        String userCurrency = "BRL";
+
+        User user =  authenticationService.getCurrentAuthenticatedUser();
+
+
+        String userCurrency = user.getPreferredCurrency().getCurrencyFlag();
         BigDecimal sum = BigDecimal.ZERO;
 
         Map<String, List<Income>> incomesByCurrency = incomes.stream()
@@ -116,7 +119,8 @@ public class IncomesService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             if (incomeCurrency.equals(userCurrency)) {
-                currentCurrencySum = currentCurrencySum.add(currentCurrencySum);
+                sum  = sum.add(currentCurrencySum);
+                log.info("Income currency changed!!: {}", currentCurrencySum);
             } else {
                 // For converting a subtotal, using the current day's rate is a reasonable default.
                 // This could be made more complex later if historical accuracy is needed.

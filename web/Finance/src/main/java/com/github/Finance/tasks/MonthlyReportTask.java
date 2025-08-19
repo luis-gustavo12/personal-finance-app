@@ -18,15 +18,15 @@ public class MonthlyReportTask {
         this.monthlyReportService = monthlyReportService;
     }
 
-    @Scheduled(cron = "0 0 0 2 * ?")
-    public void execute() {
-        try {
-            log.info("Starting monthly report task");
-            monthlyReportService.generateMonthlyReport();
-        } catch (Exception ex) {
-            log.error("Exception occurred while executing task", ex);
-        }
-
-    }
+//    @Scheduled(cron = "0 0 0 2 * ?")
+//    public void execute() {
+//        try {
+//            log.info("Starting monthly report task");
+//            monthlyReportService.generateMonthlyReport();
+//        } catch (Exception ex) {
+//            log.error("Exception occurred while executing task", ex);
+//        }
+//
+//    }
 
 }
