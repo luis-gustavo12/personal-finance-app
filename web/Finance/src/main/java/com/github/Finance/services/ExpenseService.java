@@ -11,8 +11,7 @@ import com.github.Finance.dtos.UpdateExpenseDTO;
 import com.github.Finance.dtos.UserSumResultDTO;
 import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.views.CardView;
-import com.github.Finance.models.Currency;
-import com.github.Finance.models.Subscription;
+import com.github.Finance.models.*;
 import com.github.Finance.specifications.ExpensesSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -23,8 +22,6 @@ import com.github.Finance.dtos.views.ExpenseDetails;
 import com.github.Finance.dtos.views.ExpenseView;
 import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.mappers.ExpenseMapper;
-import com.github.Finance.models.Expense;
-import com.github.Finance.models.User;
 import com.github.Finance.repositories.ExpenseRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -311,4 +308,86 @@ public class ExpenseService {
 
     }
 
+    /**
+     * Method intended to update the amount and the splits on expenses, after it
+     * was modified on installments table.
+     * @param installment The installment that will be indexed
+     * @param splits The new splits amount. If it is null, that means that no splits were changed, only final value
+     */
+    public void updateExpenseAmountByInstallmentAndSplits(Installment installment, Integer splits) {
+
+        double splitAmount;
+        List<Expense> expenses = repository.findExpensesByInstallment(installment);
+
+        if (splits == null || splits.equals(expenses.size())) {
+            log.debug("No splits specified, or number of splits keeps unchanged");
+            splitAmount = installment.getAmount().doubleValue() / installment.getSplits();
+
+            for (Expense expense : expenses) {
+                expense.setAmount(BigDecimal.valueOf(splitAmount));
+                repository.save(expense);
+            }
+            return;
+        }
+
+        int splitsIndex = 1;
+        splitAmount = installment.getAmount().doubleValue() / splits;
+        String declaration = installment.getDescription();
+        // If the splits exceed the new ones, so we need to insert new expenses
+        if (splits > expenses.size()) {
+            Expense lastExpense = new Expense();
+            for (Expense expense : expenses) {
+                expense.setAmount(BigDecimal.valueOf(splitAmount));
+                expense.setExtraInfo(
+                    String.format("Splits [%d/%d] - %s", splitsIndex, splits, declaration)
+                );
+                lastExpense = repository.save(expense);
+                splitsIndex++;
+            }
+
+            log.info("here");
+
+            for (; splitsIndex < splits + 1; splitsIndex++) {
+                Expense expense = new Expense();
+                expense.setPaymentMethod(lastExpense.getPaymentMethod());
+                expense.setAmount(BigDecimal.valueOf(splitAmount));
+                expense.setExtraInfo(
+                    String.format("Splits [%d/%d] - %s", splitsIndex, splits, declaration)
+                );
+                expense.setCurrency(lastExpense.getCurrency());
+                expense.setDate(lastExpense.getDate().plusMonths(1));
+                expense.setCategory(lastExpense.getCategory());
+                expense.setInstallment(lastExpense.getInstallment());
+                expense.setUser(lastExpense.getUser());
+                lastExpense = repository.save(expense);
+            }
+
+        } else {
+
+            // If it is less than, so it means that we need to remove the ones that will no longer be used
+            for (; splitsIndex < splits + 1; splitsIndex++) {
+                // For now, we're just updating the existent values
+                Expense expense = expenses.get(splitsIndex - 1);
+                expense.setAmount(BigDecimal.valueOf(splitAmount));
+                expense.setExtraInfo(
+                        String.format("Splits [%d/%d] - %s", splitsIndex, splits, declaration)
+                );
+                repository.save(expense);
+            }
+            // Now we need to remove the older ones, since the splits number are less than the previously declared
+            for (; splitsIndex < expenses.size() + 1; splitsIndex++) {
+                Expense expense = expenses.get(splitsIndex - 1);
+                repository.delete(expense);
+            }
+
+
+        }
+
+        log.info("Update expense amounts by installment");
+
+    }
+
+    public int deleteExpenseByInstallment(Installment installment) {
+        return repository.deleteExpenseByInstallment(installment);
+    }
 }

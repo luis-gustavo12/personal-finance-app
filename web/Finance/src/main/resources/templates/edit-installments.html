@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Parcelamento</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/forms.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+
+    <div th:insert="~{layouts/return-nav-button :: backButtonNav}"></div>
+
+    <form th:method="post">
+
+        <div th:insert="~{layouts/hidden-csrf-token :: hiddenCsrf}"></div>
+
+        <label for="amount">Quantia</label>
+        <input type="text" name="amount" id="amount" th:value="${installment.amount}" required>
+
+        <label for="splits-amount">Numero de parcelas</label>
+        <input type="text" name="splits" id="splits-amount" th:value="${installment.splits}" required>
+
+        <label for="description">Descrição</label>
+        <textarea name="description" id="description" cols="3" rows="15" th:text="${installment.description}"></textarea>
+
+        <label for="paymentMethod">Método de pagamento</label>
+        <select name="paymentMethod" id="paymentMethod">
+            <option th:each="pm: ${paymentMethods}" th:value="${pm.id}" th:text="${pm.description}"
+                    th:selected="${installment.id == pm.id}">
+            </option>
+
+        </select>
+
+
+        <button type="submit">Enviar</button>
+
+    </form>
+
+</div>
+
+
+</body>
+</html>

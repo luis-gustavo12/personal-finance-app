@@ -1,0 +1,1 @@
+ALTER TABLE card_expenses DROP FOREIGN KEY card_expenses_ibfk_2;

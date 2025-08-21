@@ -31,4 +31,10 @@ public class Installment {
     )
     private User user;
 
+    @ManyToOne
+    @JoinColumn(
+        name = "card_id"
+    )
+    private Card card;
+
 }

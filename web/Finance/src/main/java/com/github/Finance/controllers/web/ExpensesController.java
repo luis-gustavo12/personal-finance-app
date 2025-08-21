@@ -107,6 +107,14 @@ public class ExpensesController {
         Expense expense = expenseService.findExpenseById(id);
         expenseService.validateExpenseByUser(expense);
 
+        // Special case for expenses that come from installments
+        if (expense.getInstallment() != null) {
+
+            // In this case, you must be able to edit the installment, and not the expense itself
+            return "redirect:/installments/edit/" + expense.getInstallment().getId();
+
+        }
+
         model.addAttribute("expense", expense);
         model.addAttribute("paymentMethods", paymentMethodsService.getAllPaymentMethods());
         model.addAttribute("currencies", expenseService.findAllCurrenciesByUser());
@@ -129,6 +137,10 @@ public class ExpensesController {
     public String deleteExpense(@PathVariable Long id) {
 
         expenseService.validateExpenseByUser(expenseService.findExpenseById(id));
+        Expense expense = expenseService.findExpenseById(id);
+        if (expense.getInstallment() != null) {
+            return "redirect:/installments/delete/" + expense.getInstallment().getId();
+        }
         expenseService.deleteExpense(id);
 
         return "redirect:/expenses";

@@ -140,7 +140,8 @@ public class ExpenseDetailsService {
             splits,
             expenseDeclaration.getInfo(),
             expenseDeclaration.getPaymentMethod(),
-            expenseDeclaration.getUser()
+            expenseDeclaration.getUser(),
+            card
         );
 
         double splitValue = expenseDeclaration.getAmount().doubleValue() / splits;
@@ -160,7 +161,7 @@ public class ExpenseDetailsService {
             expense.setInstallment(installment);
             expense = expenseService.saveExpense(expense);
 
-            cardExpenseService.processExpenseDetails(expense, card, true, splits, status);
+            //cardExpenseService.processExpenseDetails(expense, card, true, splits, status);
 
         }
 
