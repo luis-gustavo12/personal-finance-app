@@ -141,7 +141,9 @@ public class ExpenseDetailsService {
             expenseDeclaration.getInfo(),
             expenseDeclaration.getPaymentMethod(),
             expenseDeclaration.getUser(),
-            card
+            card,
+            expenseDeclaration.getDate(),
+            expenseDeclaration.getCurrency()
         );
 
         double splitValue = expenseDeclaration.getAmount().doubleValue() / splits;

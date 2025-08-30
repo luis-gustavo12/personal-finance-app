@@ -1,0 +1,2 @@
+ALTER TABLE installments
+ADD COLUMN created_at DATE DEFAULT CURRENT_DATE

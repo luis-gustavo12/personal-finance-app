@@ -55,9 +55,9 @@
                     <span class="amount-value" th:text="${#numbers.formatDecimal(expensesSum, 1, 'POINT', 2, 'COMMA')}" style="color: red"></span>
                 </div>
             </div>
-            <div th:if="${subscriptions != null}" class="financial-summary-card subscription-card">
+            <div th:if="${subscriptions != null}" class="financial-summary-card double-element-card">
                 <h3>Assinaturas Mensais</h3>
-                <div class="subscription-details">
+                <div class="double-element-details">
                     <div class="primary-detail">
                         <span class="currency-symbol" th:text="${subscriptions.currency.currencySymbol}"></span>
                         <span class="amount-value" th:text="${#numbers.formatDecimal(subscriptions.totalAmount, 1, 'POINT', 2, 'COMMA')}"></span>
@@ -66,18 +66,43 @@
                     <div class="secondary-detail">
                         <span th:text="${subscriptions.numberOfSubscriptions}"></span>
                         <span>assinaturas ativas</span>
-                        <button id="modalButton" title="View active subscriptions">i</button>
+                        <button id="open-modal-button" class="open-modal-button" title="View active subscriptions">i</button>
                     </div>
                 </div>
             </div>
+            <div th:if="${installments != null}" class="financial-summary-card double-element-card">
+                <h3>Parcelamentos</h3>
+                <div class="double-element-details">
+                    <div class="primary-detail">
+                        <span class="currency-symbol" th:text="${installments.currency.currencySymbol}"></span>
+                        <span class="amount-value" th:text="${#numbers.formatDecimal(installments.totalAmount, 1, 'POINT', 2, 'COMMA')}"></span>
+                    </div>
+                    <div class="secondary-detail">
+                        <span th:text="${installments.installments}"></span>
+                        <span>parcelamentos restantes</span>
+                        <button id="installmentsModal" class="open-modal-button" title="Visualizar parcelamentos">i</button>
+                    </div>
+                </div>
+
+            </div>
 
             <dialog class="modal" id="subscription-modal">
-                <div id="subscriptionsSummary" class="subscription-list-container">
-                    <h4>Active Subscriptions</h4>
+                <div id="subscriptionsSummary" class="modal-element-container">
+                    <h4>Assinaturas Ativas</h4>
                     <ul>
                         <li th:each="sub : ${subscriptions.subscriptions}" th:text="${sub}"></li>
                     </ul>
-                    <button id="closeModal">Close</button>
+                    <button id="closeModalButton" class="close-modal-button">Close</button>
+                </div>
+            </dialog>
+
+            <dialog class="modal" id="installments-modal">
+                <div class="modal-element-container">
+                    <h4>Parcelamentos Ativos</h4>
+                    <ul>
+                        <li th:each="inst : ${installments.subscriptionsDetails}" th:text="${inst}"></li>
+                    </ul>
+                    <button id="closeInstallment" class="close-modal-button">Ok</button>
                 </div>
             </dialog>
 

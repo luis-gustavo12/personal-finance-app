@@ -1,0 +1,2 @@
+ALTER TABLE installments
+ADD COLUMN first_split_date DATE NOT NULL DEFAULT CURRENT_DATE

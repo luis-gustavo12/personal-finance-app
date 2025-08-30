@@ -33,6 +33,7 @@
                         <th>Parcelas</th>
                         <th>Descrição</th>
                         <th>Método de Pagamento</th>
+                        <th>Data da Primera Parcela</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,7 @@
                         <td th:text="${installment.splits}"></td>
                         <td th:text="${installment.description}"></td>
                         <td th:text="${installment.paymentMethod.description}"></td>
+                        <td th:text="${#temporals.format(installment.firstSplitDate, 'dd/MM/yyyy')}"></td>
                     </tr>
                 </tbody>
 

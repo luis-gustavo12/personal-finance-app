@@ -1,5 +1,6 @@
 package com.github.Finance.controllers.web;
 
+import com.github.Finance.dtos.installments.InstallmentsDashboardView;
 import com.github.Finance.dtos.subscriptions.SubscriptionsDashboardView;
 import com.github.Finance.models.Expense;
 import com.github.Finance.models.Income;
@@ -27,14 +28,16 @@ public class DashboardController {
     private final ExpenseService expenseService;
     private final MonthlyReportTask monthlyReportTask;
     private final SubscriptionService subscriptionService;
+    private final InstallmentService installmentService;
 
-    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, MonthlyReportTask monthlyReportTask, SubscriptionService subscriptionService) {
+    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, MonthlyReportTask monthlyReportTask, SubscriptionService subscriptionService, InstallmentService installmentService) {
         this.reportService = reportService;
         this.authenticationService = authenticationService;
         this.incomesService = incomesService;
         this.expenseService = expenseService;
         this.monthlyReportTask = monthlyReportTask;
         this.subscriptionService = subscriptionService;
+        this.installmentService = installmentService;
     }
 
 
@@ -46,7 +49,7 @@ public class DashboardController {
         calculateIncomes(user, model);
         calculateExpenses(user, model);
         model.addAttribute("subscriptions", getUserSubscriptionsSummary(user));
-
+        model.addAttribute("installments", getUserInstallmentsDetails(user));
         return "dashboard";
     }
 
@@ -91,6 +94,10 @@ public class DashboardController {
 
     private SubscriptionsDashboardView getUserSubscriptionsSummary(User user) {
         return subscriptionService.getSubscriptionsOverallSummary(user);
+    }
+
+    private InstallmentsDashboardView getUserInstallmentsDetails(User user) {
+        return installmentService.getInstallmentsDashboardDetails(user);
     }
     
 }

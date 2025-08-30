@@ -1,5 +1,6 @@
 package com.github.Finance.services;
 
+import com.github.Finance.dtos.installments.InstallmentsDashboardView;
 import com.github.Finance.dtos.requests.InstallmentUpdateRequest;
 import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.models.*;
@@ -8,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,11 +30,11 @@ public class InstallmentService {
     }
 
     public Installment createInstallment(
-        Long amount,
-        int splits,
-        String description,
-        PaymentMethod paymentMethod,
-        User user, Card card) {
+            Long amount,
+            int splits,
+            String description,
+            PaymentMethod paymentMethod,
+            User user, Card card, LocalDate date, Currency currency) {
 
         Installment installment = new Installment();
         installment.setAmount(BigDecimal.valueOf(amount));
@@ -39,6 +42,8 @@ public class InstallmentService {
         installment.setDescription(description);
         installment.setPaymentMethod(paymentMethod);
         installment.setUser(user);
+        installment.setFirstSplitDate(date);
+        installment.setCurrency(currency);
         if (card != null)
             installment.setCard(card);
 
@@ -139,6 +144,37 @@ public class InstallmentService {
         }
 
 
+
+    }
+
+    public InstallmentsDashboardView getInstallmentsDashboardDetails(User user) {
+
+        List<Installment> installments = installmentRepository.findUserActiveInstallments(user);
+
+        if (installments.isEmpty()) {
+            return null;
+        }
+
+        Double totalAmount = installments.stream()
+            .map(Installment::getAmount)
+            .mapToDouble(BigDecimal::doubleValue)
+            .sum();
+
+        List<String> installmentsDescriptions = new ArrayList<>(installments.size());
+        for (Installment installment : installments) {
+            //installmentsDescriptions.add(installment.getDescription());
+            log.debug("Formated: [{}]", String.format("%s (%s %.2f)", installment.getDescription(), installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue()));
+            installmentsDescriptions.add(
+                String.format("%s (%s %.2f)", installment.getDescription(), installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue())
+            );
+        }
+
+        return new InstallmentsDashboardView(
+            totalAmount,
+            installments.size(),
+            user.getPreferredCurrency(),
+            installmentsDescriptions
+        );
 
     }
 

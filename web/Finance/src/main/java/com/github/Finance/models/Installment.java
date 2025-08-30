@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Table(name = "installments")
 @Entity
@@ -36,5 +37,15 @@ public class Installment {
         name = "card_id"
     )
     private Card card;
+
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private LocalDate createdAt;
+
+    @Column(name = "first_split_date")
+    private LocalDate firstSplitDate;
+
+    @ManyToOne
+    @JoinColumn(name = "currency_id")
+    private Currency currency;
 
 }
