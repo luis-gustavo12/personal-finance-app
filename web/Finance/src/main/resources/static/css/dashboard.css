@@ -117,7 +117,7 @@ dialog.modal {
 .subscription-list-container {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Space between the list and the button */
+    gap: 20px;
 }
 
 #modalButton {
@@ -144,7 +144,7 @@ dialog.modal {
 }
 
 #closeModal {
-    background-color: var(--main-blue); /* Using your color from styles.css */
+    background-color: var(--main-blue);
     color: white;
     font-weight: 600;
     padding: 12px 24px;
@@ -152,10 +152,10 @@ dialog.modal {
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s;
-    align-self: flex-end; /* Aligns the button to the right */
+    align-self: flex-end;
     margin-top: 10px;
 }
 
 #closeModal:hover {
-    background-color: #007bb5; /* A slightly darker blue for hover */
+    background-color: #007bb5;
 }
