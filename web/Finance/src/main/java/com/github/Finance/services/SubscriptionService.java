@@ -1,9 +1,12 @@
 package com.github.Finance.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.github.Finance.dtos.SubscriptionDetailsDTO;
+import com.github.Finance.dtos.subscriptions.SubscriptionsDashboardView;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.dtos.views.SubscriptionsSummaryView;
 import com.github.Finance.models.*;
@@ -11,7 +14,6 @@ import com.github.Finance.provider.currencyexchange.CurrencyExchangeProvider;
 import com.github.Finance.provider.currencyexchange.FrankfurterCurrencyProvider;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -204,4 +206,42 @@ public class SubscriptionService {
         return repository.findTodayChargedSubscriptions((byte) LocalDate.now().getDayOfMonth());
 
     }
+
+    /**
+     * Method responsible for giving a nice overview of the subscriptions
+     * @param user Desired user
+     * @return The View
+     */
+    public SubscriptionsDashboardView getSubscriptionsOverallSummary(User user) {
+
+        List<Subscription> subscriptions = repository.findSubscriptionsSummary(user);
+        log.debug("Found {} subscription(s)", subscriptions.size());
+
+        if (subscriptions.isEmpty()) {
+            return null;
+        }
+
+        Double totalAmount = subscriptions.stream()
+                .map(Subscription::getCost)
+                .mapToDouble(BigDecimal::doubleValue)
+                .sum();
+
+        List<String> subscriptionsNames = new ArrayList<>(subscriptions.size());
+
+        for (Subscription subscription : subscriptions) {
+
+            subscriptionsNames.add(
+                String.format("%s (%s %s)", subscription.getName(), subscription.getCurrency().getCurrencyFlag() ,subscription.getCost())
+            );
+
+        }
+
+        return new SubscriptionsDashboardView(
+            subscriptions.size(),
+            user.getPreferredCurrency(),
+            totalAmount, subscriptionsNames
+        );
+
+    }
+
 }

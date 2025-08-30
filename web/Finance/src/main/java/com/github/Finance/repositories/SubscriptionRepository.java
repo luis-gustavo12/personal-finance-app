@@ -18,4 +18,7 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     @Query("SELECT s FROM Subscription s WHERE s.dayOfCharging = :date")
     List<Subscription> findTodayChargedSubscriptions(Byte date);
+
+    @Query("SELECT s FROM Subscription s WHERE s.validUntil IS NULL")
+    List<Subscription> findSubscriptionsSummary(User user);
 }

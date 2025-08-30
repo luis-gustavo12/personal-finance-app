@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/base}">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title>Dashboard</title>
-    <th:block layout:fragment="page-css">
-        <link rel="stylesheet" th:href="@{/css/dashboard.css}">
-    </th:block>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
 </head>
 <body>
 
@@ -52,9 +52,34 @@
                 <h3>Total de Despesas</h3>
                 <div class="amount">
                     <span class="currency-symbol">R$</span>
-                    <span class="amount-value" th:text="${#numbers.formatDecimal(expensesSum, 1, 'POINT', 2, 'COMMA')}"></span>
+                    <span class="amount-value" th:text="${#numbers.formatDecimal(expensesSum, 1, 'POINT', 2, 'COMMA')}" style="color: red"></span>
                 </div>
             </div>
+            <div th:if="${subscriptions != null}" class="financial-summary-card subscription-card">
+                <h3>Assinaturas Mensais</h3>
+                <div class="subscription-details">
+                    <div class="primary-detail">
+                        <span class="currency-symbol" th:text="${subscriptions.currency.currencySymbol}"></span>
+                        <span class="amount-value" th:text="${#numbers.formatDecimal(subscriptions.totalAmount, 1, 'POINT', 2, 'COMMA')}"></span>
+                        <span class="detail-label">/mês</span>
+                    </div>
+                    <div class="secondary-detail">
+                        <span th:text="${subscriptions.numberOfSubscriptions}"></span>
+                        <span>assinaturas ativas</span>
+                        <button id="modalButton" title="View active subscriptions">i</button>
+                    </div>
+                </div>
+            </div>
+
+            <dialog class="modal" id="subscription-modal">
+                <div id="subscriptionsSummary" class="subscription-list-container">
+                    <h4>Active Subscriptions</h4>
+                    <ul>
+                        <li th:each="sub : ${subscriptions.subscriptions}" th:text="${sub}"></li>
+                    </ul>
+                    <button id="closeModal">Close</button>
+                </div>
+            </dialog>
 
         </section>
     </main>
@@ -64,5 +89,8 @@
 
     </footer>
 
+    <script type="module" th:src="@{/js/dist/dashboard.js}">
+
+    </script>
 </body>
 </html>

@@ -1,9 +1,8 @@
 package com.github.Finance.controllers.web;
 
-import com.github.Finance.dtos.dashboard.DashboardDTO;
+import com.github.Finance.dtos.subscriptions.SubscriptionsDashboardView;
 import com.github.Finance.models.Expense;
 import com.github.Finance.models.Income;
-import com.github.Finance.models.Report;
 import com.github.Finance.models.User;
 import com.github.Finance.services.*;
 import com.github.Finance.tasks.MonthlyReportTask;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/dashboard")
@@ -28,13 +26,15 @@ public class DashboardController {
     private final IncomesService incomesService;
     private final ExpenseService expenseService;
     private final MonthlyReportTask monthlyReportTask;
+    private final SubscriptionService subscriptionService;
 
-    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, MonthlyReportTask monthlyReportTask) {
+    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, MonthlyReportTask monthlyReportTask, SubscriptionService subscriptionService) {
         this.reportService = reportService;
         this.authenticationService = authenticationService;
         this.incomesService = incomesService;
         this.expenseService = expenseService;
         this.monthlyReportTask = monthlyReportTask;
+        this.subscriptionService = subscriptionService;
     }
 
 
@@ -45,6 +45,7 @@ public class DashboardController {
 
         calculateIncomes(user, model);
         calculateExpenses(user, model);
+        model.addAttribute("subscriptions", getUserSubscriptionsSummary(user));
 
         return "dashboard";
     }
@@ -86,6 +87,10 @@ public class DashboardController {
 
         model.addAttribute("expensesSum", expensesSum);
 
+    }
+
+    private SubscriptionsDashboardView getUserSubscriptionsSummary(User user) {
+        return subscriptionService.getSubscriptionsOverallSummary(user);
     }
     
 }
