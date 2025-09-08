@@ -86,7 +86,7 @@
 
             </div>
 
-            <dialog class="modal" id="subscription-modal">
+            <dialog th:if="${subscriptions != null}" class="modal" id="subscription-modal">
                 <div id="subscriptionsSummary" class="modal-element-container">
                     <h4>Assinaturas Ativas</h4>
                     <ul>
@@ -96,7 +96,7 @@
                 </div>
             </dialog>
 
-            <dialog class="modal" id="installments-modal">
+            <dialog th:if="${installments != null}" class="modal" id="installments-modal">
                 <div class="modal-element-container">
                     <h4>Parcelamentos Ativos</h4>
                     <ul>
