@@ -107,7 +107,7 @@ public class ExpenseDetailsService {
             throw new ResourceNotFoundException("Expense declaration not found");
         }
 
-        if (form.installmentCheck() && form.splits() > 1) {
+        if (form.installmentCheck() != null && form.splits() > 1) {
             // Follow the splits check
             creditCardExpenseFlow(card, expenseDeclaration, form.splits(), form.status());
             return;
