@@ -66,6 +66,7 @@ public class CardService {
             cardView.setCardType(card.getCardType());
             cardGatewayService.getCardDetails(cardView, card.getToken());
             cardView.setId(card.getId());
+            cardView.setCardName(card.getCardDescription());
             cardViews.add(cardView);
         }
         
