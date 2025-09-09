@@ -71,12 +71,19 @@
                 </div>
             </div>
             <div th:if="${installments != null}" class="financial-summary-card double-element-card">
-                <h3>Parcelamentos</h3>
+                <h3>Parcelamentos / Despesa Mensal de Parcelamentoss</h3>
                 <div class="double-element-details">
-                    <div class="primary-detail">
-                        <span class="currency-symbol" th:text="${installments.currency.currencySymbol}"></span>
-                        <span class="amount-value" th:text="${#numbers.formatDecimal(installments.totalAmount, 1, 'POINT', 2, 'COMMA')}"></span>
+                    <div class="primary-details-container">
+                        <div class="primary-detail">
+                            <span class="currency-symbol" th:text="${installments.currency.currencySymbol}"></span>
+                            <span class="amount-value" th:text="${#numbers.formatDecimal(installments.totalAmount, 1, 'POINT', 2, 'COMMA')}"></span>
+                        </div>
+                        <div class="primary-detail" style="display: inline-block;">
+                            <span class="currency-symbol" th:text="${installments.currency.currencySymbol}"></span>
+                            <span class="amount-value" th:text="${#numbers.formatDecimal(installments.installmentAverage, 1, 'POINT', 2, 'COMMA')}"></span>
+                        </div>
                     </div>
+
                     <div class="secondary-detail">
                         <span th:text="${installments.installments}"></span>
                         <span>parcelamentos restantes</span>

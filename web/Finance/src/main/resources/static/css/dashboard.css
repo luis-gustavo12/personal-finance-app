@@ -77,6 +77,20 @@ section.main-panel {
     color: #666;
 }
 
+.primary-details-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.primary-details-container .primary-detail:first-child::after {
+    content: '/';
+    font-size: 0.8em;
+    font-weight: 500;
+    color: #555;
+    margin-left: 8px;
+}
+
 .double-element-card h3 {
     margin-bottom: 16px;
 }

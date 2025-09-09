@@ -9,7 +9,8 @@ public record InstallmentsDashboardView(
     Double totalAmount,
     Integer installments, // number of installments
     Currency currency,
-    List<String> subscriptionsDetails
+    List<String> subscriptionsDetails,
+    Double installmentAverage
 ) {
 
 }

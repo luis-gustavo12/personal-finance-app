@@ -169,11 +169,19 @@ public class InstallmentService {
             );
         }
 
+        double average = 0.0;
+        for (Installment installment : installments) {
+            average += installment.getAmount().doubleValue() / installment.getSplits();
+        }
+
+        log.info("Average amount: {}", average);
+
         return new InstallmentsDashboardView(
             totalAmount,
             installments.size(),
             user.getPreferredCurrency(),
-            installmentsDescriptions
+            installmentsDescriptions,
+            average
         );
 
     }
