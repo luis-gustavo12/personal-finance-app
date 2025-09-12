@@ -44,8 +44,7 @@ public class AccountRecoverService {
         }
 
         String token = tokenService.generateToken(
-            user, "Account Recover", user.getEmail(),
-        3600 * 1000
+            user
         );
 
         recoverPasswordTokenService.storeToken(token, user);

@@ -2,6 +2,7 @@ package com.github.Finance.services;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.github.Finance.models.User;
@@ -18,58 +19,54 @@ import java.util.UUID;
 public class TokenService {
 
     private final Algorithm algorithm;
+    private final String issuer;
+    private final JWTVerifier verifier;
 
-    public TokenService(@Value("${jwt.secret-key}") String secretKey) {
+    public TokenService(@Value("${jwt.secret-key}") String secretKey, @Value("${jwt.issuer}") String issuer) {
         this.algorithm = Algorithm.HMAC256(secretKey);
+        this.issuer = issuer;
+        this.verifier = JWT.require(this.algorithm).withIssuer(issuer).build();
     }
 
-    public String generateToken(User user, String issuer, String subject, long expiration ) {
+    public String generateToken(User user ) {
 
         DecodedJWT jwt;
         Date now = new Date();
 
         try {
-            String token = JWT.create()
+            return JWT.create()
                     .withIssuer(issuer)
-                    .withSubject(subject)
-                    .withExpiresAt(new Date(now.getTime() + expiration))
+                    .withSubject(user.getEmail())
+                    .withExpiresAt(new Date(now.getTime() + 3600 * 1000))
                     .withIssuedAt(now)
                     .withClaim("userId", user.getId().toString())
                     .sign(algorithm);
-            return token;
         } catch (Exception e) {
             log.error("Error on token generation: {}", e.getMessage());
             return null;
         }
 
 
+    }
+
+    public DecodedJWT verifyToken(String token) {
+        try {
+            return verifier.verify(token);
+        } catch (JWTVerificationException e) {
+            log.error("Error on token verification: {}", e.getMessage());
+            return null;
+        }
     }
 
     public Long getIdFromToken(String token) {
-        DecodedJWT jwt;
-
-        try {
-
-        } catch (Exception e) {
-            return null;
-        }
-
-        return null;
+        DecodedJWT decodedJWT = verifyToken(token);
+        return (decodedJWT != null) ? decodedJWT.getClaim("userId").asLong() : null;
     }
 
     public String getSubjectFromToken(String token) {
-        DecodedJWT jwt;
 
-        try {
-            jwt = JWT.decode(token);
-            String subject = jwt.getSubject();
-            log.info("Subject: {}", subject);
-            return subject;
-        } catch (Exception e) {
-            log.error("Error on token generation: {}", e.getMessage());
-        }
-
-        return null;
+        DecodedJWT jwt = verifyToken(token);
+        return (jwt != null) ? jwt.getSubject() : "";
     }
 
 }

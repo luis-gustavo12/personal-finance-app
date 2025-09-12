@@ -125,13 +125,15 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
         spring.quartz.properties.org.quartz.threadPool.threadCount=10
         ```        
     - Para tokens JWT
-        - Adicionar a seguinte linha no application.properties
+        - Adicionar as seguintes linhas no application.properties
         ```properties
         jwt.secret.key=SECRET_KEY
+        jwt.issuer=ISSUER
         ```
         - De recomendação, é possibile adicionar uma variável de ambiente, para nao divulgar a chave de encriptação
         ```properties
         jwt.secret.key=${SECRET_KEY}
+        jwt.issuer=${ISSUER}
         ```
     - Para usar o Spring Mail:
         - Adicionar a seguinte linha no application.properties
@@ -143,6 +145,7 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
         spring.mail.properties.mail.smtp.auth=true
         spring.mail.properties.mail.smtp.starttls.enable=true
         ```
+        - As demais configurações devem ser adicionadas conforme a orientação do seu email, na configuraçãod o seu SMPT
 
 
 
