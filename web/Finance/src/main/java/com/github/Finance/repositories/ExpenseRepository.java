@@ -24,7 +24,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpec
     "MONTH(e.date) = :month")
     List<Expense> findExpensesByMonthAndYear(User user, int month, int year);
 
-    @Query("SELECT e FROM Expense e WHERE e.user = :user AND e.date BETWEEN :startDate AND :endDate")
+    @Query("SELECT e FROM Expense e WHERE e.user = :user AND e.date BETWEEN :startDate AND :endDate ORDER BY e.date DESC")
     List<Expense> findExpensesByUserAndPeriod(User user, LocalDate startDate, LocalDate endDate);
 
     List<Expense> findExpensesByInstallment(Installment installment);

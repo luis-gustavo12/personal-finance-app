@@ -165,7 +165,7 @@ public class InstallmentService {
             //installmentsDescriptions.add(installment.getDescription());
             log.debug("Formated: [{}]", String.format("%s (%s %.2f)", installment.getDescription(), installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue()));
             installmentsDescriptions.add(
-                String.format("%s (%s %.2f)", installment.getDescription(), installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue())
+                String.format("%s (%d x %s %.2f)", installment.getDescription(), installment.getSplits() ,installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue())
             );
         }
 

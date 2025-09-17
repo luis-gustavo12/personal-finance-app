@@ -123,6 +123,7 @@ public class ExpenseService {
             obj.setExtraInfo(expense.getExtraInfo());
             obj.setDetailedLink(String.format("/expenses/details/%d", expense.getId()));
             obj.setCategory(expense.getCategory());
+            obj.setDate(expense.getDate());
             expenseDetails.add(obj);
         }
 
