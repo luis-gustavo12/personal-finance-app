@@ -124,7 +124,7 @@ dialog.modal[open]::backdrop {
 }
 
 dialog.modal {
-    max-width: 500px;
+    max-width: 750px;
     width: 90%;
     padding: 32px;
     border: none;

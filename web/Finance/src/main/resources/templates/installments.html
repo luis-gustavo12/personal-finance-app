@@ -35,15 +35,17 @@
                         <th>Descrição</th>
                         <th>Método de Pagamento</th>
                         <th>Data da Primera Parcela</th>
+                        <th>Data da Última Parcela</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="installment : ${installments}">
-                        <td th:text="${installment.amount}"></td>
-                        <td th:text="${installment.splits}"></td>
-                        <td th:text="${installment.description}"></td>
-                        <td th:text="${installment.paymentMethod.description}"></td>
-                        <td th:text="${#temporals.format(installment.firstSplitDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${installment.installment.amount}"></td>
+                        <td th:text="${installment.installment.splits}"></td>
+                        <td th:text="${installment.installment.description}"></td>
+                        <td th:text="${installment.installment.paymentMethod.description}"></td>
+                        <td th:text="${#temporals.format(installment.installment.firstSplitDate, 'dd/MM/yyyy')}"></td>
+                        <td th:text="${#temporals.format(installment.lastExpectedSplit, 'dd/MM/yyyy')}"></td>
                     </tr>
                 </tbody>
 

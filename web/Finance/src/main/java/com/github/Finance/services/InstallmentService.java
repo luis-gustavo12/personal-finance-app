@@ -2,6 +2,7 @@ package com.github.Finance.services;
 
 import com.github.Finance.dtos.installments.InstallmentsDashboardView;
 import com.github.Finance.dtos.requests.InstallmentUpdateRequest;
+import com.github.Finance.dtos.views.InstallmentView;
 import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.models.*;
 import com.github.Finance.repositories.InstallmentRepository;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -51,10 +53,14 @@ public class InstallmentService {
 
     }
 
-    public List<Installment> getUserInstallments() {
+    public List<InstallmentView> getUserInstallments() {
         User user = authenticationService.getCurrentAuthenticatedUser();
 
-        return installmentRepository.findAllByUser(user);
+        List<Installment> userInstallments = installmentRepository.findAllByUser(user);
+
+        return userInstallments.stream()
+                .map(InstallmentView::new)
+                .collect(Collectors.toList());
 
     }
 
@@ -163,10 +169,10 @@ public class InstallmentService {
         List<String> installmentsDescriptions = new ArrayList<>(installments.size());
         for (Installment installment : installments) {
             //installmentsDescriptions.add(installment.getDescription());
-            log.debug("Formated: [{}]", String.format("%s (%s %.2f)", installment.getDescription(), installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue()));
-            installmentsDescriptions.add(
-                String.format("%s (%d x %s %.2f)", installment.getDescription(), installment.getSplits() ,installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue())
-            );
+            String formatted = String.format("%s (%s %.2f - %d x %s %.2f)", installment.getDescription() ,installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue(), installment.getSplits(),
+                    installment.getCurrency().getCurrencySymbol(), (installment.getAmount().doubleValue() / installment.getSplits()));
+            log.debug("Formated: [{}]", formatted);
+            installmentsDescriptions.add(formatted);
         }
 
         double average = 0.0;
