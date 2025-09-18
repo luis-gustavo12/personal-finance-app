@@ -26,7 +26,7 @@ public class CategoriesController {
 
     @GetMapping("")
     public String mainCategories(Model model) {
-        model.addAttribute("categories", categoryService.getAllUserCategories());
+        model.addAttribute("categories", categoryService.getAllCurrentLoggedUserCategories());
         return "categories";
     }
 

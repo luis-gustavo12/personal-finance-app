@@ -4,7 +4,8 @@ public record InstallmentUpdateRequest(
         Double amount,
         Integer splits,
         String description,
-        Long paymentMethod
+        Long paymentMethod,
+        Long categoryId
 )
 
 {

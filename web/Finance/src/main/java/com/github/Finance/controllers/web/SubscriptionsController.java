@@ -3,15 +3,12 @@ package com.github.Finance.controllers.web;
 import com.github.Finance.models.Subscription;
 import com.github.Finance.services.CategoryService;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,7 +50,7 @@ public class SubscriptionsController {
         List<PaymentMethod> paymentMethods = service.getPaymentMethods();
         model.addAttribute("currencies", currencies);
         model.addAttribute("methods", paymentMethods);
-        model.addAttribute("categories", categoryService.getAllUserCategories());
+        model.addAttribute("categories", categoryService.getAllCurrentLoggedUserCategories());
         return "create-subscription";
     }
 
@@ -106,7 +103,7 @@ public class SubscriptionsController {
         model.addAttribute("currencies", service.getUserCurrencies());
         model.addAttribute("subscription", service.getSubscriptionDetail(id));
         model.addAttribute("paymentMethods", service.getPaymentMethods());
-        model.addAttribute("categories", categoryService.getAllUserCategories());
+        model.addAttribute("categories", categoryService.getAllCurrentLoggedUserCategories());
         return "subscription-edit";
     }
 

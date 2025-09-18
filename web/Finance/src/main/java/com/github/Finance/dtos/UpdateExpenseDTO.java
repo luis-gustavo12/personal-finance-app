@@ -8,6 +8,7 @@ public record UpdateExpenseDTO(
         Long paymentMethod,
         BigDecimal amount,
         String extraInfo,
-        LocalDate date
+        LocalDate date,
+        Long categoryId
 ) {}
 

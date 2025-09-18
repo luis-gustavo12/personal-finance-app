@@ -159,7 +159,7 @@ public class ExpenseService {
         expense.setPaymentMethod(paymentMethodsService.findPaymentMethod(expenseToUpdate.paymentMethod()));
         expense.setExtraInfo(expenseToUpdate.extraInfo());
         expense.setDate(expenseToUpdate.date());
-
+        expense.setCategory(categoryService.getCategoryById(expenseToUpdate.categoryId()));
         repository.save(expense);
 
         log.info("New expense updated successfully!!!");
@@ -391,4 +391,37 @@ public class ExpenseService {
     public int deleteExpenseByInstallment(Installment installment) {
         return repository.deleteExpenseByInstallment(installment);
     }
+
+    public Expense findExpenseByInstallment(Installment installment) {
+        return repository.findFirstByInstallment(installment);
+    }
+
+    /**
+     * Method designed for updating the categories given one installment
+     * @param categoryId The new categoryId
+     * @param installment The installment to be looked up for
+     */
+    public void updateInstallmentCategories(Long categoryId, Installment installment) {
+
+        Category category = categoryService.getCategoryById(categoryId);
+
+        if (category.getUser()!= null) {
+            if (!category.getUser().equals(installment.getUser())) {
+                throw new SecurityException("You are not allowed to use this category!!");
+            }
+        }
+
+
+        List<Expense> installmentExpenses = repository.findExpensesByInstallment(installment);
+
+        log.debug("Found {} expenses for installment with id {}", installmentExpenses.size(), installment.getId());
+
+        installmentExpenses.forEach(expense -> expense.setCategory(category));
+
+        repository.saveAll(installmentExpenses);
+
+        log.info("Expenses saved successfully!!!");
+
+    }
+
 }

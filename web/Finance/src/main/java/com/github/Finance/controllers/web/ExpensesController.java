@@ -67,7 +67,7 @@ public class ExpensesController {
         model.addAttribute("paymentMethods", expenses.stream()
                 .map(Expense::getPaymentMethod)
                 .distinct().collect(Collectors.toList()));
-        model.addAttribute("categories", categoryService.getAllUserCategories());
+        model.addAttribute("categories", categoryService.getAllCurrentLoggedUserCategories());
         model.addAttribute("sum", expenseService.getExpensesSum(expenses));
         return "expenses";
     }
@@ -79,7 +79,7 @@ public class ExpensesController {
         List<Currency> currencies = expenseService.findAllCurrenciesByUser();
         model.addAttribute("hasCreditCards", !expenseService.getUserCards().isEmpty());
         model.addAttribute("currencies", currencies);
-        model.addAttribute("categories", categoryService.getAllUserCategories());
+        model.addAttribute("categories", categoryService.getAllCurrentLoggedUserCategories());
         return "create-expense";
     }
 
@@ -118,7 +118,7 @@ public class ExpensesController {
         model.addAttribute("expense", expense);
         model.addAttribute("paymentMethods", paymentMethodsService.getAllPaymentMethods());
         model.addAttribute("currencies", expenseService.findAllCurrenciesByUser());
-
+        model.addAttribute("userCategories", categoryService.getAllUserCategories(expense.getUser()));
 
         return "edit-expense";
     }

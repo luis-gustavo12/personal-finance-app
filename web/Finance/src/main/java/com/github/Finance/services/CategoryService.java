@@ -22,11 +22,15 @@ public class CategoryService {
         this.authenticationService = authenticationService;
     }
 
-    public List<Category> getAllUserCategories() {
+    public List<Category> getAllCurrentLoggedUserCategories() {
         User user = authenticationService.getCurrentAuthenticatedUser();
 
         return categoryRepository.findDefaultAndUserCategories(user);
 
+    }
+
+    public List<Category> getAllUserCategories(User user) {
+        return categoryRepository.findDefaultAndUserCategories(user);
     }
 
     /**

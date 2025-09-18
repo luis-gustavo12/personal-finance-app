@@ -23,12 +23,14 @@ public class InstallmentService {
     private final AuthenticationService authenticationService;
     private final PaymentMethodsService paymentMethodsService;
     private final ExpenseService expenseService;
+    private final CategoryService categoryService;
 
-    public InstallmentService(InstallmentRepository installmentRepository, AuthenticationService authenticationService, PaymentMethodsService paymentMethodsService, ExpenseService expenseService) {
+    public InstallmentService(InstallmentRepository installmentRepository, AuthenticationService authenticationService, PaymentMethodsService paymentMethodsService, ExpenseService expenseService, CategoryService categoryService) {
         this.installmentRepository = installmentRepository;
         this.authenticationService = authenticationService;
         this.paymentMethodsService = paymentMethodsService;
         this.expenseService = expenseService;
+        this.categoryService = categoryService;
     }
 
     public Installment createInstallment(
@@ -76,7 +78,7 @@ public class InstallmentService {
 
         // Those are marker variables, because depending on what is updated, I need to change also
         // on expenses table
-        boolean updateAmount = false, updateSplits = false, updateDescription = false;
+        boolean updateAmount = false, updateSplits = false, updateDescription , updateExpensesCategory = false;
 
         Installment installment = installmentRepository.findById(installmentId)
             .orElseThrow(() -> new ResourceNotFoundException("Installment with id: " + installmentId));
@@ -85,6 +87,22 @@ public class InstallmentService {
 
         if (!installment.getUser().getId().equals(user.getId()))
             throw new SecurityException("You are not allowed to update this installment");
+
+        Category desiredCategory = categoryService.getCategoryById(request.categoryId());
+
+        // Null users are the default categories
+        if (desiredCategory.getUser() != null) {
+            if (!desiredCategory.getUser().getId().equals(user.getId())) {
+                throw new SecurityException("You are not allowed to use this category!!");
+            }
+        }
+
+        Expense expense = expenseService.findExpenseByInstallment(installment);
+
+        if (!desiredCategory.getId().equals(expense.getCategory().getId())) {
+            updateExpensesCategory = true;
+        }
+
 
         if (request.amount() != installment.getAmount().doubleValue()) {
             installment.setAmount(BigDecimal.valueOf(request.amount()));
@@ -121,6 +139,9 @@ public class InstallmentService {
                     expenseService.updateExpenseAmountByInstallmentAndSplits(updatedInstallment,null);
 
             }
+
+            if (updateExpensesCategory)
+                expenseService.updateInstallmentCategories(request.categoryId(), installment);
 
         } catch (Exception e) {
             log.error("Error while updating installment of id {}", installmentId);

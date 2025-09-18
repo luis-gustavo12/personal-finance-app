@@ -35,6 +35,11 @@
 
         </select>
 
+        <label for="categoryId">Selecione a categoria</label>
+        <select name="categoryId" id="categoryId">
+            <option th:each="cat : ${userCategories}" th:value="${cat.id}" th:text="${cat.categoryName}" th:selected="${cat.id == expense.category.id}"></option>
+        </select>
+
 
         <button type="submit">Enviar</button>
 

@@ -5,6 +5,7 @@ package com.github.Finance.repositories;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.github.Finance.models.Category;
 import com.github.Finance.models.Installment;
 import com.github.Finance.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,4 +34,7 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpec
     @Modifying
     @Query("DELETE FROM Expense e WHERE e.installment = :installment")
     int deleteExpenseByInstallment(Installment installment);
+
+    Expense findFirstByInstallment(Installment installment);
+
 }

@@ -38,6 +38,11 @@
         <label for="date">Data</label>
         <input type="date" name="date" id="date" th:value="${expense.date}">
 
+        <label for="categoryId">Categoria</label>
+        <select name="categoryId" id="categoryId">
+            <option th:each="cat : ${userCategories}" th:text="${cat.categoryName}" th:value="${cat.id}" th:selected="${cat.id == expense.category.id}"></option>
+        </select>
+
         <button type="submit">Enviar</button>
 
     </form>
