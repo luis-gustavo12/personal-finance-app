@@ -1,0 +1,75 @@
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-app-main
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      # --- Database Connection ---
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/mydb
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=mypassword
+      - SPRING_FLYWAY_URL=jdbc:mysql://db:3306/mydb
+      - SPRING_FLYWAY_USER=myuser
+      - SPRING_FLYWAY_PASSWORD=mypassword
+
+      # --- JPA / Hibernate Settings ---
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop  # Creates schema from scratch
+      - SPRING_JPA_SHOW_SQL=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
+
+      - SPRING_ERROR_INCLUDE_STACKSTRACE=never
+      - SPRING_CACHE_TYPE=caffeine
+      - SPRING_CACHE_CAFFEINE_SPEC=maximumSize=100,expireAfterWrite=1d
+
+      # Logging
+      - LOGGING_LEVEL_ORG_HIBERNATE_SQL=DEBUG
+      - LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER=INFO
+      - LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL=INFO
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      - LOGGING_FILE_NAME=logs/app.log
+      - AES_SECRET_KEY=${AES_SECRET_KEY}
+      - LOGGING_PATTERN_DATEFORMAT=HH:mm:ss.SSS dd/MM/yyyy
+
+      - SPRING_THYMELEAF_CACHE=FALSE
+      - SERVER_SERVLET_SESSION_TIMEOUT=240m
+
+      - SPRING_QUARTZ_JDBC_INITIALIZE_SCHEMA=never
+      - SPRING_QUARTZ_JOB_STORE_TYPE=jdbc
+      - SPRING_QUARTZ_PROPERTIES_ORG_QUARTZ_JOBSTORE_TABLEPREFIX=QRTZ_
+      - SPRING_QUARTZ_PROPERTIES_ORG
+
+      - CARDGATEWAY_PROVIDER=STRIPE
+      - CARDGATEWAY_PUBLIC_KEY=${CARDGATEWAY_PUBLIC_KEY}
+      - CARDGATEWAY_PRIVATE_KEY=${CARDGATEWAY_PRIVATE_KEY}
+
+      - JWT_SECRET_KEY={JWT_KEY}
+      - SPRING_MAIL_HOST=${SPRING_MAIL_HOST}
+      - SPRING_MAIL_PORT=${SPRING_MAIL_PORT}
+      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_CONNECTIONTOMEOUT=5000
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT=3000
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_WRITETIMEOUT=5000
+    restart: always
+  db:
+    image: mariadb:12.0
+    container_name: spring-finance-db
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=mypassword
+      - MYSQL_DATABASE=mydb
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mypassword
+    restart: always

@@ -12,3 +12,6 @@ web/Finance/src/main/resources/static/js/node/npm.cmd
 web/Finance/src/main/resources/static/js/node/npx
 web/Finance/src/main/resources/static/js/node/npx.cmd
 /web/Finance/src/main/resources/static/js/dist/
+
+.env
+*.original

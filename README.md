@@ -27,6 +27,7 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 
 - Java 17
 - Spring Boot
+- Docker
 - Spring Data JPA
 - Spring Security
 - MySQL
@@ -48,7 +49,8 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 ### Pré-requisitos:
 
     - Java JDK 17
-    - MySQL 8
+    - MariaDB 12 ou MySQL8
+    - Docker
     - Git
 
 ---
@@ -57,110 +59,51 @@ O código-fonte, comentários e a documentação técnica seguem o padrão inter
 1. **Clone o repositório**
     ```bash
     git clone https://github.com/luis-gustavo12/personal-finance-app.git
+    cd personal-finance-app
     ```
 
-    - Depois de feito o clone, mude o diretório para o root do Spring Boot.
+2. **Preencha as informações em um arquivo .env**
+    - Você irá precisar:
+        - Uma chave de encriptação AES
+        - Uma chave para tokens JWT
+        - Credenciais da Stripe
+        - Um servidor SMTP
+
+
+    - Rode o seguinte comando para copiar o .env.example
+    ```bash
+    cp .env.example .env
+    ```
+
+    1) Para gerar as chaves tanto de AES quando de JWT, você pode rodar o seguinte comando no Linux:
+    ```bash
+    openssl rand -base64 32
+    ```
+    2) Para as credenciais da Stripe, você pode pegá-las [aqui](https://docs.stripe.com/keys). Pegue as chaves públicas e privadas.
+
+    3) Para o servidor SMTP, você pode utilizar o Mailbox, ou o GMail. Recomendo o [Mailbox](https://mailtrap.io/) pela simplicidade, mas requer cadastro, e também, é um sandbox. Você também pode utilizar o [Brevo](https://www.brevo.com/). Ambas opções gratuitas.
+
+    - Após isso, preencher de acordo
+        ```env
+        JWT_SECRET_KEY=JWT_SECRET_KEY
+
+        AES_SECRET_KEY=AES_SECRET_KEY
+
+        CARDGATEWAY_PUBLIC_KEY=STRIPE_PUBLIC_KEY
+        CARDGATEWAY_PRIVATE_KEY=STRIPE_PRIVATE_KEY
+
+        SPRING_MAIL_HOST=www.smtp.com
+        SPRING_MAIL_PORT=587
+        SPRING_MAIL_USERNAME=EMAIL
+        SPRING_MAIL_PASSWORD=PASSWORD
+        ```
+
+
+3. **Execute o Docker para criar o banco de dados, e rodar a aplicação**
 
     ```bash
-    cd web/Finance
+    docker-compose up --build -d
     ```
-
-2. **Configure o Banco de Dados MySQL**
-    - Dê um nome ao banco de dados (exemplo: `finances_app`)
-    - Crie o arquivo `src/main/resources/application.properties`, e coloque as seguintes informações nele
-
-    ```properties
-    spring.datasource.url=jdbc:mysql://localhost:3306/finances_app
-    spring.datasource.username=my_user
-    spring.datasource.password=pwd
-    ```
-
-    - Então, crie o banco de dados no MySQL
-    ```SQL
-    CREATE DATABASE finances_app;
-    ```
-
-    - Não se esqueça de dar acesso ao usuário dentro do banco de dados.
-
-    ```SQL
-    CREATE USER 'my_user'@'localhost' IDENTIFIED BY 'pwd';
-    GRANT ALL PRIVILEGES ON finances_app.* TO 'my_user'@'localhost';
-    FLUSH PRIVILEGES;
-    ```
-
-    - Os arquivos de migração do Flyway Migration cuidarão de criar as tabelas
-
-3. **Adicione as configurações necessárias para rodar a aplicação**
-
-    - Para uso de gateway de cartões
-        - Ir no _application.properties_, e preencher o seguinte campo, da seguinte maneira:  *cardgateway.provider=STRIPE*
-        - Logo após, você precisa da suas chaves públicas e privadas da stripe, e referenciar também no _application.properties_:
-        ```properties
-        cardgateway.provider=STRIPE
-        cardgateway.public-key=PUBLIC_KEY
-        cardgateway.private-key=PRIVATE_KEY
-        ```
-
-        - Você pode criar uma no [website](https://docs.stripe.com/keys)
-
-    - Para usar dos serviços de criptografia
-        - Adicionar a seguinte linha no application.properties
-        ```properties
-        aes.secret.key=SECRET_KEY
-        ```
-        - De recomendação, é possível adicionar uma variável de ambiente, para nao divulgar a chave de encriptação
-        ```properties
-        aes.secret.key=${SECRET_KEY}
-        ```
-        - Para gerar uma, você pode rodar o seguinte comando no Linux:
-        ```bash
-        openssl rand -base64 32
-        ``` 
-    - Para usar o Quartz
-        - Adicionar a seguinte linha no application.properties
-        ```properties        
-        spring.quartz.jdbc.initialize-schema=never
-        spring.quartz.job-store-type=jdbc
-        spring.quartz.properties.org.quartz.jobStore.tablePrefix=QRTZ_
-        spring.quartz.properties.org.quartz.threadPool.threadCount=10
-        ```        
-    - Para tokens JWT
-        - Adicionar as seguintes linhas no application.properties
-        ```properties
-        jwt.secret.key=SECRET_KEY
-        jwt.issuer=ISSUER
-        ```
-        - De recomendação, é possibile adicionar uma variável de ambiente, para nao divulgar a chave de encriptação
-        ```properties
-        jwt.secret.key=${SECRET_KEY}
-        jwt.issuer=${ISSUER}
-        ```
-    - Para usar o Spring Mail:
-        - Adicionar a seguinte linha no application.properties
-        ```properties
-        spring.mail.host=smtp.gmail.com
-        spring.mail.port=587
-        spring.mail.username=EMAIL
-        spring.mail.password=PASSWORD
-        spring.mail.properties.mail.smtp.auth=true
-        spring.mail.properties.mail.smtp.starttls.enable=true
-        ```
-        - As demais configurações devem ser adicionadas conforme a orientação do seu email, na configuraçãod o seu SMPT
-
-
-
-4. **Compile o projeto**
-    ```bash
-    ./mvnw clean install
-    ```
-
-5. **Então, execute a aplicação**
-    ```bash
-    ./mvnw spring-boot:run
-    ```
-
-- A aplicação estará rodando no [localhost](http://localhost:8080)
-
 
 ## Observações
 
