@@ -40,6 +40,16 @@ function updateTable(incomes: Array<any>) {
            row.insertCell().textContent = income.amount.toFixed(2);
            row.insertCell().textContent = income.info;
            row.insertCell().textContent = income.category;
+           // row.insertCell().textContent = income.date;
+           const dateObject = new Date(income.date);
+           const formatter = Intl.DateTimeFormat(
+               'pt-br', {
+                   day: '2-digit',
+                   month: '2-digit',
+                   year: 'numeric'
+               }
+           );
+           row.insertCell().textContent = formatter.format(dateObject);
            row.insertCell().innerHTML = divActionButton(income.id);
        }
     });

@@ -111,6 +111,9 @@ public class ExpensesSpecification {
 
             @Override
             public Predicate toPredicate(Root<Expense> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+
+                if (categoryId == null) return null;
+
                 return criteriaBuilder.equal(root.get("category").get("id"), categoryId);
             }
         };
