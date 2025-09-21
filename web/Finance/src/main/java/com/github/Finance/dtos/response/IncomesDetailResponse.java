@@ -8,7 +8,8 @@ public record IncomesDetailResponse (
     Double amount,
     String paymentForm,
     LocalDate date,
-    String extraInfo
+    String extraInfo,
+    Long id
 
 ) {
 }

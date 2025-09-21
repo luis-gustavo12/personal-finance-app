@@ -13,7 +13,8 @@ public class IncomesMapper {
             income.getAmount().doubleValue(),
             income.getPaymentMethod().getDescription(),
             income.getIncomeDate(),
-            income.getDescription()
+            income.getDescription(),
+            income.getId()
         );
 
     }
