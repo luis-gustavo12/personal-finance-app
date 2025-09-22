@@ -4,6 +4,7 @@ import com.github.Finance.dtos.UserSumResultDTO;
 import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
 import com.github.Finance.dtos.response.IncomesDetailResponse;
+import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.mappers.IncomesMapper;
 import com.github.Finance.models.Currency;
@@ -32,13 +33,15 @@ public class IncomesService {
     private final CurrencyService currencyService;
     private final AuthenticationService authenticationService;
     private final ExchangeRateService exchangeRateService;
+    private final CardService cardService;
 
-    public IncomesService(IncomeRepository incomeRepository, PaymentMethodsService paymentMethodsService, CurrencyService currencyService, AuthenticationService authenticationService, CurrencyExchangeProvider currencyExchangeProvider, ExchangeRateService exchangeRateService) {
+    public IncomesService(IncomeRepository incomeRepository, PaymentMethodsService paymentMethodsService, CurrencyService currencyService, AuthenticationService authenticationService, CurrencyExchangeProvider currencyExchangeProvider, ExchangeRateService exchangeRateService, CardService cardService) {
         this.incomeRepository = incomeRepository;
         this.paymentMethodsService = paymentMethodsService;
         this.currencyService = currencyService;
         this.authenticationService = authenticationService;
         this.exchangeRateService = exchangeRateService;
+        this.cardService = cardService;
     }
 
     public Income findIncomeById(Long id) {

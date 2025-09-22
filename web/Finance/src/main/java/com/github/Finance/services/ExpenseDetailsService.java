@@ -120,6 +120,7 @@ public class ExpenseDetailsService {
         expense.setExtraInfo(expenseDeclaration.getInfo());
         expense.setUser(expenseDeclaration.getUser());
         expense.setCategory(expenseDeclaration.getCategory());
+        expense.setCard(card);
         expense.setDate(expenseDeclaration.getDate());
 
         expenseService.saveExpense(expense);

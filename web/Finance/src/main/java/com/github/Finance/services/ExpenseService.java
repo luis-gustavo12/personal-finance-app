@@ -250,6 +250,7 @@ public class ExpenseService {
         Specification<Expense> min = ExpensesSpecification.hasMinimum(form.minimumAmount());
         Specification<Expense> max =  ExpensesSpecification.hasMaximum(form.maximumAmount());
         Specification<Expense> category = ExpensesSpecification.hasCategory(form.categoryId());
+        Specification<Expense> cards = ExpensesSpecification.hasCardId(form.cardId());
 
         Specification<Expense> spec = Specification
                 .where(user)
@@ -259,7 +260,8 @@ public class ExpenseService {
                 .and(paymentMethods)
                 .and(min)
                 .and(max)
-                .and(category);
+                .and(category)
+                .and(cards);
 
         return repository.findAll(spec);
 

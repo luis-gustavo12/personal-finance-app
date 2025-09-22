@@ -56,6 +56,11 @@ public class CardService {
         User user = authenticationService.getCurrentAuthenticatedUser();
 
           
+        return getCardsByUser(user);
+
+    }
+
+    public List<CardView> getCardsByUser(User user) {
         List<Card> cards = repository.findAllByUser(user);
         List<CardView> cardViews = new ArrayList<>(cards.size());
 
@@ -69,10 +74,9 @@ public class CardService {
             cardView.setCardName(card.getCardDescription());
             cardViews.add(cardView);
         }
-        
+
 
         return cardViews;
-
     }
 
     public Card getCardByFirstAndLastDigits(String firstDigits, String lastDigits) {

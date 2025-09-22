@@ -90,7 +90,13 @@
                             <option th:each="cat : ${categories}" th:text="${cat.categoryName}" th:value="${cat.id}"></option>
                         </select>
                     </div>
-
+                    <div th:if="${!userCards.isEmpty()}" class="filter-item">
+                        <label for="card-filter">Cartões</label>
+                        <select name="cardId" id="card-filter" class="form-control">
+                            <option selected disabled>Selecione um cartão</option>
+                            <option th:each="card : ${userCards}" th:value="${card.id}" th:text="${card.cardName}"></option>
+                        </select>
+                    </div>
                 </div>
                 <div class="action-buttons">
                     <button type="submit" class="btn btn-primary" id="apply-filter">Filtrar</button>

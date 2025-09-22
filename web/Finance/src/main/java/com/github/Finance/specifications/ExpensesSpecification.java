@@ -120,4 +120,14 @@ public class ExpensesSpecification {
 
     }
 
+    public static Specification<Expense> hasCardId(Long cardId) {
+        return new Specification<Expense>() {
+            @Override
+            public Predicate toPredicate(Root<Expense> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                if (cardId == null) return null;
+                return criteriaBuilder.equal(root.get("card").get("id"), cardId);
+            }
+        };
+    }
+
 }

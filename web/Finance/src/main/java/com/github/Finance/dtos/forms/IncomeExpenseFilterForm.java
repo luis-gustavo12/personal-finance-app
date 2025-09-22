@@ -8,6 +8,7 @@ public record IncomeExpenseFilterForm(
     Double minimumAmount,
     Double maximumAmount,
     String description,
-    Long categoryId
+    Long categoryId,
+    Long cardId
 ) {
 }

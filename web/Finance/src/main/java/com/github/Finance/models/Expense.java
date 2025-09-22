@@ -83,4 +83,10 @@ public class Expense {
     )
     private Installment installment;
 
+    @ManyToOne
+    @JoinColumn(
+        name = "card_id"
+    )
+    private Card card;
+
 }

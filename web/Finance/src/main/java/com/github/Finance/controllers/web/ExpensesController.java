@@ -69,6 +69,7 @@ public class ExpensesController {
                 .distinct().collect(Collectors.toList()));
         model.addAttribute("categories", categoryService.getAllCurrentLoggedUserCategories());
         model.addAttribute("sum", expenseService.getExpensesSum(expenses));
+        model.addAttribute("userCards", expenseService.getUserCards());
         return "expenses";
     }
 
