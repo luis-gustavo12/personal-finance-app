@@ -60,6 +60,18 @@ function showEmptyTable() {
     cell.colSpan = 5;
     cell.style.textAlign = 'center';
 }
+function divActionButton(number) {
+    return `
+        <div class="action-icons">
+            <a href="/incomes/edit/${number}" title="Editar">
+                <i class="fas fa-pencil-alt edit-icon"></i>
+            </a>
+            <a href="/incomes/delete/${number}" title="Excluir"">
+                <i class="fas fa-times delete-icon"></i>
+            </a>
+        </div>
+    `;
+}
 function updateTable(incomes) {
     const tbody = displayTable.querySelector('tbody');
     const tfoot = displayTable.querySelector('tfoot');
@@ -76,11 +88,11 @@ function updateTable(incomes) {
         const date = new Date(income.date);
         row.insertCell().textContent = date.toLocaleDateString('pt-BR');
         row.insertCell().textContent = income.extraInfo;
+        row.insertCell().innerHTML = divActionButton(income.id);
     });
     const footerRow = tfoot.insertRow();
     const footerCell = footerRow.insertCell();
     const formattedSum = totalSum.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     footerCell.textContent = `Total: ${currency} ${formattedSum}`;
-    footerCell.colSpan = 5;
 }
 //# sourceMappingURL=incomes.js.map

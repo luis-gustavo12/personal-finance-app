@@ -1,5 +1,7 @@
 package com.github.Finance.dtos.response;
 
+import com.github.Finance.models.Income;
+
 import java.time.LocalDate;
 
 public record IncomesDetailResponse (
@@ -12,4 +14,17 @@ public record IncomesDetailResponse (
     Long id
 
 ) {
+
+    public IncomesDetailResponse (Income income) {
+        this(
+            income.getCurrency().getCurrencyFlag(),
+            income.getAmount().doubleValue(),
+            income.getPaymentMethod().getDescription(),
+            income.getIncomeDate(),
+            income.getDescription(),
+            income.getId()
+        );
+    }
+
+
 }

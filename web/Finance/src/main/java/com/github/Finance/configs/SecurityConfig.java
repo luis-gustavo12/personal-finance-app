@@ -38,6 +38,7 @@ public class SecurityConfig {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(daoAuthenticationProvider())
                 .exceptionHandling(exceptions ->
 
                     exceptions.authenticationEntryPoint((req, resp, e) -> {
@@ -61,7 +62,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(
                requests -> requests
                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-               .requestMatchers("/register/**", "/register", "/register/").permitAll()
+               .requestMatchers("/register/**", "/register", "/register/", "/error").permitAll()
                .requestMatchers("/recover/**").permitAll()
                .anyRequest().authenticated()
             )

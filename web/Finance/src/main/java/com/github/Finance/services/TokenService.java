@@ -60,7 +60,7 @@ public class TokenService {
 
     public Long getIdFromToken(String token) {
         DecodedJWT decodedJWT = verifyToken(token);
-        return (decodedJWT != null) ? decodedJWT.getClaim("userId").asLong() : null;
+        return (decodedJWT != null) ? Long.valueOf(decodedJWT.getClaim("userId").asString()) : null;
     }
 
     public String getSubjectFromToken(String token) {
