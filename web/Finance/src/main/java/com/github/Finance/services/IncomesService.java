@@ -74,7 +74,7 @@ public class IncomesService {
     public List<Income> getCurrentMonthUserIncomes() {
         User user = authenticationService.getCurrentAuthenticatedUser();
         LocalDate today = LocalDate.now();
-        return incomeRepository.findAllIncomesByMonth(user, today.getMonthValue(), today.getYear());
+        return incomeRepository.findIncomesByPeriodOfTime(user, today.minusDays(45), today);
     }
 
     public List<Income> getMonthUserIncomes(int month, int year ,User user) {
@@ -188,6 +188,11 @@ public class IncomesService {
     }
 
     public List<Income> getIncomesByUserAndPeriod(User user, LocalDate startDate, LocalDate endDate) {
+
+        if (user == null) {
+            user = authenticationService.getCurrentAuthenticatedUser();
+        }
+
         return incomeRepository.findIncomesByPeriodOfTime(user, startDate, endDate);
     }
 
