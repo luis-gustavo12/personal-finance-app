@@ -77,6 +77,17 @@ public class IncomesService {
         return incomeRepository.findIncomesByPeriodOfTime(user, today.minusDays(45), today);
     }
 
+    public List<IncomesDetailResponse> getUserRecentIncomes(User user) {
+        if (user == null)
+            user = authenticationService.getCurrentAuthenticatedUser();
+
+        LocalDate today = LocalDate.now();
+        return incomeRepository.findIncomesByPeriodOfTime(user, today.minusDays(45), today)
+                .stream()
+                .map(IncomesDetailResponse::new)
+                .toList();
+    }
+
     public List<Income> getMonthUserIncomes(int month, int year ,User user) {
         return incomeRepository.findAllIncomesByMonth(user, month, year);
     }

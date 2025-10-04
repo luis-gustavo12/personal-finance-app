@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/screens/incomes_page.dart';
 import 'screens/login_page.dart';
 import 'screens/home_page.dart';
 
@@ -7,21 +8,18 @@ void main() {
 }
 
 class MainFinanceApp extends StatelessWidget {
-
   const MainFinanceApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: "Finance App",
       routes: {
         '/': (context) => const LoginPage(),
-        '/home': (context) => const HomePage()
+        '/home': (context) => const HomePage(),
+        '/incomes': (context) => const IncomesPage(),
       },
       initialRoute: '/',
     );
-
   }
-
 }
