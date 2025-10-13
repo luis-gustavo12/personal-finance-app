@@ -246,11 +246,16 @@ public class IncomesService {
             throw new SecurityException("Not authorized");
         }
 
-        existingIncome.setCurrency(currencyService.findCurrency(form.currencyId()));
-        existingIncome.setAmount(BigDecimal.valueOf(form.incomeAmount()));
-        existingIncome.setPaymentMethod(paymentMethodsService.findPaymentMethod(form.paymentMethodId()));
-        existingIncome.setIncomeDate(form.incomeDate());
-        existingIncome.setDescription(form.incomeDescription());
+        if (form.currencyId() != null)
+            existingIncome.setCurrency(currencyService.findCurrency(form.currencyId()));
+        if (form.paymentMethodId() != null)
+            existingIncome.setAmount(BigDecimal.valueOf(form.incomeAmount()));
+        if (form.paymentMethodId() != null)
+            existingIncome.setPaymentMethod(paymentMethodsService.findPaymentMethod(form.paymentMethodId()));
+        if (form.incomeDate() != null)
+            existingIncome.setIncomeDate(form.incomeDate());
+        if (form.incomeDescription() != null)
+            existingIncome.setDescription(form.incomeDescription());
 
         return incomeRepository.save(existingIncome);
 
