@@ -1,12 +1,10 @@
 package com.github.Finance.controllers.api;
 
-import com.github.Finance.models.Income;
+import com.github.Finance.dtos.forms.RegisterIncomeForm;
 import com.github.Finance.services.IncomesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,6 +25,14 @@ public class IncomesApiController {
         return ResponseEntity.ok(
             incomesService.getUserRecentIncomes(null)
         );
+    }
+
+    @RequestMapping(value = "/edit/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
+    public ResponseEntity<?> addIncome(@PathVariable Long id, @RequestBody RegisterIncomeForm incomeForm) {
+
+        log.info("HEREHREHRE");
+        incomesService.updateExistentIncome(id, incomeForm);
+        return ResponseEntity.ok().build();
     }
 
 
