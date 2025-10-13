@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,12 +10,13 @@ class AuthenticationService {
 
   final _storage = FlutterSecureStorage();
 
+  final String baseUrl = dotenv.env['BASE_URL'] ?? "http://localhost:8080";
 
   Future<bool> login (String email, String password) async {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8080/api/login'),
+        Uri.parse('http://$baseUrl/api/login'),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
         },
