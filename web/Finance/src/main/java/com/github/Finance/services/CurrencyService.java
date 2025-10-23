@@ -23,6 +23,10 @@ public class CurrencyService {
         return repository.findAll();
     }
 
+    public List<Currency> findAllCurrenciesByAlphabeticalOrder() {
+        return repository.findAllByAlphabeticalOrder();
+    }
+
     /**
      * Find all the currencies given the user preferred currency, and ordered by the amount of expenses they have
      * Ideal for UX on forms

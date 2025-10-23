@@ -81,4 +81,6 @@ public interface CurrencyRepository extends JpaRepository<Currency, Long> {
     "    c.currency_name ASC;", nativeQuery = true)
     List<Currency> findAllUserCurrenciesByIncome(@Param("user")  User user);
 
+    @Query("SELECT c FROM Currency c ORDER BY c.currencyFlag ASC ")
+    List<Currency> findAllByAlphabeticalOrder();
 }
