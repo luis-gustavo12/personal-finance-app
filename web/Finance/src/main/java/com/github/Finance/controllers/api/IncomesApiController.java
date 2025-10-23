@@ -29,8 +29,6 @@ public class IncomesApiController {
 
     @RequestMapping(value = "/edit/{id}", method = {RequestMethod.PUT, RequestMethod.PATCH})
     public ResponseEntity<?> addIncome(@PathVariable Long id, @RequestBody RegisterIncomeForm incomeForm) {
-
-        log.info("HEREHREHRE");
         incomesService.updateExistentIncome(id, incomeForm);
         return ResponseEntity.ok().build();
     }
