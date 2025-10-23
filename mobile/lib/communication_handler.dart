@@ -59,6 +59,8 @@ class CommunicationHandler {
         response = await http.patch(uri, headers: headers, body: encodedData);
       } else if (method == Methods.post) {
         response = await http.post(uri, headers: headers, body: encodedData);
+      } else if (method == Methods.get) {
+        response = await http.get(uri, headers: headers);
       }
 
       if (response.statusCode != 200) {
