@@ -13,6 +13,9 @@ import 'package:mobile/services/incomes_service.dart';
 import 'package:mobile/services/payment_methods_service.dart';
 import 'package:mobile/theme/colors.dart';
 
+import '../dtos/requests/currency_payments_requests.dart';
+import '../modals/income_creation_modal.dart';
+
 class IncomesPage extends StatefulWidget {
   const IncomesPage({super.key});
 
@@ -57,6 +60,9 @@ class _IncomesState extends State<IncomesPage> {
         ),
         title: Text('Incomes'),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        showIncomeCreationModal(context);
+      }, child: Icon(Icons.add),),
       body: _isLoading ? CircularProgressIndicator() : _getIncomesBody(),
     );
   }
@@ -125,12 +131,6 @@ class _IncomesState extends State<IncomesPage> {
   }
 }
 
-class EditModalRequest {
-  final List<Currency> currencies;
-  final List<PaymentMethods> paymentMethods;
-
-  EditModalRequest({required this.currencies, required this.paymentMethods});
-}
 
 class EditIncomeModal extends StatefulWidget {
   final IncomesSummaryResponse response;
@@ -146,7 +146,7 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
   final _currencyService = CurrencyService();
   final IncomesSummaryResponse response;
   final _paymentMethodsService = PaymentMethodsService();
-  late Future<EditModalRequest> _editModalData;
+  late Future<IncomeFetchedDataRequest> _editModalData;
   final _incomesService = IncomesService();
 
   // Form keys and controllers
@@ -170,7 +170,7 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
   _EditIncomesModalState(this.response);
 
 
-  Future<EditModalRequest> _fetchRequests() async {
+  Future<IncomeFetchedDataRequest> _fetchRequests() async {
     final result = await Future.wait([
       _currencyService.fetchCurrencies(),
       _paymentMethodsService.fetchPaymentMethods(),
@@ -179,7 +179,7 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
     final fetchedCurrencies = result[0] as List<Currency>;
     final fetchedPaymentMethods = result[1] as List<PaymentMethods>;
 
-    return EditModalRequest(
+    return IncomeFetchedDataRequest(
       currencies: fetchedCurrencies,
       paymentMethods: fetchedPaymentMethods,
     );

@@ -1,3 +1,4 @@
+import 'package:mobile/dtos/requests/income_creation_request.dart';
 import 'package:mobile/dtos/requests/income_update_request.dart';
 import 'package:mobile/dtos/responses/incomes_summary_response.dart';
 import 'package:mobile/communication_handler.dart';
@@ -26,4 +27,12 @@ class IncomesService {
     return true;
 
   }
+
+  Future<int> createIncome ({required IncomeCreationRequest request}) async {
+    final response = await CommunicationHandler.sendData(data: request, route: "/api/incomes", method: Methods.post);
+    if (response != null)
+      return response.status;
+    else return 0;
+  }
+
 }
