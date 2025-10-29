@@ -37,7 +37,6 @@ class _IncomeCreationModalState extends State<IncomeCreationModal> {
   int? _selectedCurrencyId; // Selected currency ID
   int? _selectedPaymentMethodId;
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _dateControllerText = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
