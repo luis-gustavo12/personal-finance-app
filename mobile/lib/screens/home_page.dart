@@ -116,7 +116,10 @@ class _HomeState extends State<HomePage> {
             ListTile(
               leading: Icon(Icons.money_off, color: Colors.red),
               title: Text('Despesas'),
-              onTap: () {},
+              onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/expenses");
+              },
             ),
             ListTile(
               leading: Icon(Icons.credit_card),

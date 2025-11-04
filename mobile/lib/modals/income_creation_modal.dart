@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/dtos/requests/income_creation_request.dart';
 import 'package:mobile/services/currency_service.dart';
+import 'package:mobile/utils/amount_form_field.dart';
 
 import '../dtos/requests/currency_payments_requests.dart';
 import '../models/currency.dart';
@@ -29,7 +30,7 @@ class _IncomeCreationModalState extends State<IncomeCreationModal> {
   final _paymentMethodsService = PaymentMethodsService();
   final _incomesService = IncomesService();
   final _formKey = GlobalKey<FormState>();
-  late final Future<IncomeFetchedDataRequest> _fetchedDataRequest;
+  late final Future<TransactionRequiredDataRequest> _fetchedDataRequest;
 
   DateTime? _dateTime;
 
@@ -42,16 +43,16 @@ class _IncomeCreationModalState extends State<IncomeCreationModal> {
 
   bool _formIsBeingSent = false;
 
-  Future<IncomeFetchedDataRequest> _fetchRequests() async {
+  Future<TransactionRequiredDataRequest> _fetchRequests() async {
     final result = await Future.wait([
       _currencyService.fetchCurrencies(),
       _paymentMethodsService.fetchPaymentMethods(),
     ]);
 
     final fetchedCurrencies = result[0] as List<Currency>;
-    final fetchedPaymentMethods = result[1] as List<PaymentMethods>;
+    final fetchedPaymentMethods = result[1] as List<PaymentMethod>;
 
-    return IncomeFetchedDataRequest(
+    return TransactionRequiredDataRequest(
       currencies: fetchedCurrencies,
       paymentMethods: fetchedPaymentMethods,
     );
@@ -128,7 +129,7 @@ class _IncomeCreationModalState extends State<IncomeCreationModal> {
                             border: OutlineInputBorder(),
                           ),
                           value: _selectedPaymentMethodId,
-                          items: paymentMethods.map((PaymentMethods pm) {
+                          items: paymentMethods.map((PaymentMethod pm) {
                             return DropdownMenuItem(
                               child: Text(pm.description),
                               value: pm.id,
@@ -156,13 +157,7 @@ class _IncomeCreationModalState extends State<IncomeCreationModal> {
                         ),
                         SizedBox(height: 15),
                         // Amount
-                        TextFormField(
-                          controller: _amountController,
-                          decoration: InputDecoration(
-                            labelText: "Amount",
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
+                        AmountFormField(controller: _amountController),
                         SizedBox(height: 15),
                         // Description
                         TextField(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mobile/screens/expenses_page.dart';
 import 'package:mobile/screens/incomes_page.dart';
 import 'screens/login_page.dart';
 import 'screens/home_page.dart';
@@ -21,6 +22,7 @@ class MainFinanceApp extends StatelessWidget {
         '/': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
         '/incomes': (context) => const IncomesPage(),
+        '/expenses': (context) => const ExpensesPage(),
       },
       initialRoute: '/',
     );

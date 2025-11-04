@@ -1,14 +1,14 @@
 
 import 'dart:ffi';
 
-class PaymentMethods {
+class PaymentMethod {
   final int id;
   final String description;
 
-  const PaymentMethods({required this.id, required this.description});
+  const PaymentMethod({required this.id, required this.description});
 
-  factory PaymentMethods.fromJson(Map<String, dynamic> json) {
-    return PaymentMethods(id: json['id'], description: json['description']);
+  factory PaymentMethod.fromJson(Map<String, dynamic> json) {
+    return PaymentMethod(id: json['id'], description: json['description']);
   }
 
 }

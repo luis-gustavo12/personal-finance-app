@@ -24,7 +24,7 @@ class AuthenticationService {
           'email': email,
           'password': password
         }),
-      );
+      ).timeout(const Duration(seconds: 5));
 
       if (response.statusCode == 200) {
         print('Login successfull!');

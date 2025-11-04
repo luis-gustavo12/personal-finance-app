@@ -2,9 +2,9 @@
 import '../../models/currency.dart';
 import '../../models/payment_methods.dart';
 
-class IncomeFetchedDataRequest {
+class TransactionRequiredDataRequest {
   final List<Currency> currencies;
-  final List<PaymentMethods> paymentMethods;
+  final List<PaymentMethod> paymentMethods;
 
-  IncomeFetchedDataRequest({required this.currencies, required this.paymentMethods});
+  TransactionRequiredDataRequest({required this.currencies, required this.paymentMethods});
 }

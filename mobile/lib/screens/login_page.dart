@@ -23,7 +23,7 @@ class _LoginState extends State<LoginPage> {
 
     if (_formKey.currentState!.validate()) {
       setState(() {
-        _isLoading = false;
+        _isLoading = true;
       });
 
       bool success = await _authenticationService.login(
@@ -128,7 +128,8 @@ class _LoginState extends State<LoginPage> {
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: const Text('Log in', style: TextStyle(fontSize: 18),)
+                        //child: const Text('Log in', style: TextStyle(fontSize: 18),)
+                        child: _isLoading ? CircularProgressIndicator() : const Text('Log in', style: TextStyle(fontSize: 18) )
                     ),
                   ),
 

@@ -12,6 +12,7 @@ import 'package:mobile/services/currency_service.dart';
 import 'package:mobile/services/incomes_service.dart';
 import 'package:mobile/services/payment_methods_service.dart';
 import 'package:mobile/theme/colors.dart';
+import 'package:mobile/utils/amount_form_field.dart';
 
 import '../dtos/requests/currency_payments_requests.dart';
 import '../modals/income_creation_modal.dart';
@@ -60,10 +61,18 @@ class _IncomesState extends State<IncomesPage> {
         ),
         title: Text('Incomes'),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        showIncomeCreationModal(context);
-      }, child: Icon(Icons.add),),
-      body: _isLoading ? CircularProgressIndicator() : _getIncomesBody(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showIncomeCreationModal(context);
+        },
+        child: Icon(Icons.add),
+      ),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: _fetchIncomesData,
+              child: _getIncomesBody(),
+            ),
     );
   }
 
@@ -101,7 +110,7 @@ class _IncomesState extends State<IncomesPage> {
                     final result = await showModalBottomSheet<bool>(
                       context: context,
                       isScrollControlled: true,
-                      builder: (ctx) => Padding (
+                      builder: (ctx) => Padding(
                         padding: EdgeInsets.only(
                           bottom: MediaQuery.of(ctx).viewInsets.bottom,
                         ),
@@ -109,7 +118,7 @@ class _IncomesState extends State<IncomesPage> {
                           heightFactor: 0.75,
                           child: _showEditModal(incomes),
                         ),
-                      )
+                      ),
                     );
                     if (result == true) {
                       _fetchIncomesData();
@@ -131,7 +140,6 @@ class _IncomesState extends State<IncomesPage> {
   }
 }
 
-
 class EditIncomeModal extends StatefulWidget {
   final IncomesSummaryResponse response;
 
@@ -146,7 +154,7 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
   final _currencyService = CurrencyService();
   final IncomesSummaryResponse response;
   final _paymentMethodsService = PaymentMethodsService();
-  late Future<IncomeFetchedDataRequest> _editModalData;
+  late Future<TransactionRequiredDataRequest> _editModalData;
   final _incomesService = IncomesService();
 
   // Form keys and controllers
@@ -166,20 +174,18 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
 
   var _isSubmitting = false;
 
-
   _EditIncomesModalState(this.response);
 
-
-  Future<IncomeFetchedDataRequest> _fetchRequests() async {
+  Future<TransactionRequiredDataRequest> _fetchRequests() async {
     final result = await Future.wait([
       _currencyService.fetchCurrencies(),
       _paymentMethodsService.fetchPaymentMethods(),
     ]);
 
     final fetchedCurrencies = result[0] as List<Currency>;
-    final fetchedPaymentMethods = result[1] as List<PaymentMethods>;
+    final fetchedPaymentMethods = result[1] as List<PaymentMethod>;
 
-    return IncomeFetchedDataRequest(
+    return TransactionRequiredDataRequest(
       currencies: fetchedCurrencies,
       paymentMethods: fetchedPaymentMethods,
     );
@@ -190,7 +196,9 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
     super.initState();
     final response = widget.response;
     _dateControllerText = TextEditingController();
-    _amountController = TextEditingController(text: response.amount.toStringAsFixed(2));
+    _amountController = TextEditingController(
+      text: response.amount.toStringAsFixed(2),
+    );
     _descriptionController = TextEditingController(text: response.extraInfo);
     if (response.date != null) {
       _dateTime = DateTime.tryParse(response.date);
@@ -210,8 +218,9 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
             _selectedCurrencyId = null;
           }
           try {
-            final selectedMethod = data.paymentMethods
-                .firstWhere((pm) => pm.description == response.paymentForm);
+            final selectedMethod = data.paymentMethods.firstWhere(
+              (pm) => pm.description == response.paymentForm,
+            );
             _selectedPaymentMethodId = selectedMethod.id.toString();
           } catch (e) {
             _selectedPaymentMethodId = null;
@@ -285,21 +294,14 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
                                 _selectedCurrencyId = value;
                               });
                             },
-                            validator: (value) => value == null ? "Please, select a currency" : null,
+                            validator: (value) => value == null
+                                ? "Please, select a currency"
+                                : null,
                           ),
                           SizedBox(height: 15),
                           // Amount
-                          TextFormField(
-                            controller: _amountController,
-                            decoration: InputDecoration(labelText: "Amount"),
-                            validator: (value) {
-                              if (value == null || value.isEmpty || double.tryParse(value) == null) {
-                                return "Please, select a decimal format";
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 15,),
+                          AmountFormField(controller: _amountController),
+                          SizedBox(height: 15),
                           // Payment Method Id
                           DropdownButtonFormField<String>(
                             decoration: InputDecoration(
@@ -307,7 +309,9 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
                               border: OutlineInputBorder(),
                             ),
                             value: _selectedPaymentMethodId,
-                            items: paymentMethods.map((PaymentMethods paymentMethod) {
+                            items: paymentMethods.map((
+                              PaymentMethod paymentMethod,
+                            ) {
                               return DropdownMenuItem(
                                 value: paymentMethod.id.toString(),
                                 child: Text(paymentMethod.description),
@@ -325,20 +329,21 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
                               return null;
                             },
                           ),
-                          SizedBox(height: 15,),
+                          SizedBox(height: 15),
                           // Date
                           TextFormField(
                             controller: _dateControllerText,
                             decoration: InputDecoration(
                               labelText: "Date",
                               border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.calendar_today)
+                              prefixIcon: Icon(Icons.calendar_today),
                             ),
-                            onTap: (){_selectDate(context);},
+                            onTap: () {
+                              _selectDate(context);
+                            },
                             readOnly: true,
-
                           ),
-                          SizedBox(height: 15,),
+                          SizedBox(height: 15),
                           // Description
                           TextField(
                             controller: _descriptionController,
@@ -348,21 +353,25 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
                             decoration: InputDecoration(
                               hintText: response.extraInfo,
                               border: OutlineInputBorder(),
-                              labelText: response.extraInfo
+                              labelText: response.extraInfo,
                             ),
                           ),
-                          SizedBox(height: 15,),
+                          SizedBox(height: 15),
                           ElevatedButton(
-                            onPressed: _isSubmitting? null : _submitForm,
+                            onPressed: _isSubmitting ? null : _submitForm,
                             style: ElevatedButton.styleFrom(
                               maximumSize: Size(double.infinity, 50),
                             ),
-                            child: _isSubmitting ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                            ) :
-                            const Text("Edit"),
+                            child: _isSubmitting
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text("Edit"),
                           ),
                         ],
                       ),
@@ -377,12 +386,12 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async{
+  Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: _dateTime ?? DateTime.now(),
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2101)
+      context: context,
+      initialDate: _dateTime ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
     );
     if (picked != null) {
       setState(() {
@@ -400,21 +409,34 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
       _isSubmitting = true;
     });
     try {
-      var request = IncomeUpdateRequest(currencyId: _selectedCurrencyId!, incomeAmount: double.tryParse(_amountController.text)! ,
-          paymentMethodId: int.tryParse(_selectedPaymentMethodId!)!, date: _dateTime!, incomeDescription: _descriptionController.text);
-      bool result = await _incomesService.updateIncome(request: request, incomeId: response.id);
+      var request = IncomeUpdateRequest(
+        currencyId: _selectedCurrencyId!,
+        incomeAmount: double.tryParse(_amountController.text)!,
+        paymentMethodId: int.tryParse(_selectedPaymentMethodId!)!,
+        date: _dateTime!,
+        incomeDescription: _descriptionController.text,
+      );
+      bool result = await _incomesService.updateIncome(
+        request: request,
+        incomeId: response.id,
+      );
       if (mounted) {
         if (result) {
           Navigator.of(context).pop(true);
           _showFeedbackSnackBar("Income updated successfully", isError: false);
         } else {
-          _showFeedbackSnackBar("Failed to update income. Please try again.", isError: true);
+          _showFeedbackSnackBar(
+            "Failed to update income. Please try again.",
+            isError: true,
+          );
         }
       }
-
     } catch (e) {
       if (mounted) {
-        _showFeedbackSnackBar("Error to update income ${e.toString()}", isError: true);
+        _showFeedbackSnackBar(
+          "Error to update income ${e.toString()}",
+          isError: true,
+        );
       }
     } finally {
       if (mounted) {
@@ -434,5 +456,4 @@ class _EditIncomesModalState extends State<EditIncomeModal> {
       ),
     );
   }
-
 }
