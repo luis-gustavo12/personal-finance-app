@@ -3,6 +3,7 @@ package com.github.Finance.services;
 import com.github.Finance.dtos.UserSumResultDTO;
 import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
+import com.github.Finance.dtos.requests.IncomeCreationRequest;
 import com.github.Finance.dtos.response.IncomesDetailResponse;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.exceptions.ResourceNotFoundException;
@@ -69,6 +70,17 @@ public class IncomesService {
 
         log.info("New income created!!");
 
+    }
+
+    public Income createIncome(IncomeCreationRequest request) {
+        Income income = new Income();
+        income.setAmount(BigDecimal.valueOf(request.amount()));
+        income.setCurrency(currencyService.findCurrency(request.currencyId()));
+        income.setPaymentMethod(paymentMethodsService.findPaymentMethod(request.paymentMethodId()));
+        income.setIncomeDate(request.date());
+        income.setDescription(request.description());
+        income.setUser(authenticationService.getCurrentAuthenticatedUser());
+        return incomeRepository.save(income);
     }
 
     public List<Income> getCurrentMonthUserIncomes() {
