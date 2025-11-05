@@ -30,6 +30,8 @@ public class CategoryService {
     }
 
     public List<Category> getAllUserCategories(User user) {
+        if (user == null)
+            return categoryRepository.findDefaultAndUserCategories(authenticationService.getCurrentAuthenticatedUser());
         return categoryRepository.findDefaultAndUserCategories(user);
     }
 

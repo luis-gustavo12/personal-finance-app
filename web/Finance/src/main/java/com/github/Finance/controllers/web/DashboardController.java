@@ -29,8 +29,9 @@ public class DashboardController {
     private final MonthlyReportTask monthlyReportTask;
     private final SubscriptionService subscriptionService;
     private final InstallmentService installmentService;
+    private final InstallmentQueryService installmentQueryService;
 
-    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, MonthlyReportTask monthlyReportTask, SubscriptionService subscriptionService, InstallmentService installmentService) {
+    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, MonthlyReportTask monthlyReportTask, SubscriptionService subscriptionService, InstallmentService installmentService, InstallmentQueryService installmentQueryService) {
         this.reportService = reportService;
         this.authenticationService = authenticationService;
         this.incomesService = incomesService;
@@ -38,6 +39,7 @@ public class DashboardController {
         this.monthlyReportTask = monthlyReportTask;
         this.subscriptionService = subscriptionService;
         this.installmentService = installmentService;
+        this.installmentQueryService = installmentQueryService;
     }
 
 
@@ -97,7 +99,7 @@ public class DashboardController {
     }
 
     private InstallmentsDashboardView getUserInstallmentsDetails(User user) {
-        return installmentService.getInstallmentsDashboardDetails(user);
+        return installmentQueryService.getInstallmentsDashboardDetails(user);
     }
     
 }

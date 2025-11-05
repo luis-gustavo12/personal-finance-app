@@ -1,17 +1,14 @@
 package com.github.Finance.services;
 
-import com.github.Finance.dtos.installments.InstallmentsDashboardView;
 import com.github.Finance.dtos.requests.InstallmentUpdateRequest;
 import com.github.Finance.dtos.views.InstallmentView;
 import com.github.Finance.exceptions.ResourceNotFoundException;
-import com.github.Finance.models.*;
+import com.github.Finance.models.Installment;
+import com.github.Finance.models.User;
 import com.github.Finance.repositories.InstallmentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,196 +18,63 @@ public class InstallmentService {
 
     private final InstallmentRepository installmentRepository;
     private final AuthenticationService authenticationService;
-    private final PaymentMethodsService paymentMethodsService;
-    private final ExpenseService expenseService;
-    private final CategoryService categoryService;
 
-    public InstallmentService(InstallmentRepository installmentRepository, AuthenticationService authenticationService, PaymentMethodsService paymentMethodsService, ExpenseService expenseService, CategoryService categoryService) {
+    public InstallmentService(InstallmentRepository installmentRepository, AuthenticationService authenticationService) {
         this.installmentRepository = installmentRepository;
         this.authenticationService = authenticationService;
-        this.paymentMethodsService = paymentMethodsService;
-        this.expenseService = expenseService;
-        this.categoryService = categoryService;
     }
 
-    public Installment createInstallment(
-            Long amount,
-            int splits,
-            String description,
-            PaymentMethod paymentMethod,
-            User user, Card card, LocalDate date, Currency currency) {
-
-        Installment installment = new Installment();
-        installment.setAmount(BigDecimal.valueOf(amount));
-        installment.setSplits(splits);
-        installment.setDescription(description);
-        installment.setPaymentMethod(paymentMethod);
-        installment.setUser(user);
-        installment.setFirstSplitDate(date);
-        installment.setCurrency(currency);
-        if (card != null)
-            installment.setCard(card);
-
-        return installmentRepository.save(installment);
-
+    /**
+     * Finds an installment by its ID.
+     * Throws an exception if not found.
+     */
+    public Installment findById(Long id) {
+        return installmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Installment with id: " + id + " not found."));
     }
 
+    /**
+     * Finds an installment by ID and verifies the current user owns it.
+     */
+    public Installment findByIdAndVerifyOwnership(Long id) {
+        User user = authenticationService.getCurrentAuthenticatedUser();
+        Installment installment = findById(id);
+
+        if (!installment.getUser().getId().equals(user.getId())) {
+            log.warn("User {} attempted to access installment {} owned by user {}", user.getId(), installment.getId(), installment.getUser().getId());
+            throw new SecurityException("You are not allowed to access this installment.");
+        }
+        return installment;
+    }
+
+    /**
+     * Gets a list of installments for the current user.
+     */
     public List<InstallmentView> getUserInstallments() {
         User user = authenticationService.getCurrentAuthenticatedUser();
-
         List<Installment> userInstallments = installmentRepository.findAllByUser(user);
 
         return userInstallments.stream()
                 .map(InstallmentView::new)
                 .collect(Collectors.toList());
-
-    }
-
-    public Installment findInstallmentById(Long id) {
-        return installmentRepository.findById(id).orElse(null);
-    }
-
-    public List<PaymentMethod> getPaymentMethods() {
-        return paymentMethodsService.getAllPaymentMethods();
-    }
-
-    public void updateInstallment(Long installmentId, InstallmentUpdateRequest request) {
-
-        // Those are marker variables, because depending on what is updated, I need to change also
-        // on expenses table
-        boolean updateAmount = false, updateSplits = false, updateDescription , updateExpensesCategory = false;
-
-        Installment installment = installmentRepository.findById(installmentId)
-            .orElseThrow(() -> new ResourceNotFoundException("Installment with id: " + installmentId));
-
-        User user = authenticationService.getCurrentAuthenticatedUser();
-
-        if (!installment.getUser().getId().equals(user.getId()))
-            throw new SecurityException("You are not allowed to update this installment");
-
-        Category desiredCategory = categoryService.getCategoryById(request.categoryId());
-
-        // Null users are the default categories
-        if (desiredCategory.getUser() != null) {
-            if (!desiredCategory.getUser().getId().equals(user.getId())) {
-                throw new SecurityException("You are not allowed to use this category!!");
-            }
-        }
-
-        Expense expense = expenseService.findExpenseByInstallment(installment);
-
-        if (!desiredCategory.getId().equals(expense.getCategory().getId())) {
-            updateExpensesCategory = true;
-        }
-
-
-        if (request.amount() != installment.getAmount().doubleValue()) {
-            installment.setAmount(BigDecimal.valueOf(request.amount()));
-            updateAmount = true;
-        }
-
-        if (request.splits() !=  installment.getSplits()) {
-            installment.setSplits(request.splits());
-            updateSplits = true;
-        }
-
-        if (!request.description().isEmpty()) {
-            if (!request.description().equals(  installment.getDescription())) {
-                installment.setDescription(request.description());
-                updateDescription = true;
-            }
-        }
-
-
-        if (!request.paymentMethod().equals(installment.getPaymentMethod().getId())) {
-            installment.setPaymentMethod(installment.getPaymentMethod());
-        }
-
-        Installment updatedInstallment = installmentRepository.save(installment);
-
-        try {
-            if (updateAmount || updateSplits) {
-
-                if (updateSplits) {
-                    expenseService.updateExpenseAmountByInstallmentAndSplits(
-                        updatedInstallment, request.splits()
-                    );
-                } else
-                    expenseService.updateExpenseAmountByInstallmentAndSplits(updatedInstallment,null);
-
-            }
-
-            if (updateExpensesCategory)
-                expenseService.updateInstallmentCategories(request.categoryId(), installment);
-
-        } catch (Exception e) {
-            log.error("Error while updating installment of id {}", installmentId);
-            log.error("Message: {}", e.getMessage());
-        }
-
-    }
-
-    public void deleteInstallment(Installment installment) {
-        installmentRepository.delete(installment);
     }
 
     /**
-     * Special method for deleting expenses that have installments.
-     * Once you delete an expense that has an installment, you must delete the installment
-     * on the installments table, and all referenced expenses
-     * @param installmentId
+     * Saves changes to an installment entity.
+     * This is used for both creating new and updating existing ones.
      */
-    public void deleteExpensesAndInstallments(Long installmentId) {
-
-        Installment installment = installmentRepository.findById(installmentId).orElse(null);
-        if (installment != null) {
-            int rsl = expenseService.deleteExpenseByInstallment(installment);
-            log.info("Deleting {} expense(s)", rsl);
-            log.debug("Deleting installment with id: {}, description: {}", installment.getId(), installment.getDescription());
-            installmentRepository.delete(installment);
-        }
-
-
-
+    public Installment save(Installment installment) {
+        return installmentRepository.save(installment);
     }
 
-    public InstallmentsDashboardView getInstallmentsDashboardDetails(User user) {
-
-        List<Installment> installments = installmentRepository.findUserActiveInstallments(user);
-
-        if (installments.isEmpty()) {
-            return null;
-        }
-
-        Double totalAmount = installments.stream()
-            .map(Installment::getAmount)
-            .mapToDouble(BigDecimal::doubleValue)
-            .sum();
-
-        List<String> installmentsDescriptions = new ArrayList<>(installments.size());
-        for (Installment installment : installments) {
-            //installmentsDescriptions.add(installment.getDescription());
-            String formatted = String.format("%s (%s %.2f - %d x %s %.2f)", installment.getDescription() ,installment.getCurrency().getCurrencyFlag(), installment.getAmount().doubleValue(), installment.getSplits(),
-                    installment.getCurrency().getCurrencySymbol(), (installment.getAmount().doubleValue() / installment.getSplits()));
-            log.debug("Formated: [{}]", formatted);
-            installmentsDescriptions.add(formatted);
-        }
-
-        double average = 0.0;
-        for (Installment installment : installments) {
-            average += installment.getAmount().doubleValue() / installment.getSplits();
-        }
-
-        log.info("Average amount: {}", average);
-
-        return new InstallmentsDashboardView(
-            totalAmount,
-            installments.size(),
-            user.getPreferredCurrency(),
-            installmentsDescriptions,
-            average
-        );
-
+    /**
+     * Deletes an installment by its ID after verifying ownership.
+     */
+    public void deleteById(Long installmentId) {
+        // findByIdAndVerifyOwnership ensures the user is allowed to delete this
+        Installment installment = findByIdAndVerifyOwnership(installmentId);
+        installmentRepository.delete(installment);
+        log.info("Deleted installment with id: {}", installmentId);
     }
 
 }

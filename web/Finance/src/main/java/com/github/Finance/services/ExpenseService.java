@@ -1,15 +1,19 @@
 package com.github.Finance.services;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.Finance.dtos.UpdateExpenseDTO;
 import com.github.Finance.dtos.UserSumResultDTO;
 import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
+import com.github.Finance.dtos.requests.InstallmentPurchaseRequest;
+import com.github.Finance.dtos.requests.SimpleExpenseCreationRequest;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.models.*;
 import com.github.Finance.specifications.ExpensesSpecification;
@@ -25,6 +29,7 @@ import com.github.Finance.mappers.ExpenseMapper;
 import com.github.Finance.repositories.ExpenseRepository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
@@ -39,8 +44,9 @@ public class ExpenseService {
     private final CategoryService categoryService;
     private final SubscriptionService subscriptionService;
     private final ExchangeRateService exchangeRateService;
+    private final InstallmentService installmentService;
 
-    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService, ExchangeRateService exchangeRateService) {
+    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService, ExchangeRateService exchangeRateService, InstallmentService installmentService) {
         this.currencyService = currencyService;
         this.paymentMethodsService = paymentMethodsService;
         this.repository = expenseRepository;
@@ -49,6 +55,7 @@ public class ExpenseService {
         this.categoryService = categoryService;
         this.subscriptionService = subscriptionService;
         this.exchangeRateService = exchangeRateService;
+        this.installmentService = installmentService;
     }
 
 
@@ -423,6 +430,140 @@ public class ExpenseService {
         repository.saveAll(installmentExpenses);
 
         log.info("Expenses saved successfully!!!");
+
+    }
+
+    public List<Expense> getUserExpensesByPeriodOfTime(User user, LocalDate start, LocalDate end) {
+        if (user == null)
+            user = authenticationService.getCurrentAuthenticatedUser();
+
+        return repository.findExpensesByUserAndPeriod(user, start, end);
+
+    }
+
+    public Expense saveInstallmentExpense(InstallmentPurchaseRequest request) {
+        Expense expense = new Expense();
+
+
+        return null;
+
+    }
+
+    @Transactional
+    public Expense saveSimpleExpense(SimpleExpenseCreationRequest request) {
+        Expense expense = new Expense();
+        expense.setPaymentMethod(paymentMethodsService.findPaymentMethod(request.paymentMethodId()));
+        expense.setCurrency(currencyService.findCurrency(request.currencyId()));
+        expense.setAmount(BigDecimal.valueOf(request.amount()));
+        expense.setExtraInfo(request.extraInfo());
+        expense.setDate(request.date());
+        expense.setUser(authenticationService.getCurrentAuthenticatedUser());
+        expense.setCategory(categoryService.getCategoryById(request.categoryId()));
+        if (request.cardId() != null)
+            expense.setCard(cardService.findCardById(Long.valueOf(request.cardId())));
+        return repository.save(expense);
+    }
+
+    @Transactional
+    public List<Expense> createNewInstallmentExpense(InstallmentPurchaseRequest request) {
+
+        Category category = categoryService.getCategoryById(request.categoryId());
+        PaymentMethod paymentMethod = paymentMethodsService.findPaymentMethod(request.paymentMethodId());
+        User currentAuthenticatedUser = authenticationService.getCurrentAuthenticatedUser();
+        Card card = cardService.findCardById(Long.valueOf(request.cardId()));
+        Currency currency = currencyService.findCurrency(request.currencyId());
+
+        // First step, create installment
+        Installment installment = new Installment();
+        installment.setAmount(BigDecimal.valueOf(request.amount()));
+        installment.setSplits(request.splits());
+        installment.setDescription(request.description());
+        installment.setPaymentMethod(paymentMethod);
+        installment.setUser(currentAuthenticatedUser);
+        installment.setCard(card);
+        installment.setFirstSplitDate(request.firstSplitDate());
+        installment.setCurrency(currency);
+        installment = installmentService.save(installment);
+
+        // Calculate the amount
+        BigDecimal bigDecimalAmount = BigDecimal.valueOf(request.amount());
+        BigDecimal splitAmount = bigDecimalAmount.divide(
+            new BigDecimal(request.splits()),
+            2,
+            RoundingMode.HALF_UP
+        );
+
+        List<Expense> expensesToCreate = new ArrayList<>();
+        for (int i = 0; i < installment.getSplits(); i++) {
+            Expense expense = new Expense();
+            expense.setInstallment(installment);
+            expense.setUser(currentAuthenticatedUser);
+            expense.setCategory(category);
+            expense.setAmount(splitAmount);
+            expense.setDate(request.firstSplitDate().plusMonths(i));
+            expense.setPaymentMethod(paymentMethod);
+            expense.setCurrency(currency);
+            expense.setCard(card);
+            expense.setExtraInfo(request.description());
+            expensesToCreate.add(expense);
+        }
+
+        return repository.saveAll(expensesToCreate);
+
+    }
+
+    public Optional<Expense> findFirstExpenseByInstallmentId(Long installmentId) {
+        return repository.findFirstByInstallmentId(installmentId);
+    }
+
+    public void updateInstallmentDescription(Long installmentId, String newDescription) {
+        repository.updateDescriptionForInstallment(installmentId, newDescription);
+    }
+
+    public void updateFutureInstallmentCategory(Long installmentId, Category newCategory) {
+        repository.updateCategoryForFutureExpenses(installmentId, newCategory, LocalDate.now());
+    }
+
+    public void updateFutureInstallmentPaymentMethod(Long installmentId, PaymentMethod newPaymentMethod) {
+        repository.updatePaymentMethodForFutureExpenses(installmentId, newPaymentMethod, LocalDate.now());
+    }
+
+    public void recalculateExpenseAmountsForInstallment(Installment installment) {
+        repository.deleteAllByInstallmentId(installment.getId());
+
+        List<Expense> expenses = generatedExpensesForInstallments(installment);
+
+        repository.saveAll(expenses);
+    }
+
+    private List<Expense> generatedExpensesForInstallments(Installment installment) {
+
+        BigDecimal splitAmount = installment.getAmount().divide(
+                new BigDecimal(installment.getSplits()),
+                2,
+                RoundingMode.HALF_UP
+        );
+
+        List<Expense> newExpenses = new ArrayList<>();
+
+        for (int i = 0; i < installment.getSplits(); i++) {
+            Expense expense = new Expense();
+            expense.setInstallment(installment);
+            expense.setPaymentMethod(installment.getPaymentMethod());
+            expense.setAmount(splitAmount);
+            expense.setDate(installment.getFirstSplitDate().plusMonths(i));
+            expense.setUser(installment.getUser());
+            //expense.setCategory(installment.g);
+            expense.setCurrency(installment.getCurrency());
+            expense.setCard(installment.getCard());
+            expense.setExtraInfo(installment.getDescription());
+            expense.setCurrency(installment.getCurrency());
+
+            newExpenses.add(expense);
+
+        }
+
+        return repository.saveAll(newExpenses);
 
     }
 

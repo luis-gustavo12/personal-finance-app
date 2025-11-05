@@ -136,16 +136,16 @@ public class ExpenseDetailsService {
 
 
         // Before saving the expense, create an installment record
-        Installment installment = installmentService.createInstallment(
-            expenseDeclaration.getAmount().longValue(),
-            splits,
-            expenseDeclaration.getInfo(),
-            expenseDeclaration.getPaymentMethod(),
-            expenseDeclaration.getUser(),
-            card,
-            expenseDeclaration.getDate(),
-            expenseDeclaration.getCurrency()
-        );
+        Installment installmentPlan = new Installment();
+        installmentPlan.setAmount(expenseDeclaration.getAmount());
+        installmentPlan.setSplits(splits);
+        installmentPlan.setDescription(expenseDeclaration.getInfo());
+        installmentPlan.setPaymentMethod(expenseDeclaration.getPaymentMethod());
+        installmentPlan.setUser(expenseDeclaration.getUser());
+        installmentPlan.setCard(card);
+        installmentPlan.setFirstSplitDate(expenseDeclaration.getDate());
+        installmentPlan.setCurrency(expenseDeclaration.getCurrency());
+        Installment savedInstallment = installmentService.save(installmentPlan);
 
         double splitValue = expenseDeclaration.getAmount().doubleValue() / splits;
         LocalDate date = expenseDeclaration.getDate();
@@ -161,7 +161,7 @@ public class ExpenseDetailsService {
             expense.setDate(date);
             expense.setUser(expenseDeclaration.getUser());
             expense.setCategory(expenseDeclaration.getCategory());
-            expense.setInstallment(installment);
+            expense.setInstallment(savedInstallment);
             expense = expenseService.saveExpense(expense);
 
             //cardExpenseService.processExpenseDetails(expense, card, true, splits, status);

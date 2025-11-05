@@ -3,9 +3,8 @@ package com.github.Finance.controllers.web;
 import com.github.Finance.dtos.requests.InstallmentUpdateRequest;
 import com.github.Finance.models.Expense;
 import com.github.Finance.models.Installment;
-import com.github.Finance.services.CategoryService;
-import com.github.Finance.services.ExpenseService;
-import com.github.Finance.services.InstallmentService;
+import com.github.Finance.repositories.InstallmentRepository;
+import com.github.Finance.services.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +19,17 @@ public class InstallmentsController {
     private final InstallmentService installmentService;
     private final CategoryService categoryService;
     private final ExpenseService expenseService;
+    private final InstallmentRepository installmentRepository;
+    private final PaymentMethodsService paymentMethodsService;
+    private final InstallmentManagementService installmentManagementService;
 
-    public InstallmentsController(InstallmentService installmentService, CategoryService categoryService, ExpenseService expenseService) {
+    public InstallmentsController(InstallmentService installmentService, CategoryService categoryService, ExpenseService expenseService, InstallmentRepository installmentRepository, PaymentMethodsService paymentMethodsService, InstallmentManagementService installmentManagementService) {
         this.installmentService = installmentService;
         this.categoryService = categoryService;
         this.expenseService = expenseService;
+        this.installmentRepository = installmentRepository;
+        this.paymentMethodsService = paymentMethodsService;
+        this.installmentManagementService = installmentManagementService;
     }
 
     @GetMapping("")
@@ -38,11 +43,11 @@ public class InstallmentsController {
     @GetMapping("/edit/{id}")
     public String editInstallments(@PathVariable Long id, Model model) {
 
-        Installment installment = installmentService.findInstallmentById(id);
+        Installment installment = installmentRepository.findById(id).orElse(null);
         Expense expense = expenseService.findExpenseByInstallment(installment);
         model.addAttribute("expense", expense);
         model.addAttribute("installment", installment);
-        model.addAttribute("paymentMethods", installmentService.getPaymentMethods());
+        model.addAttribute("paymentMethods", paymentMethodsService.getAllPaymentMethods());
         model.addAttribute("userCategories", categoryService.getAllUserCategories(installment.getUser()));
 
         return "edit-installments";
@@ -51,13 +56,13 @@ public class InstallmentsController {
     @PostMapping("/edit/{id}")
     public String postEditInstallments(@PathVariable Long id, InstallmentUpdateRequest request) {
 
-        installmentService.updateInstallment(id, request);
+        installmentManagementService.updateInstallment(id, request);
         return "redirect:/dashboard";
     }
 
     @GetMapping("/delete/{id}")
     public String deleteInstallments(@PathVariable Long id) {
-        installmentService.deleteExpensesAndInstallments(id);
+        installmentRepository.deleteById(id);
         return "redirect:/dashboard";
     }
 
