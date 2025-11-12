@@ -50,7 +50,7 @@ class _ExpenseCreationModalState extends State<ExpenseCreationModal> {
   // Controllers
   final _amountTextController = TextEditingController();
   final _cardService = CardService();
-  final _extraInfoController = TextEditingController();
+  final extraInfoController = TextEditingController();
 
   // Cards related variables
   List<CardResponse>? _cards;
@@ -223,7 +223,7 @@ class _ExpenseCreationModalState extends State<ExpenseCreationModal> {
                   SizedBox(height: 15),
                   // Description/extra info
                   TextField(
-                    controller: _extraInfoController,
+                    controller: extraInfoController,
                     minLines: 3,
                     maxLines: null,
                     keyboardType: TextInputType.multiline,
@@ -384,7 +384,7 @@ class _ExpenseCreationModalState extends State<ExpenseCreationModal> {
         categoryId: _selectedCategoryId!,
         amount: double.tryParse(_amountTextController.text)!,
         splits: int.tryParse(_installmentsController.text)!,
-        description: _extraInfoController.text,
+        description: extraInfoController.text,
         paymentMethodId: _selectedPaymentMethod!.id,
         cardId: _selectedCardId!,
         firstSplitDate: DateTime.parse(_dateController.text),
@@ -398,7 +398,7 @@ class _ExpenseCreationModalState extends State<ExpenseCreationModal> {
         paymentMethodId: _selectedPaymentMethod!.id,
         currencyId: _selectedCurrencyId!,
         amount: double.tryParse(_amountTextController.text)!,
-        extraInfo: _extraInfoController.text,
+        extraInfo: extraInfoController.text,
         expenseDate: DateTime.parse(_dateController.text),
         categoryId: _selectedCategoryId!,
         cardId: _selectedCardId,

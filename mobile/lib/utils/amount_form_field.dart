@@ -27,7 +27,6 @@ class AmountFormField extends StatelessWidget {
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          // You could make this a parameter too!
           return "Please, provide a value!!";
         }
         if (double.tryParse(value) == 0.0) {

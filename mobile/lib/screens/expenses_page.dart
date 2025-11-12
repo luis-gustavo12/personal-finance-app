@@ -8,13 +8,13 @@ import 'package:mobile/services/category_service.dart';
 import 'package:mobile/services/expenses_service.dart';
 import 'package:mobile/theme/colors.dart';
 import 'package:mobile/utils/app_bar.dart';
+import 'package:mobile/modals/show_edit_expense_modal.dart';
 
 import '../modals/expense_creation_modal.dart';
 
 class ExpensesPage extends StatefulWidget {
   const ExpensesPage({super.key});
 
-  @override
   Widget build(BuildContext context) {
     return const Placeholder();
   }
@@ -39,7 +39,6 @@ class _ExpensesState extends State<ExpensesPage> {
     setState(() {
       _isLoading = false;
     });
-    print("Hello");
   }
 
   @override
@@ -50,9 +49,12 @@ class _ExpensesState extends State<ExpensesPage> {
         AppColors.lilac,
         AppColors.mainBlue,
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        showExpensesModalCreation(context);
-      }, child: Icon(Icons.add),),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showExpensesModalCreation(context);
+        },
+        child: Icon(Icons.add),
+      ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : _expenses == null
@@ -82,27 +84,62 @@ class _ExpensesState extends State<ExpensesPage> {
     return ListView(
       children: [
         SizedBox(height: 8),
-        ..._expenses!.map((expenses) {
+        ..._expenses!.map((expense) {
           return Card(
             elevation: 4.0,
             margin: EdgeInsets.symmetric(vertical: 8.0),
             child: Container(
-              height: 100,
               padding: const EdgeInsets.all(12.0),
               color: Theme.of(context).colorScheme.surfaceVariant,
-              child: ListTile(
-                title: Text(
-                  "${expenses.currency}  ${expenses.amount.toStringAsFixed(2)}",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: AppColors.mainGreen
+              child: Column(
+                children: [
+                  ListTile(
+                    title: Text(
+                      "${expense.currency}  ${expense.amount.toStringAsFixed(2)}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: AppColors.mainGreen,
+                      ),
+                    ),
+                    subtitle: Text(
+                      "${DateFormat('yyyy-MM-dd').format(expense.date)} - ${expense.paymentMethod}",
+                    ),
+                    isThreeLine: false,
+                    trailing: IconButton(
+                      onPressed: () {
+                        showEditExpensesModal(context, expense);
+                      },
+                      icon: Icon(Icons.edit),
+                      color: AppColors.mainBlue,
+                    ),
                   ),
-                ),
-                subtitle: Text(
-                    "${DateFormat('yyyy-MM-dd').format(expenses.date)} - ${expenses.paymentMethod}"
-                ),
-                isThreeLine: false,
+                  if (expense.installment != null)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        bottom: 8.0,
+                      ),
+                      child: Text(
+                        "${expense.installment!.splits} splits, total amount ${expense.installment!.amount.toStringAsFixed(2)}",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                          color: AppColors.mainBlue,
+                        ),
+                      ),
+                    ),
+                  if (expense.info != null && expense.info!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        bottom: 8.0,
+                      ),
+                      child: Text(expense.info!),
+                    ),
+                ],
               ),
             ),
           );
@@ -110,5 +147,4 @@ class _ExpensesState extends State<ExpensesPage> {
       ],
     );
   }
-
 }
