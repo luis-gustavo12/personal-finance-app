@@ -14,6 +14,8 @@ import com.github.Finance.dtos.UserSumResultDTO;
 import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.requests.InstallmentPurchaseRequest;
 import com.github.Finance.dtos.requests.SimpleExpenseCreationRequest;
+import com.github.Finance.dtos.requests.UpdateExpenseRequest;
+import com.github.Finance.dtos.requests.UpdateInstallmentRequest;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.models.*;
 import com.github.Finance.specifications.ExpensesSpecification;
@@ -44,9 +46,8 @@ public class ExpenseService {
     private final CategoryService categoryService;
     private final SubscriptionService subscriptionService;
     private final ExchangeRateService exchangeRateService;
-    private final InstallmentService installmentService;
 
-    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService, ExchangeRateService exchangeRateService, InstallmentService installmentService) {
+    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService, ExchangeRateService exchangeRateService) {
         this.currencyService = currencyService;
         this.paymentMethodsService = paymentMethodsService;
         this.repository = expenseRepository;
@@ -55,7 +56,6 @@ public class ExpenseService {
         this.categoryService = categoryService;
         this.subscriptionService = subscriptionService;
         this.exchangeRateService = exchangeRateService;
-        this.installmentService = installmentService;
     }
 
 
@@ -175,21 +175,24 @@ public class ExpenseService {
 
     public void deleteExpense(Long id) {
 
-        if (!repository.existsById(id)) {
-            throw new ResourceNotFoundException("Expense not found!!!");
-        }
+        Expense expense = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found!!!"));
 
-        User currentUser = authenticationService.getCurrentAuthenticatedUser();
+        validateExpenseByUser(expense);
 
-        Expense expense = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Expense not found!!!"));
+        User user = authenticationService.getCurrentAuthenticatedUser();
 
-        if (!expense.getUser().getId().equals(currentUser.getId())) {
+        if (!expense.getUser().getId().equals(user.getId())) {
             throw new SecurityException("You are not allowed to perform this operation");
         }
 
-        repository.deleteById(id);
-        log.info("Expense with id {} deleted successfully!!!", id);
+        if (expense.getInstallment() != null) {
+            throw new IllegalArgumentException("Cannot delete a single installment expense. " +
+                    "Please delete the entire installment series.");
+        }
 
+        repository.delete(expense);
+        log.info("Expense with id {} deleted successfully!!!", id);
 
     }
 
@@ -464,54 +467,6 @@ public class ExpenseService {
         return repository.save(expense);
     }
 
-    @Transactional
-    public List<Expense> createNewInstallmentExpense(InstallmentPurchaseRequest request) {
-
-        Category category = categoryService.getCategoryById(request.categoryId());
-        PaymentMethod paymentMethod = paymentMethodsService.findPaymentMethod(request.paymentMethodId());
-        User currentAuthenticatedUser = authenticationService.getCurrentAuthenticatedUser();
-        Card card = cardService.findCardById(Long.valueOf(request.cardId()));
-        Currency currency = currencyService.findCurrency(request.currencyId());
-
-        // First step, create installment
-        Installment installment = new Installment();
-        installment.setAmount(BigDecimal.valueOf(request.amount()));
-        installment.setSplits(request.splits());
-        installment.setDescription(request.description());
-        installment.setPaymentMethod(paymentMethod);
-        installment.setUser(currentAuthenticatedUser);
-        installment.setCard(card);
-        installment.setFirstSplitDate(request.firstSplitDate());
-        installment.setCurrency(currency);
-        installment = installmentService.save(installment);
-
-        // Calculate the amount
-        BigDecimal bigDecimalAmount = BigDecimal.valueOf(request.amount());
-        BigDecimal splitAmount = bigDecimalAmount.divide(
-            new BigDecimal(request.splits()),
-            2,
-            RoundingMode.HALF_UP
-        );
-
-        List<Expense> expensesToCreate = new ArrayList<>();
-        for (int i = 0; i < installment.getSplits(); i++) {
-            Expense expense = new Expense();
-            expense.setInstallment(installment);
-            expense.setUser(currentAuthenticatedUser);
-            expense.setCategory(category);
-            expense.setAmount(splitAmount);
-            expense.setDate(request.firstSplitDate().plusMonths(i));
-            expense.setPaymentMethod(paymentMethod);
-            expense.setCurrency(currency);
-            expense.setCard(card);
-            expense.setExtraInfo(request.description());
-            expensesToCreate.add(expense);
-        }
-
-        return repository.saveAll(expensesToCreate);
-
-    }
-
     public Optional<Expense> findFirstExpenseByInstallmentId(Long installmentId) {
         return repository.findFirstByInstallmentId(installmentId);
     }
@@ -528,15 +483,17 @@ public class ExpenseService {
         repository.updatePaymentMethodForFutureExpenses(installmentId, newPaymentMethod, LocalDate.now());
     }
 
-    public void recalculateExpenseAmountsForInstallment(Installment installment) {
+    public void recalculateExpenseAmountsForInstallment(Installment installment, UpdateInstallmentRequest request) {
         repository.deleteAllByInstallmentId(installment.getId());
 
-        List<Expense> expenses = generatedExpensesForInstallments(installment);
+        Category category = categoryService.getCategoryById(request.categoryId());
+
+        List<Expense> expenses = generatedExpensesForInstallments(installment, category);
 
         repository.saveAll(expenses);
     }
 
-    private List<Expense> generatedExpensesForInstallments(Installment installment) {
+    private List<Expense> generatedExpensesForInstallments(Installment installment, Category category) {
 
         BigDecimal splitAmount = installment.getAmount().divide(
                 new BigDecimal(installment.getSplits()),
@@ -553,18 +510,102 @@ public class ExpenseService {
             expense.setAmount(splitAmount);
             expense.setDate(installment.getFirstSplitDate().plusMonths(i));
             expense.setUser(installment.getUser());
-            //expense.setCategory(installment.g);
+            if (category != null)
+                expense.setCategory(category);
             expense.setCurrency(installment.getCurrency());
             expense.setCard(installment.getCard());
             expense.setExtraInfo(installment.getDescription());
             expense.setCurrency(installment.getCurrency());
 
             newExpenses.add(expense);
-
         }
 
         return repository.saveAll(newExpenses);
 
     }
 
+    @Transactional
+    public Expense updateSingleExpense(Long expenseId, UpdateExpenseRequest request) {
+
+        Expense expense = repository.findById(expenseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found!!"));
+
+        validateExpenseByUser(expense);
+
+        if (expense.getInstallment() != null) {
+
+            if (request.amount() != null && !request.amount().equals(expense.getAmount())) {
+                throw new IllegalArgumentException("Cannot change amount of a single installment expense. " +
+                        "Please edit the installment series instead.");
+            }
+
+        }
+
+        expense.setAmount(request.amount());
+
+
+        if (request.currencyId() != null) {
+            expense.setCurrency(currencyService.findCurrency(request.currencyId()));
+        }
+        if (request.paymentMethodId() != null) {
+            expense.setPaymentMethod(paymentMethodsService.findPaymentMethod(request.paymentMethodId()));
+        }
+        if (request.extraInfo() != null) {
+            expense.setExtraInfo(request.extraInfo());
+        }
+        if (request.date() != null) {
+            expense.setDate(request.date());
+        }
+        if (request.categoryId() != null) {
+            expense.setCategory(categoryService.getCategoryById(request.categoryId()));
+        }
+
+        if (request.cardId() != null) {
+            expense.setCard(cardService.findCardById(request.cardId()));
+        }
+
+        return repository.save(expense);
+    }
+
+    /**
+     * Updates the category for ALL expenses associated with a given installmentId,
+     * regardless of their date.
+     *
+     * @param installmentId The ID of the parent installment.
+     * @param newCategory   The new Category object to set for all related expenses.
+     */
+    @Transactional
+    public void updateAllInstallmentCategory(Long installmentId, Category newCategory) {
+        log.debug("Updating all expenses for installment {} to category {}",
+                installmentId, newCategory.getCategoryName());
+
+        int updatedRows = repository.updateCategoryForAllExpensesByInstallment(installmentId, newCategory);
+
+        log.info("Updated category for {} expenses related to installment {}",
+                updatedRows, installmentId);
+    }
+
+    /**
+     * Updates the payment method for ALL expenses associated with a given installmentId,
+     * regardless of their date.
+     *
+     * @param installmentId     The ID of the parent installment.
+     * @param newPaymentMethod  The new PaymentMethod object to set for all related expenses.
+     */
+    @Transactional
+    public void updateAllInstallmentPaymentMethod(Long installmentId, PaymentMethod newPaymentMethod) {
+        log.debug("Updating all expenses for installment {} to payment method {}",
+                installmentId, newPaymentMethod.getDescription()); // Or .getName(), etc.
+
+        int updatedRows = repository.updatePaymentMethodForAllExpensesByInstallment(
+                installmentId, newPaymentMethod);
+
+        log.info("Updated payment method for {} expenses related to installment {}",
+                updatedRows, installmentId);
+    }
+
+
+    public List<Expense> findExpensesByInstallment(Installment installment) {
+        return repository.findExpensesByInstallment(installment);
+    }
 }

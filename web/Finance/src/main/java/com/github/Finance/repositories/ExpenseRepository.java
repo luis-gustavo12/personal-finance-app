@@ -54,4 +54,27 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long>, JpaSpec
     @Query("DELETE FROM Expense e WHERE e.installment.id = :installmentId")
     void deleteAllByInstallmentId(@Param("installmentId") Long installmentId);
 
+    /**
+     * Updates the category for all expenses linked to a specific installment ID.
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE Expense e SET e.category = :category WHERE e.installment.id = :installmentId")
+    int updateCategoryForAllExpensesByInstallment(
+            @Param("installmentId") Long installmentId,
+            @Param("category") Category category);
+
+
+    /**
+     * Updates the payment method for all expenses linked to a specific installment ID.
+     */
+    @Modifying
+    @Transactional
+    @Query("UPDATE Expense e SET e.paymentMethod = :paymentMethod WHERE e.installment.id = :installmentId")
+    int updatePaymentMethodForAllExpensesByInstallment(
+            @Param("installmentId") Long installmentId,
+            @Param("paymentMethod") PaymentMethod paymentMethod);
+
+
+
 }

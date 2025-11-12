@@ -100,7 +100,7 @@ public class InstallmentManagementService {
 
             if (updateAmount || updateSplits) {
                 log.debug("Updating child expense amounts/splits for installment {}", installmentId);
-                expenseService.recalculateExpenseAmountsForInstallment(updatedInstallment);
+                expenseService.recalculateExpenseAmountsForInstallment(updatedInstallment, null);
             }
 
             if (updateExpensesCategory) {

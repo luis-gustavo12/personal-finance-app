@@ -73,7 +73,7 @@ public class InstallmentQueryService {
             installmentsDescriptions.add(formatted);
         }
 
-        log.info("Calculated dashboard for user {}: totalAmount={}, sumOfAverages={}",
+        log.info("Calculated dashboard for user {}: amount={}, sumOfAverages={}",
                 user.getId(), totalAmount, sumOfPerSplitAverages);
 
         return new InstallmentsDashboardView(
