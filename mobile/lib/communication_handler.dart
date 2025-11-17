@@ -81,6 +81,8 @@ class CommunicationHandler {
         requestFuture = http.post(uri, headers: headers, body: encodedData);
       } else if (method == Methods.get) {
         requestFuture = http.get(uri, headers: headers);
+      } else if (method == Methods.delete) {
+        requestFuture = http.delete(uri, headers: headers);
       } else {
         return null;
       }

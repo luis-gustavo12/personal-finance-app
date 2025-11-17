@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/dtos/responses/api_response.dart';
 import 'package:mobile/dtos/responses/expenses_response.dart';
 import 'package:mobile/dtos/responses/user_category_response.dart';
 import 'package:mobile/services/category_service.dart';
@@ -106,12 +107,24 @@ class _ExpensesState extends State<ExpensesPage> {
                       "${DateFormat('yyyy-MM-dd').format(expense.date)} - ${expense.paymentMethod}",
                     ),
                     isThreeLine: false,
-                    trailing: IconButton(
-                      onPressed: () {
-                        showEditExpensesModal(context, expense);
-                      },
-                      icon: Icon(Icons.edit),
-                      color: AppColors.mainBlue,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            showEditExpensesModal(context, expense);
+                          },
+                          icon: Icon(Icons.edit),
+                          color: AppColors.mainBlue,
+                        ),
+                        IconButton(
+                          onPressed: ()  {
+                            _deleteExpense(expense.id, expense);
+                          },
+                          icon: Icon(Icons.delete),
+                          color: Colors.redAccent,
+                        ),
+                      ],
                     ),
                   ),
                   if (expense.installment != null)
@@ -146,5 +159,67 @@ class _ExpensesState extends State<ExpensesPage> {
         }),
       ],
     );
+  }
+
+  Future<void> _deleteExpense(int id, ExpenseResponse expense) async {
+
+    showDialog(context: context, builder: (BuildContext context) {
+      return Center(child: CircularProgressIndicator(),);
+    });
+
+    ApiResponse? response;
+
+    try {
+      if (expense.installment == null) {
+         response = await _expensesService.deleteExpense(id);
+      } else {
+        response = await _expensesService.deleteInstallmentExpense(expense.installment!.id);
+      }
+
+      if (!mounted) return;
+
+      Navigator.of(context).pop();
+
+      if (response == null) throw Exception();
+
+      bool success = response.status >= 200 && response.status < 300;
+
+      if (success) {
+        setState(() {
+          _expenses?.remove(expense);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Expense deleted successfully!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        String errorMessage = "Failed to delete expense.";
+        if (response.data is String) {
+          errorMessage = response.data;
+        } else if (response.data is Map && response.data.containsKey('message')) {
+          errorMessage = response.data['message'];
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+
+    } on Exception catch (e) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("An error occurred: ${e.toString()}"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+
+
   }
 }

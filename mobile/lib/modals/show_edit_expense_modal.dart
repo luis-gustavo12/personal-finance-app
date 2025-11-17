@@ -19,6 +19,7 @@ import 'package:mobile/theme/colors.dart';
 import 'package:mobile/utils/amount_form_field.dart';
 import 'package:mobile/utils/date.dart';
 
+import '../dtos/requests/simple_expense_conversion.dart';
 import '../dtos/responses/user_category_response.dart';
 
 void showEditExpensesModal(BuildContext context, ExpenseResponse expense) {
@@ -475,17 +476,16 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
         } else {
           // SCENARIO 1: Installment -> Simple (Conversion)
           print("SCENARIO 1: Converting installment to simple expense");
-          // TODO: Create your ConvertInstallmentToSimpleRequest DTO
-          // var request = ConvertInstallmentToSimpleRequest(
-          //   originalExpenseId: widget.expense.id,
-          //   amount: amount, // This is now the simple amount
-          //   paymentMethodId: _selectedPm!.id, // Use _selectedPm
-          //   categoryId: _selectedCategoryId!,
-          //   currencyId: _selectedCurrencyId!,
-          //   date: date,
-          //   info: info,
-          // );
-          // await _expenseService.convertInstallmentToSimple(request);
+          //TODO: Create your ConvertInstallmentToSimpleRequest DTO
+          var request = SimpleExpenseConversion(
+            amount: amount, // This is now the simple amount
+            paymentMethodId: _selectedPm!.id, // Use _selectedPm
+            categoryId: _selectedCategoryId!,
+            currencyId: _selectedCurrencyId!,
+            date: DateTime.parse(_dateController.text),
+            description: info,
+          );
+          await _expenseService.convertInstallmentToSimple(widget.expense.installment!.id, request);
         }
       } else {
         // --- Original was a SIMPLE expense ---
@@ -495,7 +495,7 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
           print("SCENARIO 2: Converting simple expense to installment");
           // This is what you already started
           var request = InstallmentConversionExpenseRequest(
-            originalExpenseId: widget.expense.id,
+            expenseId: widget.expense.id,
             amount: amount, // Total amount
             splits: int.tryParse(_installmentsController.text)!,
             cardId: _selectedCard!.id, // Make sure _selectedCard is not null
@@ -503,9 +503,10 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
             currencyId: _selectedCurrencyId!,
             date: date,
             info: info,
+            paymentMethodId: int.parse(_installmentsController.text),
           );
           // TODO: Call your service
-          // await _expenseService.convertSimpleToInstallment(request);
+          await _expenseService.convertSimpleExpenseToInstallment(request);
 
         } else {
           // SCENARIO 4: Simple -> Simple (Update)
