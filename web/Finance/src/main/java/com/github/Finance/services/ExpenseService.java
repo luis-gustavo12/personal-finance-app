@@ -12,12 +12,10 @@ import java.util.stream.Collectors;
 import com.github.Finance.dtos.UpdateExpenseDTO;
 import com.github.Finance.dtos.UserSumResultDTO;
 import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
-import com.github.Finance.dtos.requests.InstallmentPurchaseRequest;
-import com.github.Finance.dtos.requests.SimpleExpenseCreationRequest;
-import com.github.Finance.dtos.requests.UpdateExpenseRequest;
-import com.github.Finance.dtos.requests.UpdateInstallmentRequest;
+import com.github.Finance.dtos.requests.*;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.models.*;
+import com.github.Finance.repositories.InstallmentRepository;
 import com.github.Finance.specifications.ExpensesSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -46,8 +44,9 @@ public class ExpenseService {
     private final CategoryService categoryService;
     private final SubscriptionService subscriptionService;
     private final ExchangeRateService exchangeRateService;
+    private final InstallmentRepository installmentRepository;
 
-    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService, ExchangeRateService exchangeRateService) {
+    public ExpenseService(CurrencyService currencyService, PaymentMethodsService paymentMethodsService, ExpenseRepository expenseRepository, AuthenticationService authenticationService, CardService cardService, CategoryService categoryService, SubscriptionService subscriptionService, ExchangeRateService exchangeRateService, InstallmentRepository installmentRepository) {
         this.currencyService = currencyService;
         this.paymentMethodsService = paymentMethodsService;
         this.repository = expenseRepository;
@@ -56,6 +55,7 @@ public class ExpenseService {
         this.categoryService = categoryService;
         this.subscriptionService = subscriptionService;
         this.exchangeRateService = exchangeRateService;
+        this.installmentRepository = installmentRepository;
     }
 
 
@@ -607,5 +607,29 @@ public class ExpenseService {
 
     public List<Expense> findExpensesByInstallment(Installment installment) {
         return repository.findExpensesByInstallment(installment);
+    }
+
+    /**
+     * Method responsible for converting one installment into one expense.
+     * @param id the current installment id to be deleted
+     * @param request the new expense
+     * @return The created expense
+     */
+    @Transactional
+    public Expense convertInstallment(Long id, SimpleExpenseConversionRequest request) {
+
+        installmentRepository.deleteById(id);
+
+        Expense expense = new Expense();
+        expense.setCurrency(currencyService.findCurrency(request.currencyId()));
+        expense.setPaymentMethod(paymentMethodsService.findPaymentMethod(request.paymentMethodId()));
+        expense.setUser(authenticationService.getCurrentAuthenticatedUser());
+        expense.setDate(request.date());
+        expense.setCategory(categoryService.getCategoryById(request.categoryId()));
+        expense.setAmount(BigDecimal.valueOf(request.amount()));
+        if (request.cardId() != null)
+            expense.setCard(cardService.findCardById(request.cardId()));
+
+        return repository.save(expense);
     }
 }

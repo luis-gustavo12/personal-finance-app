@@ -7,18 +7,19 @@ import java.time.LocalDate;
  *
  * Converts one installment expense into a normal expense
  *
- * @param newAmount
- * @param newExtraInfo
+ * @param amount
+ * @param description
  * @param currencyId
  * @param date
  * @param categoryId
  * @param cardId
  */
 public record SimpleExpenseConversionRequest(
-        BigDecimal newAmount,
-        String newExtraInfo,
+        Double amount,
+        String description,
         Long currencyId,
         LocalDate date,
         Long categoryId,
-        Long cardId
+        Long cardId,
+        Long paymentMethodId
 ) {}

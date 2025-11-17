@@ -1,9 +1,6 @@
 package com.github.Finance.controllers.api;
 
-import com.github.Finance.dtos.requests.SimpleExpenseConversionRequest;
-import com.github.Finance.dtos.requests.InstallmentPurchaseRequest;
-import com.github.Finance.dtos.requests.SimpleExpenseCreationRequest;
-import com.github.Finance.dtos.requests.UpdateExpenseRequest;
+import com.github.Finance.dtos.requests.*;
 import com.github.Finance.dtos.response.ExpenseResponse;
 import com.github.Finance.factories.ExpenseResponseFactory;
 import com.github.Finance.models.Expense;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/expenses")
@@ -74,13 +72,46 @@ public class ExpensesApiController {
 
     /**
      * Method responsible for receiving one installment expense, and convert it to simple expense
-     * @param id Current Expense ID
+     * @param id Current installment ID. To be deleted
      * @param request The needed data for adding a new simple expense
      * @return
      */
     @PostMapping("{installmentId}/convert-simple-expense")
     public ResponseEntity<?> convertToSimpleExpense(@PathVariable(name = "installmentId") Long id, @RequestBody SimpleExpenseConversionRequest request) {
+        Expense expense = expenseService.convertInstallment(id, request);
+
+        return ResponseEntity.ok(
+                expenseResponseFactory.create(expense)
+        );
+    }
+
+    /**
+     * Convert one simple expense into an installment
+     */
+    @PostMapping("convert-to-installment")
+    public ResponseEntity<?> convertToInstallment(@RequestBody InstallmentConversionRequest request) {
+
+        installmentService.convertToInstallment(request);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message", "Installment updated successfully!!"
+                )
+        );
+
+
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteExpense(@PathVariable Long id) {
+
+        log.debug("Deleting expense {}", id);
+
+        expenseService.deleteExpense(id);
         return ResponseEntity.noContent().build();
+
+
+
     }
 
 

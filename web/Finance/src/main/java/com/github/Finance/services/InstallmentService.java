@@ -1,5 +1,6 @@
 package com.github.Finance.services;
 
+import com.github.Finance.dtos.requests.InstallmentConversionRequest;
 import com.github.Finance.dtos.requests.InstallmentPurchaseRequest;
 import com.github.Finance.dtos.requests.UpdateInstallmentRequest;
 import com.github.Finance.dtos.views.InstallmentView;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -182,30 +184,87 @@ public class InstallmentService {
         installment.setCurrency(currency);
         installment = installmentRepository.save(installment);
 
-        // Calculate the amount
-        BigDecimal bigDecimalAmount = BigDecimal.valueOf(request.amount());
+//        // Calculate the amount
+//        BigDecimal bigDecimalAmount = BigDecimal.valueOf(request.amount());
+//        BigDecimal splitAmount = bigDecimalAmount.divide(
+//                new BigDecimal(request.splits()),
+//                2,
+//                RoundingMode.HALF_UP
+//        );
+
+        return generateExpensesFromInstallment(request.firstSplitDate(),
+                request.description(),
+                installment, currentAuthenticatedUser,
+                category, request.amount(),
+                paymentMethod, currency, card);
+
+    }
+
+    private List<Expense> generateExpensesFromInstallment(LocalDate firstSplitDate, String description,
+                                      Installment installment, User user, Category category,
+                                      Double fullAmount, PaymentMethod paymentMethod, Currency currency, Card card) {
+
+
+        BigDecimal bigDecimalAmount = BigDecimal.valueOf(fullAmount);
         BigDecimal splitAmount = bigDecimalAmount.divide(
-                new BigDecimal(request.splits()),
-                2,
-                RoundingMode.HALF_UP
+                new BigDecimal(installment.getSplits()),
+                2, RoundingMode.HALF_UP
         );
+
 
         List<Expense> expensesToCreate = new ArrayList<>();
         for (int i = 0; i < installment.getSplits(); i++) {
             Expense expense = new Expense();
             expense.setInstallment(installment);
-            expense.setUser(currentAuthenticatedUser);
+            expense.setUser(user);
             expense.setCategory(category);
             expense.setAmount(splitAmount);
-            expense.setDate(request.firstSplitDate().plusMonths(i));
+            expense.setDate(firstSplitDate.plusMonths(i));
             expense.setPaymentMethod(paymentMethod);
             expense.setCurrency(currency);
             expense.setCard(card);
-            expense.setExtraInfo(request.description());
+            expense.setExtraInfo(description);
             expensesToCreate.add(expense);
         }
 
         return expenseRepository.saveAll(expensesToCreate);
+    }
+
+    @Transactional
+    public void convertToInstallment(InstallmentConversionRequest request) {
+
+        // First, delete the existent expense
+        Expense expense = expenseService.findExpenseById(request.expenseId());
+
+        if (expense == null)
+            throw new ResourceNotFoundException("Expense with id " + request.expenseId() + " not found!!");
+
+        expenseService.deleteExpense(expense.getId());
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+        Category category = categoryService.getCategoryById(request.categoryId());
+        PaymentMethod paymentMethod = paymentMethodsService.findPaymentMethod(request.paymentMethodId());
+        Currency currency = currencyService.findCurrency(request.currencyId());
+        Card card = cardService.findCardById(request.cardId());
+
+        Installment installment = new Installment();
+        installment.setFirstSplitDate(request.date());
+        installment.setAmount(BigDecimal.valueOf(request.amount()));
+        installment.setDescription(request.extraInfo());
+        installment.setPaymentMethod(paymentMethod);
+        installment.setUser(user);
+        installment.setSplits(request.splits());
+        if (request.cardId() != null)
+            installment.setCard(card);
+        installment.setCurrency(currency);
+
+        installment = installmentRepository.save(installment);
+
+        var generatedExpenses = generateExpensesFromInstallment(request.date(), request.extraInfo(), installment, user, category,
+                request.amount(), paymentMethod, currency, card);
+
+        log.debug("Generated {} expenses from installment", generatedExpenses.size());
+
 
     }
 

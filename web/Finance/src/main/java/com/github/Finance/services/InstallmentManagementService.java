@@ -44,10 +44,6 @@ public class InstallmentManagementService {
         this.paymentMethodRepository = paymentMethodRepository;
     }
 
-    /**
-     * This is your original updateInstallment method, now living in the correct place.
-     * It is @Transactional to ensure the update either fully succeeds or fails completely.
-     */
     @Transactional
     public Installment updateInstallment(Long installmentId, InstallmentUpdateRequest request) {
 
