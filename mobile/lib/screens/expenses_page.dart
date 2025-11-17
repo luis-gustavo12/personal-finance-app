@@ -111,8 +111,9 @@ class _ExpensesState extends State<ExpensesPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          onPressed: () {
-                            showEditExpensesModal(context, expense);
+                          onPressed: () async {
+                            bool? result = await showEditExpensesModal(context, expense);
+                            if (result == true) _getExpenses();
                           },
                           icon: Icon(Icons.edit),
                           color: AppColors.mainBlue,

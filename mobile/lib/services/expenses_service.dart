@@ -6,6 +6,7 @@ import 'package:mobile/dtos/requests/installment_conversion_expense_request.dart
 import 'package:mobile/dtos/requests/installment_expense_creation_request.dart';
 import 'package:mobile/dtos/requests/simple_expense_conversion.dart';
 import 'package:mobile/dtos/requests/update_installment_request.dart';
+import 'package:mobile/dtos/requests/update_simple_expense_request.dart';
 import 'package:mobile/dtos/responses/api_response.dart';
 import 'package:mobile/dtos/responses/expenses_response.dart';
 
@@ -116,6 +117,17 @@ class ExpensesService {
       logger.i("Error: ${e.toString()}");
       return null;
     }
+  }
+
+  Future<ApiResponse?> updateSimpleExpense(UpdateSimpleExpenseRequest request, int expenseId) async {
+    
+    try {
+      return await CommunicationHandler.sendData(data: request, route: "/api/expenses/$expenseId", method: Methods.put);
+    } catch (e) {
+      logger.i("Error: ${e.toString()}");
+      return null;
+    }
+    
   }
 
 

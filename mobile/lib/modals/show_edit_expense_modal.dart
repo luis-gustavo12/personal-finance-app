@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:mobile/dtos/purchase_data.dart';
 import 'package:mobile/dtos/requests/installment_conversion_expense_request.dart';
 import 'package:mobile/dtos/requests/update_installment_request.dart';
+import 'package:mobile/dtos/responses/api_response.dart';
 import 'package:mobile/dtos/responses/card_response.dart';
 import 'package:mobile/dtos/responses/expenses_response.dart';
 import 'package:mobile/models/currency.dart';
@@ -20,14 +21,15 @@ import 'package:mobile/utils/amount_form_field.dart';
 import 'package:mobile/utils/date.dart';
 
 import '../dtos/requests/simple_expense_conversion.dart';
+import '../dtos/requests/update_simple_expense_request.dart';
 import '../dtos/responses/user_category_response.dart';
 
-void showEditExpensesModal(BuildContext context, ExpenseResponse expense) {
+Future<bool?> showEditExpensesModal(BuildContext context, ExpenseResponse expense) async {
   // Before showing it, we need to check if the expense is of installment type or not.
   // If it is, we need to show the total sum, not the actual stuff
   // Otherwise, show it separately
 
-  showModalBottomSheet(
+  return await showModalBottomSheet<bool>(
     context: context,
     builder: (ctx) => ExpenseEditionModal(expense: expense),
   );
@@ -51,7 +53,6 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
   final _formKey = GlobalKey<FormState>();
   bool _isSendingData = false;
   late bool isInstallmentEligible;
-  late TextEditingController dateController;
   final _installmentsController = TextEditingController();
 
   // Variables that hold the data for sending
@@ -102,7 +103,7 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
           _dateTime = pickedDate;
         });
       },
-      dateController: dateController,
+      dateController: _dateController,
     );
   }
 
@@ -436,6 +437,8 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
 
   Future<void> sendData(ExpenseResponse originalExpense) async {
 
+    ApiResponse? response;
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -470,8 +473,7 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
             date: date!,
             description: info,
           );
-          var s = await _expenseService.updateInstallment(widget.expense.installment!.id, request);
-          print("sent");
+          response = await _expenseService.updateInstallment(widget.expense.installment!.id, request);
 
         } else {
           // SCENARIO 1: Installment -> Simple (Conversion)
@@ -485,7 +487,7 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
             date: DateTime.parse(_dateController.text),
             description: info,
           );
-          await _expenseService.convertInstallmentToSimple(widget.expense.installment!.id, request);
+          response = await _expenseService.convertInstallmentToSimple(widget.expense.installment!.id, request);
         }
       } else {
         // --- Original was a SIMPLE expense ---
@@ -506,45 +508,75 @@ class _ExpenseEditionState extends State<ExpenseEditionModal> {
             paymentMethodId: int.parse(_installmentsController.text),
           );
           // TODO: Call your service
-          await _expenseService.convertSimpleExpenseToInstallment(request);
+          response = await _expenseService.convertSimpleExpenseToInstallment(request);
 
         } else {
           // SCENARIO 4: Simple -> Simple (Update)
           print("SCENARIO 4: Updating existing simple expense");
           // TODO: Create your UpdateSimpleExpenseRequest DTO
-          // var request = UpdateSimpleExpenseRequest(
-          //   expenseId: widget.expense.id,
-          //   amount: amount,
-          //   paymentMethodId: _selectedPm!.id, // Use _selectedPm
-          //   categoryId: _selectedCategoryId!,
-          //   currencyId: _selectedCurrencyId!,
-          //   date: date,
-          //   info: info,
-          // );
-          // await _expenseService.updateSimpleExpense(request);
+          bool splitCondition = widget.expense.installment != null && _installmentsController.text.isNotEmpty &&
+              (widget.expense.installment!.splits) != int.tryParse(_installmentsController.text);
+          var request = UpdateSimpleExpenseRequest(
+            amount: double.tryParse(amountTextController.text) != widget.expense.amount ?
+                double.tryParse(amountTextController.text) : null,
+            splits: splitCondition? int.tryParse(_installmentsController.text) : null,
+            extraInfo: extraInfoController.text,
+            paymentMethodId: _selectedPm != null ? _selectedPm!.id : null,
+            cardId: _selectedCard != null ? _selectedCard!.id : null,
+            date: _dateTime != null ? DateTime.tryParse(_dateController.text) : null,
+            currencyId: _selectedCurrencyId,
+            categoryId: _selectedCategoryId
+          );
+          response = await _expenseService.updateSimpleExpense(request, widget.expense.id);
         }
       }
 
-      // 5. If everything succeeds, close the modal and return 'true'
-      if (mounted) {
-        Navigator.of(context).pop(true); // 'true' signals a refresh is needed
-      }
     } catch (e) {
-      // 6. Handle errors
+
       print("Error sending data: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Failed to update expense: ${e.toString()}")),
         );
-        Navigator.of(context).pop(false); // 'false' signals failure
+        setState(() {
+          _isSendingData = false;
+        });
+        Navigator.of(context).pop(false);
+        return;
       }
     } finally {
-      // 7. Always stop the loading indicator
+
       if (mounted) {
         setState(() {
           _isSendingData = false;
         });
       }
+    }
+
+    if (!mounted) return;
+
+    if (!_isSendingData) {
+
+      String message;
+      bool update = false;
+
+      if (response == null) {
+        message = "Failed to connect to the API!! Please, log in later";
+      } else if (response.status >= 200 && response.status < 300) {
+        message = "Data was sent successfully!!";
+        update = true;
+      } else {
+        message = "An Error occurred!!";
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message))
+      );
+
+      if (update) {
+        Navigator.of(context).pop(true);
+      }
+
     }
 
 
