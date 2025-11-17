@@ -106,7 +106,7 @@ class _HomeState extends State<HomePage> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.monetization_on_rounded),
+              leading: Icon(Icons.monetization_on_rounded, color: AppColors.mainGreen,),
               title: Text('Rendimentos'),
               onTap: () {
                 Navigator.pop(context);
