@@ -11,6 +11,7 @@ class ExpenseResponse {
   final String category;
   final InstallmentExpenseResponse? installment;
   final CardDataResponse? cardDataResponse;
+  final bool isSubscription;
 
   ExpenseResponse({
     required this.id,
@@ -21,7 +22,8 @@ class ExpenseResponse {
     required this.date,
     required this.category,
     this.installment,
-    this.cardDataResponse
+    this.cardDataResponse,
+    required this.isSubscription
   });
 
   factory ExpenseResponse.fromJson(Map<String, dynamic> json) {
@@ -48,7 +50,8 @@ class ExpenseResponse {
       date: DateTime.parse(json['date'] as String),
       category: json['category'] as String,
       installment: parsedInstallment,
-      cardDataResponse: cardData
+      cardDataResponse: cardData,
+      isSubscription: json['isSubscription'] as bool
     );
   }
 
@@ -62,7 +65,8 @@ class ExpenseResponse {
       'date': date.toIso8601String(),
       'category': category,
       'installment': installment?.toJson(),
-      'cardData': cardDataResponse?.toJson()
+      'cardData': cardDataResponse?.toJson(),
+      'isSubscription': isSubscription
     };
   }
 }

@@ -16,10 +16,6 @@ import '../modals/expense_creation_modal.dart';
 class ExpensesPage extends StatefulWidget {
   const ExpensesPage({super.key});
 
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-
   @override
   State<StatefulWidget> createState() => _ExpensesState();
 }
@@ -107,26 +103,28 @@ class _ExpensesState extends State<ExpensesPage> {
                       "${DateFormat('yyyy-MM-dd').format(expense.date)} - ${expense.paymentMethod}",
                     ),
                     isThreeLine: false,
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () async {
-                            bool? result = await showEditExpensesModal(context, expense);
-                            if (result == true) _getExpenses();
-                          },
-                          icon: Icon(Icons.edit),
-                          color: AppColors.mainBlue,
-                        ),
-                        IconButton(
-                          onPressed: ()  {
-                            _deleteExpense(expense.id, expense);
-                          },
-                          icon: Icon(Icons.delete),
-                          color: Colors.redAccent,
-                        ),
-                      ],
-                    ),
+                    trailing: !expense.isSubscription ?
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed: () async {
+                              bool? result = await showEditExpensesModal(context, expense);
+                              if (result == true) _getExpenses();
+                            },
+                            icon: Icon(Icons.edit),
+                            color: AppColors.mainBlue,
+                          ),
+                          IconButton(
+                            onPressed: ()  {
+                              _deleteExpense(expense.id, expense);
+                            },
+                            icon: Icon(Icons.delete),
+                            color: Colors.redAccent,
+                          ),
+                        ],
+                      ) : null // For the else case, could be a helper, indicating this is an subscription expense, thus can't be
+                              // deleted or edited here
                   ),
                   if (expense.installment != null)
                     Padding(
