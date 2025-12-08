@@ -15,7 +15,8 @@ public record ExpenseResponse(
         LocalDate date,
         String category,
         InstallmentDTO installment,
-        CardView cardData
+        CardView cardData,
+        boolean isSubscription
 ) {
 
     public ExpenseResponse(Expense expense) {
@@ -28,7 +29,8 @@ public record ExpenseResponse(
                 expense.getDate(),
                 expense.getCategory().getCategoryName(),
                 expense.getInstallment() == null ? null : new InstallmentDTO(expense.getInstallment()),
-                null
+                null,
+             expense.getSubscription() != null
         );
     }
 }

@@ -541,7 +541,8 @@ public class ExpenseService {
 
         }
 
-        expense.setAmount(request.amount());
+        if (request.amount() != null)
+            expense.setAmount(request.amount());
 
 
         if (request.currencyId() != null) {

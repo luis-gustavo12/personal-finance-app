@@ -38,7 +38,8 @@ public class ExpenseResponseFactory {
                 expense.getDate(),
                 expense.getCategory().getCategoryName(),
                 installmentDTO,
-                cardView
+                cardView,
+                expense.getSubscription() != null
         );
     }
 
