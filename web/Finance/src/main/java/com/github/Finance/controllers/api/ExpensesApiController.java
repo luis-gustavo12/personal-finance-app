@@ -110,8 +110,6 @@ public class ExpensesApiController {
         expenseService.deleteExpense(id);
         return ResponseEntity.noContent().build();
 
-
-
     }
 
 
