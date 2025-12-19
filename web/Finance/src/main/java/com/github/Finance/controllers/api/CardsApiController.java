@@ -3,9 +3,8 @@ package com.github.Finance.controllers.api;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.services.AuthenticationService;
 import com.github.Finance.services.CardService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +23,12 @@ public class CardsApiController {
     @GetMapping("")
     public List<CardView> getUserCards() {
         return cardService.getCardsByUser(authenticationService.getCurrentAuthenticatedUser());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCard(@PathVariable Long id) {
+        cardService.deleteCard(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
