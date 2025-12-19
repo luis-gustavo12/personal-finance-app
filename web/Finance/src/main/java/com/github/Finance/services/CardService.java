@@ -5,21 +5,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.github.Finance.exceptions.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.github.Finance.dtos.forms.AddCardForm;
 import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.enums.CardType;
-import com.github.Finance.exceptions.ResourceNotFoundException;
-import com.github.Finance.mappers.CardMapper;
 import com.github.Finance.models.Card;
 import com.github.Finance.models.User;
 import com.github.Finance.repositories.CardRepository;
 
 @Service
 public class CardService {
-    
 
+
+    private static final Logger log = LoggerFactory.getLogger(CardService.class);
     private final CardRepository repository;
     private final AuthenticationService authenticationService;
     private final EncryptionService encryptionService;
@@ -95,5 +97,31 @@ public class CardService {
 
     public Card findCardById(Long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    private void validateCard(Card card) {
+
+        User user = authenticationService.getCurrentAuthenticatedUser();
+        if (user == null) {
+            throw new RuntimeException("User not found!!");
+        }
+
+        if (!user.getId().equals(card.getUser().getId())) {
+            throw new SecurityException("You are not allowed!!");
+        }
+
+    }
+
+    public void deleteCard(Long id) {
+
+        Card card = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Expense not found!!"));
+
+        validateCard(card);
+
+        repository.deleteById(id);
+
+        log.info("Expense with id {} deleted", id);
+
     }
 }
