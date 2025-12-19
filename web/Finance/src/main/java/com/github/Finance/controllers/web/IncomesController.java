@@ -40,7 +40,7 @@ public class IncomesController {
     public String incomes(Model model) {
         List<Income> incomes = incomesService.getIncomesByUserAndPeriod(null, LocalDate.now().minusDays(45),
         LocalDate.now());
-        model.addAttribute("incomesData", incomesService.getCurrentMonthUserIncomes());
+        model.addAttribute("incomesData", incomesService.getUserLastIncomes());
         model.addAttribute("month", LocalDate.now().getMonthValue());
         model.addAttribute("sum", incomesService.getIncomesSum(incomes));
 

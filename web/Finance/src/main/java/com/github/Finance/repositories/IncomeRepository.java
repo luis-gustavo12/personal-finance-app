@@ -29,4 +29,5 @@ public interface IncomeRepository extends JpaRepository<Income, Long>, JpaSpecif
     @Query("SELECT i FROM Income i WHERE i.user = :user AND i.incomeDate BETWEEN :startDate AND :endDate")
     List<Income> findIncomesByPeriodOfTime(User user, LocalDate startDate, LocalDate endDate);
 
+    List<Income> findTop15ByUserOrderByIncomeDateDesc(User user);
 }

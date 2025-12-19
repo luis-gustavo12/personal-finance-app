@@ -5,7 +5,6 @@ import com.github.Finance.dtos.forms.IncomeExpenseFilterForm;
 import com.github.Finance.dtos.forms.RegisterIncomeForm;
 import com.github.Finance.dtos.requests.IncomeCreationRequest;
 import com.github.Finance.dtos.response.IncomesDetailResponse;
-import com.github.Finance.dtos.views.CardView;
 import com.github.Finance.exceptions.ResourceNotFoundException;
 import com.github.Finance.mappers.IncomesMapper;
 import com.github.Finance.models.Currency;
@@ -88,6 +87,12 @@ public class IncomesService {
         LocalDate today = LocalDate.now();
         return incomeRepository.findIncomesByPeriodOfTime(user, today.minusDays(45), today);
     }
+
+    public List<Income> getUserLastIncomes() {
+        User user = authenticationService.getCurrentAuthenticatedUser();
+        return incomeRepository.findTop15ByUserOrderByIncomeDateDesc(user);
+    }
+
 
     public List<IncomesDetailResponse> getUserRecentIncomes(User user) {
         if (user == null)
