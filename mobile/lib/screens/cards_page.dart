@@ -4,6 +4,7 @@ import 'package:mobile/dtos/responses/card_response.dart';
 import 'package:mobile/services/card_service.dart';
 import 'package:mobile/theme/colors.dart';
 
+import '../modals/cards_modal.dart';
 import '../utils/app_bar.dart';
 
 class CardsPage extends StatefulWidget {
@@ -64,95 +65,125 @@ class CardsState extends State<CardsPage> {
               borderRadius: BorderRadius.circular(15.0),
             ),
             margin: EdgeInsets.all(16.0),
-            child: Container(
-              width: 350,
-              height: 220,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0),
-                gradient: LinearGradient(
-                  colors: [AppColors.lilac, AppColors.lilac.withOpacity(0.7)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      card.cardType,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 3,
-                      ),
+            child: Stack(
+              children: [
+                Container(
+                  height: 220,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.lilac,
+                        AppColors.lilac.withOpacity(0.7),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    SizedBox(height: 5),
-                    Text(
-                      card.brand.toUpperCase(),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      "**** **** ${card.lastDigits}",
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 22.0,
-                        letterSpacing: 3.0,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 4.0,
-                            color: Colors.black38,
-                            offset: Offset(2.0, 2.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          card.cardType,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 3,
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Card holder",
-                          style: TextStyle(color: Colors.black, fontSize: 10.0),
                         ),
+                        SizedBox(height: 5),
                         Text(
-                          card.cardName.toUpperCase(),
+                          card.brand.toUpperCase(),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          "**** **** ${card.lastDigits}",
                           style: const TextStyle(
                             color: Colors.black,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 22.0,
+                            letterSpacing: 3.0,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 4.0,
+                                color: Colors.black38,
+                                offset: Offset(2.0, 2.0),
+                              ),
+                            ],
                           ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                        const SizedBox(height: 10.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Expires at",
+                              "Card holder",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 10.0,
                               ),
                             ),
                             Text(
-                              "${card.expirationMonth}}"
-                              " / "
-                              "${card.expirationYear}",
+                              card.cardName.toUpperCase(),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "Expires at",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10.0,
+                                  ),
+                                ),
+                                Text(
+                                  "${card.expirationMonth}"
+                                  " / "
+                                  "${card.expirationYear}",
+                                ),
+                              ],
                             ),
                           ],
                         ),
+
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: Column(
+                    children: [
+                      IconButton(
+                        onPressed: (){
+                          showEditCardModal(context, card);
+                        },
+                        icon: Icon(Icons.edit, color: AppColors.darkGreen,),
+                        constraints: BoxConstraints(),
+                      ),
+                      IconButton(
+                        onPressed: (){},
+                        icon: Icon(Icons.remove, color: Colors.red),
+                        constraints: BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           );
         }),

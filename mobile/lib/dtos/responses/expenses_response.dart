@@ -10,7 +10,7 @@ class ExpenseResponse {
   final DateTime date;
   final String category;
   final InstallmentExpenseResponse? installment;
-  final CardDataResponse? cardDataResponse;
+  final CardResponse? cardDataResponse;
   final bool isSubscription;
 
   ExpenseResponse({
@@ -37,8 +37,8 @@ class ExpenseResponse {
         : null;
 
     final cardDataJson = json['cardData'];
-    final CardDataResponse? cardData = (cardDataJson != null)
-        ? CardDataResponse.fromJson(cardDataJson as Map<String, dynamic>)
+    final CardResponse? cardData = (cardDataJson != null)
+        ? CardResponse.fromJson(cardDataJson as Map<String, dynamic>)
         : null;
 
     return ExpenseResponse(

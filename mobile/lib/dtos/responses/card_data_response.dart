@@ -1,5 +1,5 @@
 
-class CardDataResponse {
+class CardResponse {
   final int id;
   final String cardName;
   final int expirationMonth;
@@ -8,7 +8,7 @@ class CardDataResponse {
   final String brand;
   final String cardType;
 
-  CardDataResponse({
+  CardResponse({
     required this.id,
     required this.cardName,
     required this.expirationMonth,
@@ -18,8 +18,8 @@ class CardDataResponse {
     required this.cardType,
   });
 
-  factory CardDataResponse.fromJson(Map<String, dynamic> json) {
-    return CardDataResponse(
+  factory CardResponse.fromJson(Map<String, dynamic> json) {
+    return CardResponse(
       id: json['id'] as int,
       cardName: json['cardName'] as String,
       expirationMonth: json['expirationMonth'] as int,
