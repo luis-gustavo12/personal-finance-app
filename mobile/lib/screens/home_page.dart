@@ -106,7 +106,7 @@ class _HomeState extends State<HomePage> {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.monetization_on_rounded),
+              leading: Icon(Icons.monetization_on_rounded, color: AppColors.mainGreen,),
               title: Text('Rendimentos'),
               onTap: () {
                 Navigator.pop(context);
@@ -124,7 +124,10 @@ class _HomeState extends State<HomePage> {
             ListTile(
               leading: Icon(Icons.credit_card),
               title: Text('Cartões'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, "/cards");
+              },
             ),
             ListTile(
               leading: Icon(Icons.subscriptions),
