@@ -11,6 +11,10 @@
     "allowJs": true,
     "sourceMap": true
   },
+  "scripts": {
+    "build-ts": "tsc",
+    "build-webpack": "webpack"
+  },
   "include": [
     "./**/*.ts",
     "./**/*.js"
