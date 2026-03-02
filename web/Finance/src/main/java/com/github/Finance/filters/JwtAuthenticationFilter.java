@@ -35,6 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String url = request.getRequestURI();
 
+        if (!url.isEmpty() && !url.startsWith("/api")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
             log.info("Invalid Token");
