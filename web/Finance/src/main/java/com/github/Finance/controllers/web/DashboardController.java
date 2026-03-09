@@ -6,7 +6,6 @@ import com.github.Finance.models.Expense;
 import com.github.Finance.models.Income;
 import com.github.Finance.models.User;
 import com.github.Finance.services.*;
-import com.github.Finance.tasks.MonthlyReportTask;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,21 +21,18 @@ import java.util.List;
 @Slf4j
 public class DashboardController {
 
-    private final ReportService reportService;
+
     private final AuthenticationService authenticationService;
     private final IncomesService incomesService;
     private final ExpenseService expenseService;
-    private final MonthlyReportTask monthlyReportTask;
     private final SubscriptionService subscriptionService;
     private final InstallmentService installmentService;
     private final InstallmentQueryService installmentQueryService;
 
-    public DashboardController(ReportService reportService, AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, MonthlyReportTask monthlyReportTask, SubscriptionService subscriptionService, InstallmentService installmentService, InstallmentQueryService installmentQueryService) {
-        this.reportService = reportService;
+    public DashboardController(AuthenticationService authenticationService, IncomesService incomesService, ExpenseService expenseService, SubscriptionService subscriptionService, InstallmentService installmentService, InstallmentQueryService installmentQueryService) {
         this.authenticationService = authenticationService;
         this.incomesService = incomesService;
         this.expenseService = expenseService;
-        this.monthlyReportTask = monthlyReportTask;
         this.subscriptionService = subscriptionService;
         this.installmentService = installmentService;
         this.installmentQueryService = installmentQueryService;
