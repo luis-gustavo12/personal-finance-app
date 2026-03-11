@@ -4,11 +4,11 @@ import com.github.Finance.repositories.NotificationRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-class Notification {
+class NotificationService {
 
     private final NotificationRepository repository;
 
-    Notification(NotificationRepository repository) {
+    NotificationService(NotificationRepository repository) {
         this.repository = repository;
     }
 
