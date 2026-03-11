@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/tables.css}">
+    <link rel="stylesheet" th:href="@{/css/search-bar.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+    <title>Balanço</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <nav class="sidebar">
+        <div class="main-routes">
+            <div class="nav-panel">
+                <a th:href="@{/dashboard}">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+
+        <section>
+            <form method="get" class="controls-section" id="balance-form">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="minimum-date">Data Mínima</label>
+                        <input type="text" name="minimumDate" id="minimum-date" class="form-control"
+                               placeholder="Selecione uma data">
+                    </div>
+                    <div class="filter-item">
+                        <label for="maximum-date">Data Máxima</label>
+                        <input type="text" name="maximumDate" id="maximum-date" class="form-control"
+                               placeholder="Selecione uma data">
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Tab switcher (hidden until data loads) -->
+        <div id="balance-tabs" style="display: none; gap: 8px; margin-bottom: 16px;">
+            <button class="btn btn-primary" id="tab-incomes">Rendimentos</button>
+            <button class="btn btn-secondary" id="tab-expenses">Despesas</button>
+        </div>
+
+        <!-- Incomes Table -->
+        <section id="incomes-section" style="display: none;">
+            <h2>Rendimentos</h2>
+            <table class="entity-display-table">
+                <thead>
+                    <tr>
+                        <th>Moeda</th>
+                        <th>Quantia</th>
+                        <th>Forma de Pagamento</th>
+                        <th>Data</th>
+                        <th>Extra</th>
+                    </tr>
+                </thead>
+                <tbody id="incomes-tbody">
+                    <!-- Populated by balance.ts -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td id="incomes-total" colspan="5">Total: —</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+        <!-- Expenses Table -->
+        <section id="expenses-section" style="display: none;">
+            <h2>Despesas</h2>
+            <table class="entity-display-table">
+                <thead>
+                    <tr>
+                        <th>Moeda</th>
+                        <th>Forma de Pagamento</th>
+                        <th>Quantia</th>
+                        <th>Categoria</th>
+                        <th>Data</th>
+                        <th>Extra</th>
+                    </tr>
+                </thead>
+                <tbody id="expenses-tbody">
+                    <!-- Populated by balance.ts -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td id="expenses-total" colspan="6">Total: —</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    const minPicker = flatpickr("#minimum-date", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        onChange: function(selectedDates) {
+            maxPicker.set("minDate", selectedDates[0] || null);
+        }
+    });
+
+    const maxPicker = flatpickr("#maximum-date", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        onChange: function(selectedDates) {
+            minPicker.set("maxDate", selectedDates[0] || null);
+        }
+    });
+</script>
+<script type="module" th:src="@{/js/dist/balance.js}"></script>
+</body>
+</html>

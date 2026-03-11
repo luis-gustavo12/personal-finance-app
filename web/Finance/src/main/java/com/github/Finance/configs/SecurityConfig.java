@@ -1,6 +1,7 @@
 package com.github.Finance.configs;
 
 import com.github.Finance.filters.JwtAuthenticationFilter;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,6 +62,7 @@ public class SecurityConfig {
         httpSecurity
             .authorizeHttpRequests(
                requests -> requests
+               .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                .requestMatchers("/register/**", "/register", "/register/", "/error").permitAll()
                .requestMatchers("/recover/**").permitAll()
@@ -73,7 +75,7 @@ public class SecurityConfig {
                     .loginProcessingUrl("/login/submit")
                     .usernameParameter("email")
                     .passwordParameter("password")
-                    .defaultSuccessUrl("/dashboard", false)
+                    .defaultSuccessUrl("/dashboard", true)
                     .permitAll()
             )
             ;
