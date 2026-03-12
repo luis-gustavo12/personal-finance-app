@@ -27,13 +27,13 @@ interface ExpenseResponse {
     isSubscription: boolean;
 }
 
-const form = document.getElementById("balance-form")! as HTMLFormElement;
+const balanceForm = document.getElementById("balance-form") as HTMLFormElement;
 
 console.log("Hello World");
 
-form.addEventListener("submit", (event: SubmitEvent) => {
+balanceForm.addEventListener("submit", (event: SubmitEvent) => {
     event.preventDefault();
-    sendData(form).then(data => generateTable(data)).catch(err => console.error(err));
+    sendData(balanceForm).then(data => generateTable(data)).catch(err => console.error(err));
 });
 
 document.getElementById("tab-incomes")!.addEventListener("click", () => switchTab("incomes"));
